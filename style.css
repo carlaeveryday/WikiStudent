@@ -1,6 +1,13 @@
-
+:root {
+    --azul-oscuro: #072238;
+    --azul-claro: #ecf7fd;
+    --azul-acento: #0b6eab;
+    --color-pop: #FF7F50;
+    --blanco: #ffffff;
+}
 
 body {
+    display: flex;
     background-color: #ecf7fd;
     font-family: 'Inter', sans-serif;
 }
