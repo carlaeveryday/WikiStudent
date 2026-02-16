@@ -202,6 +202,10 @@ main {
         width: auto;
     }
 
+    .copyright {
+        text-align: center;
+    }
+
     .footer-links span {
         display: none;
     }
