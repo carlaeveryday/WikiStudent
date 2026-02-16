@@ -133,7 +133,6 @@ main {
     background-color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
-    user-select: none;
 }
 
 .card-1:hover {
