@@ -10,6 +10,7 @@ body {
     display: flex;
     background-color: #ecf7fd;
     font-family: 'Inter', sans-serif;
+    position: relative
 }
 
 * {
@@ -171,11 +172,13 @@ footer {
 
 .copyright {
     color: var(--azul-oscuro);
+    font-size: clamp(0.75em, 2vw, 1.1rem);
 }
 
 .footer-links {
     display: block;
     padding-top: 20px;
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
 }
 
 .footer-links a {
@@ -186,4 +189,68 @@ footer {
 .footer-links span {
     padding: 20px;
     color: #769eb6c5;
+}
+
+/*--- QUERIES ---*/
+
+@media (max-width: 700px) {
+    body {
+        display: block;
+        position: relative;
+    }
+
+    footer {
+        position: relative; 
+        margin-left: 15%;
+        padding: 20px 0;
+        z-index: 10;
+        width: auto;
+    }
+
+    .footer-links span {
+        display: none;
+    }
+
+    .footer-links a {
+        display: block;
+        text-align: center;
+        padding: 5px
+    }
+}
+
+@media (min-width: 700px) {
+    body {
+        display: grid;
+        grid-template-columns: 20% 75%;
+        grid-template-rows: 1fr auto;
+        grid-template-areas: 
+        "sidebar main"
+        "sidebar footer"
+    }
+
+    .main__header-content {
+        justify-self: flex-start;
+        align-self: flex-start;
+    }
+
+    .sidebar {
+        grid-area: sidebar;
+        position: sticky;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    body:has(input[type="checkbox"]:checked) {
+        grid-template-columns: 8% 92%
+    }
+
+    .sidebar:has(input[type="checkbox"]:checked) {
+        width: 100% !important; 
+    }
+
+    main {
+        grid-area: main;
+        width: 100%; 
+        padding-left: 1.2rem
+    }
 }

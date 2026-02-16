@@ -203,7 +203,13 @@ main {
     }
 
     .footer-links span {
-        padding: 15px;
+        display: none;
+    }
+
+    .footer-links a {
+        display: block;
+        text-align: center;
+        padding: 5px
     }
 }
 
