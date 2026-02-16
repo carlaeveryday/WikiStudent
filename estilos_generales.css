@@ -16,7 +16,6 @@ body {
     background-color: #ecf7fd;
     font-family: 'Inter', sans-serif;
     position: relative;
-    user-select: none;
 }
 
 * {
