@@ -26,7 +26,7 @@ main {
 
 .word-wiki, .word-student {
     font-weight: bolder;
-    font-size: clamp(2.2rem, 5vw, 3rem);
+    font-size: clamp(2.2rem, 3.5vw, 6rem);
     text-shadow: 4px 4px 3px #07223822;
 }
 
@@ -43,6 +43,7 @@ main {
     margin-top: 10px;
     text-align: center;
     border-left: 2px solid #3f7dd4;
+    margin-bottom: clamp(10px, 0.8vw, 50px)
 }
 
 .main__header-slogan h2 {
@@ -50,7 +51,7 @@ main {
     text-transform: uppercase;
     letter-spacing: 4px;
     margin-bottom: 6px;
-    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-size: clamp(1rem, 1.5vw, 2.3rem);
     color: #072238;
     animation: grow 1.3s both steps(20);
     position: relative;
@@ -61,7 +62,7 @@ main {
 .main__header-slogan h3 {
     font-weight: 200;
     letter-spacing: 1px;
-    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-size: clamp(1rem, 1.4vw, 1.9rem);
     font-weight: 600;
     text-wrap: balance;
     color: #3f7dd4;
@@ -106,12 +107,12 @@ main {
 
 .main__content-cards {
     justify-items: center;
-    width: 100%;
+    width: 80%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));    
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));    
     justify-content: center;
     gap: 30px;
-    max-width: 1100px;
+    max-width: 1300px;
     text-align: center;
     justify-content: center;
     align-items: stretch;
@@ -159,10 +160,16 @@ main {
 }
 
 .card h4 {
-    margin-bottom: 10px
+    margin-bottom: 10px;
+    font-size: clamp(16px, 1.2vw, 22px);
+}
+
+.card p {
+    font-size: clamp(16px, 1.2vw, 18px);
 }
 
 .card-link {
+    font-size: clamp(16px, 1.5vw, 18px);
     background-color: #FF7F50;
     padding: 10px 20px;
     border-radius: 50px;
@@ -180,6 +187,25 @@ main {
 
 
 /*--- QUERIES ---*/
+
+@media (max-width: 700px) {
+    body {
+        display: block;
+        position: relative;
+    }
+
+    footer {
+        position: relative; 
+        margin-left: 15%;
+        padding: 20px 0;
+        z-index: 10;
+        width: auto;
+    }
+
+    .footer-links span {
+        padding: 15px;
+    }
+}
 
 @media (min-width: 700px) {
     body {
@@ -216,5 +242,4 @@ main {
         width: 100%; 
         padding-left: 1.2rem
     }
-
 }
