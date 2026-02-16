@@ -92,13 +92,6 @@ h1, h2, h3, .sidebar__item {
 }
 
 .sidebar__item span {
-
-    font-feature-settings: 'liga';
-  -webkit-font-feature-settings: 'liga';
-  
-  /* Por si acaso Chrome se cree que es un texto común */
-  text-rendering: optimizeLegibility;
-    text-transform: none;
     padding-left: 12px;
     padding-right: 20px;
     font-size: clamp(24px, 1.5vw, 40px);
