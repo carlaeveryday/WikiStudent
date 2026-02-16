@@ -1,0 +1,220 @@
+/* --- MAIN SECTION --- */
+
+.main__header {
+    margin-bottom: 40px;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    justify-content: center;
+    padding-left: 78px;
+    z-index: 50;
+    height:auto
+}
+
+.main__header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.word-wiki, .word-student {
+    font-weight: bolder;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    text-shadow: 4px 4px 3px #07223822;
+}
+
+.word-wiki {
+    color: #3f7dd4;
+}
+
+.word-student {
+    color: #072238;
+}
+
+.main__header-slogan {
+    padding-left: 1rem;
+    margin-top: 10px;
+    text-align: center;
+    border-left: 2px solid #3f7dd4;
+}
+
+.main__header-slogan h2 {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: #072238;
+    animation: grow 1.3s both steps(20);
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.main__header-slogan h3 {
+    font-weight: 200;
+    letter-spacing: 1px;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-weight: 600;
+    text-wrap: balance;
+    color: #3f7dd4;
+}
+
+.slogan__animation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main__header-slogan h2::before  {
+    display: flex;
+    content: '';
+    width: 2px;
+    border-radius: 4px;
+    height: 100%;
+    background-color:#072238;
+    position: absolute;
+    right: 0;
+    align-self: flex-start;
+    animation: titilar .45s infinite alternate
+}
+
+@keyframes grow {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes titilar {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.main__content-cards {
+    justify-items: center;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));    
+    justify-content: center;
+    gap: 30px;
+    max-width: 1100px;
+    text-align: center;
+    justify-content: center;
+    align-items: stretch;
+    text-wrap: pretty;
+    color: #334;
+}
+
+.card {
+    display: grid;
+    grid-template-rows: minmax(10px, 1fr);
+    padding: 35px 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px 0 rgba(94, 102, 210, 0.37);
+    border-radius: 20px;
+    max-width: 4100px;
+    max-height: 600px;
+    border: 3px solid #072238;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card-1:hover {
+    background-color: #bed6f15d; 
+    border-color: #A2D2FF;
+    transform: translateY(-5px); 
+}
+
+.card-2:hover {
+    background-color: #bcecc164;
+    border-color: #a4f1a9;
+    transform: translateY(-5px);
+}
+
+.card-3:hover {
+    background-color: #c39bff41; 
+    border-color: #D8B4FE;
+    transform: translateY(-5px);
+}
+
+.card-4:hover {
+    background-color: #fff5f0;
+    border-color: #FFD8BE;
+    transform: translateY(-5px);
+}
+
+.card h4 {
+    margin-bottom: 10px
+}
+
+.card-link {
+    background-color: #FF7F50;
+    padding: 10px 20px;
+    border-radius: 50px;
+    margin-top: 25px;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 0 6px #FF7F50;
+}
+
+.card-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 5px 4px rgba(255, 127, 80, 0.4);
+}
+
+
+/*--- QUERIES ---*/
+
+@media (min-width: 700px) {
+    body {
+        display: grid;
+        grid-template-columns: 20% 75%;
+        grid-template-rows: 1fr auto;
+        grid-template-areas: 
+        "sidebar main"
+        "sidebar footer"
+    }
+
+    .main__header-content {
+        justify-self: flex-start;
+        align-self: flex-start;
+    }
+
+    .sidebar {
+        grid-area: sidebar;
+        position: sticky;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    body:has(input[type="checkbox"]:checked) {
+        grid-template-columns: 8% 92%
+    }
+
+    .sidebar:has(input[type="checkbox"]:checked) {
+        width: 100% !important; 
+    }
+
+    main {
+        grid-area: main;
+        width: 100%; 
+        padding-left: 1.2rem
+    }
+
+}
