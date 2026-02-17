@@ -15,7 +15,6 @@
 body {
     display: flex;
     background-color: var(--azul-claro);
-    position: relative;
 }
 
 * {
@@ -83,7 +82,7 @@ h1, h2, h3, .sidebar__item, span {
 }
 
 .sidebar__item a {
-    font-size: clamp(0.7rem, 1vw, 1.2rem);
+    font-size: clamp(0.7rem, 0.92vw, 1.2rem);
     color: inherit;
     text-decoration: none;
     padding-right: 6px;
@@ -160,7 +159,7 @@ input[type="checkbox"]:checked ~ label {
     width: clamp(3rem, 4.8vw, 6rem);
 }
 
-
+/* --- FOOTER SECTION --- */
 
 footer {
     display: flex;
@@ -206,10 +205,7 @@ footer {
     }
 
     footer {
-        position: relative; 
-        margin-left: 15%;
         padding: 20px 0;
-        z-index: 10;
         width: auto;
     }
 
@@ -227,7 +223,7 @@ footer {
 @media (min-width: 700px) {
     body {
         display: grid;
-        grid-template-columns: 22% 75%;
+        grid-template-columns: 22% 78%;
         grid-template-rows: 1fr auto;
         grid-template-areas: 
         "sidebar main"
@@ -235,8 +231,8 @@ footer {
     }
 
     .main__header-content {
-        justify-self: flex-start;
-        align-self: flex-start;
+        justify-self: center;
+        align-self: center;
     }
 
     .sidebar {
@@ -250,13 +246,13 @@ footer {
         grid-template-columns: 8% 92%
     }
 
-    .sidebar:has(input[type="checkbox"]:checked) {
-        width: 100% !important; 
-    }
-
     main {
         grid-area: main;
         width: 100%; 
         padding-left: 1.2rem
+    }
+
+    footer {
+        grid-area: footer;
     }
 }

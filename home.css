@@ -133,7 +133,7 @@ main {
     grid-template-rows: minmax(10px, 1fr);
     padding: 35px 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 30px 0 rgba(94, 102, 210, 0.37);
+    box-shadow: 0 8px 30px 0 rgba(82, 91, 210, 0.533);
     border-radius: 20px;
     max-width: 4100px;
     max-height: 600px;
@@ -220,7 +220,7 @@ main {
         margin-left: 15%;
         padding: 20px 0;
         z-index: 10;
-        width: auto;
+        width: 100%;
     }
 
     .copyright {
@@ -241,7 +241,7 @@ main {
 @media (min-width: 700px) {
     body {
         display: grid;
-        grid-template-columns: 20% 75%;
+        grid-template-columns: 20% 80%;
         grid-template-rows: 1fr auto;
         grid-template-areas: 
         "sidebar main"
@@ -272,5 +272,9 @@ main {
         grid-area: main;
         width: 100%; 
         padding-left: 1.2rem
+    }
+
+    footer {
+        grid-area: footer;
     }
 }
