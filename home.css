@@ -6,6 +6,10 @@
     --blanco: #ffffff;
 }
 
+span {
+    font-weight: 600;
+}
+
 /* --- MAIN SECTION --- */
 
 .main__header {
@@ -55,7 +59,7 @@ main {
 }
 
 .main__header-slogan h2 {
-    font-weight: 900;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 4px;
     margin-bottom: 6px;
@@ -71,7 +75,7 @@ main {
     font-weight: 800;
     letter-spacing: 1px;
     font-size: clamp(1rem, 1.4vw, 1.9rem);
-    font-weight: 600;
+    font-weight: 900;
     text-wrap: balance;
     color: var(--azul-acento);
 }
@@ -143,46 +147,43 @@ main {
     transition: all 0.3s ease;
 }
 
+.card:hover{
+    transform: translateY(-5px);
+}
+
 .card-1:hover {
     background-color: #bed6f15d; 
     border-color: #A2D2FF;
-    transform: translateY(-5px); 
 }
 
 .card-2:hover {
     background-color: #bcecc164;
     border-color: #a4f1a9;
-    transform: translateY(-5px);
 }
 
 .card-3:hover {
     background-color: #c39bff41; 
     border-color: #D8B4FE;
-    transform: translateY(-5px);
 }
 
 .card-4:hover {
     background-color: #fdcaaf8b;
     border-color: #fab78b;
-    transform: translateY(-5px);
 }
 
 .card-5:hover {
     background-color: #8bcbcb5b;
     border-color: #50d3d3;
-    transform: translateY(-5px);
 }
 
 .card-6:hover {
     background-color: #fdc4f05f;
     border-color: #ffbef1;
-    transform: translateY(-5px);
 }
 
 .card h4 {
     margin-bottom: 10px;
     font-size: clamp(16px, 1.2vw, 22px);
-    color: var(--);
 }
 
 .card p {
@@ -196,7 +197,7 @@ main {
     border-radius: 50px;
     margin-top: 25px;
     color: #fff;
-    font-weight: bold;
+    font-weight: 500;
     text-decoration: none;
     box-shadow: 0 0 6px #FF7F50;
 }
