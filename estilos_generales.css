@@ -9,12 +9,12 @@
 @font-face {
     font-family: "Montserrat";
     src: url(static/Montserrat-ExtraBold.ttf) format(truetype);
+    src: url(static/Montserrat.ttf) format(truetype);
 }
 
 body {
     display: flex;
-    background-color: #ecf7fd;
-    font-family: 'Inter', sans-serif;
+    background-color: var(--azul-claro);
     position: relative;
 }
 
@@ -22,13 +22,12 @@ body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    user-select: none;
+    font-family: sans-serif;
 }
 
-h1, h2, h3, .sidebar__item {
+h1, h2, h3, .sidebar__item, span {
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
-    -webkit-text-size-adjust: none;
 }
 
 
@@ -94,7 +93,7 @@ h1, h2, h3, .sidebar__item {
 
 .sidebar__item span {
     padding-left: 12px;
-    padding-right: 20px;
+    padding-right: 16px;
     font-size: clamp(24px, 1.5vw, 40px);
 }
 
@@ -228,7 +227,7 @@ footer {
 @media (min-width: 700px) {
     body {
         display: grid;
-        grid-template-columns: 20% 75%;
+        grid-template-columns: 22% 75%;
         grid-template-rows: 1fr auto;
         grid-template-areas: 
         "sidebar main"

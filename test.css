@@ -7,7 +7,7 @@ main {
 .test__header {
     text-align: center;
     margin-top: 30px;
-    width: 400px
+    max-width: 500px;
 }
 
 span {
@@ -16,29 +16,31 @@ span {
     font-size: clamp(1rem, 5vw, 1.9rem);
     color: var(--azul-acento);
     font-weight: 900;
-    font-family: sans-serif;
     text-shadow: 4px 4px 3px #07223822
 }
 
-.final-slogan {
+.final-title {
     color: var(--azul-oscuro);
 }
 
 .test__header h3 {
+    text-transform: uppercase;
     margin-top: 20px;
-    color: var(--azul-acento);
-    font-weight: bolder;
+    color: var(--azul-oscuro);
+    font-weight: 900;
     letter-spacing: 1px;
     font-size: clamp(1rem, 3vw, 1.3rem);
 }
 
 .test__header p {
+    font-size: clamp(0.9rem, 2vw, 16px);
+    font-weight: 600;
+    Color: var(--color-pop);
     margin-top: 15px;
     margin-bottom: 30px;
+    padding-left: 15px;
     text-align: center;
-    padding-left: 10px;
     border-left: 2px solid var(--color-pop);
-    font-weight: 500;
 }
 
 iframe {
@@ -48,6 +50,7 @@ iframe {
     border-radius: 20px;
     box-shadow: 0 8px 30px 0 rgba(94, 102, 210, 0.37);
 }
+
 .sidebar {
         display: none
     }
@@ -67,6 +70,8 @@ iframe {
     main {
         padding: 20px
     }
+
+
 
 @media (min-width: 700px) {
     .sidebar {

@@ -1,3 +1,11 @@
+:root {
+    --azul-oscuro: #072238;
+    --azul-claro: #ecf7fd;
+    --azul-acento: #0b6eab;
+    --color-pop: #FF7F50;
+    --blanco: #ffffff;
+}
+
 /* --- MAIN SECTION --- */
 
 .main__header {
@@ -14,7 +22,7 @@ main {
     justify-content: center;
     padding-left: 78px;
     z-index: 50;
-    height:auto
+    height: auto
 }
 
 .main__header-content {
@@ -31,23 +39,23 @@ main {
 }
 
 .word-wiki {
-    color: #3f7dd4;
+    color: var(--azul-acento);
 }
 
 .word-student {
-    color: #072238;
+    color: var(--azul-oscuro);
 }
 
 .main__header-slogan {
     padding-left: 1rem;
-    margin-top: 10px;
+    margin-top: 18px;
     text-align: center;
-    border-left: 2px solid #3f7dd4;
+    border-left: 2px solid var(--azul-acento);
     margin-bottom: clamp(10px, 0.8vw, 50px)
 }
 
 .main__header-slogan h2 {
-    font-weight: 600;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 4px;
     margin-bottom: 6px;
@@ -60,12 +68,12 @@ main {
 }
 
 .main__header-slogan h3 {
-    font-weight: 200;
+    font-weight: 800;
     letter-spacing: 1px;
     font-size: clamp(1rem, 1.4vw, 1.9rem);
     font-weight: 600;
     text-wrap: balance;
-    color: #3f7dd4;
+    color: var(--azul-acento);
 }
 
 .slogan__animation-container {
@@ -80,7 +88,7 @@ main {
     width: 2px;
     border-radius: 4px;
     height: 100%;
-    background-color:#072238;
+    background-color: var(--azul-oscuro);
     position: absolute;
     right: 0;
     align-self: flex-start;
@@ -129,7 +137,7 @@ main {
     border-radius: 20px;
     max-width: 4100px;
     max-height: 600px;
-    border: 3px solid #072238;
+    border: 3px solid var(--azul-oscuro);
     background-color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -154,14 +162,27 @@ main {
 }
 
 .card-4:hover {
-    background-color: #fff5f0;
-    border-color: #FFD8BE;
+    background-color: #fdcaaf8b;
+    border-color: #fab78b;
+    transform: translateY(-5px);
+}
+
+.card-5:hover {
+    background-color: #8bcbcb5b;
+    border-color: #50d3d3;
+    transform: translateY(-5px);
+}
+
+.card-6:hover {
+    background-color: #fdc4f05f;
+    border-color: #ffbef1;
     transform: translateY(-5px);
 }
 
 .card h4 {
     margin-bottom: 10px;
     font-size: clamp(16px, 1.2vw, 22px);
+    color: var(--);
 }
 
 .card p {
