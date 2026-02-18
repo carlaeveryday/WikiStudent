@@ -21,7 +21,7 @@ main {
     max-width: 500px;
 }
 
-span {
+.directorio__title {
     text-transform: uppercase;
     text-align: center;
     font-size: clamp(1rem, 5vw, 1.9rem);

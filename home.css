@@ -185,7 +185,6 @@ main {
     box-shadow: 0 3px 20px #ff7f5057;
 }
 
-
 .link-container::before {
     content: '';
     display: block;
@@ -204,77 +203,4 @@ main {
 .link-container:hover::before {
     top: -40%;
     left: -18%
-}
-
-
-/*--- QUERIES ---*/
-
-@media (max-width: 700px) {
-    body {
-        display: block;
-        position: relative;
-    }
-
-    footer {
-        position: relative; 
-        margin-left: 15%;
-        padding: 20px 0;
-        z-index: 10;
-        width: auto;
-    }
-
-    .copyright {
-        text-align: center;
-    }
-
-    .footer-links span {
-        display: none;
-    }
-
-    .footer-links a {
-        display: block;
-        text-align: center;
-        padding: 5px
-    }
-}
-
-@media (min-width: 700px) {
-    body {
-        display: grid;
-        grid-template-columns: 20% 80%;
-        grid-template-rows: 1fr auto;
-        grid-template-areas: 
-        "sidebar main"
-        "sidebar footer"
-    }
-
-    .main__header-content {
-        justify-self: flex-start;
-        align-self: flex-start;
-    }
-
-    .sidebar {
-        grid-area: sidebar;
-        position: sticky;
-        width: 100%;
-        min-height: 100vh;
-    }
-
-    body:has(input[type="checkbox"]:checked) {
-        grid-template-columns: 8% 92%
-    }
-
-    .sidebar:has(input[type="checkbox"]:checked) {
-        width: 100% !important; 
-    }
-
-    main {
-        grid-area: main;
-        width: 100%; 
-        padding-left: 1.2rem
-    }
-
-    footer {
-        grid-area: footer;
-    }
 }

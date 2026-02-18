@@ -220,6 +220,7 @@ footer {
     color: #769eb6c5;
 }
 
+
 /*--- QUERIES ---*/
 
 @media (max-width: 700px) {
@@ -229,8 +230,15 @@ footer {
     }
 
     footer {
+        position: relative; 
+        margin-left: 15%;
         padding: 20px 0;
+        z-index: 10;
         width: auto;
+    }
+
+    .copyright {
+        text-align: center;
     }
 
     .footer-links span {
@@ -247,7 +255,7 @@ footer {
 @media (min-width: 700px) {
     body {
         display: grid;
-        grid-template-columns: 22% 78%;
+        grid-template-columns: 20% 80%;
         grid-template-rows: 1fr auto;
         grid-template-areas: 
         "sidebar main"
@@ -255,8 +263,8 @@ footer {
     }
 
     .main__header-content {
-        justify-self: center;
-        align-self: center;
+        justify-self: flex-start;
+        align-self: flex-start;
     }
 
     .sidebar {
@@ -268,6 +276,10 @@ footer {
 
     body:has(input[type="checkbox"]:checked) {
         grid-template-columns: 8% 92%
+    }
+
+    .sidebar:has(input[type="checkbox"]:checked) {
+        width: 100% !important; 
     }
 
     main {
