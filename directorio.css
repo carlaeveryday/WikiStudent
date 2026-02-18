@@ -1,5 +1,5 @@
 body {
-    background-color: var(--azul-claro);
+    background-color: #252323;
 }
 
 * {
@@ -66,15 +66,15 @@ input[type="radio"] {
 .boton-filtro {
     margin: 20px;
     padding: 20px 20px;
-    background-color: var(--azul-acento);
-    color: var(--blanco);
+    background-color: var(--azul-claro);
+    color: var(--azul-acento);
     border-radius: 50px;
     cursor: pointer;
     border: 3px solid var(--azul-acento);
 }
 
-.boton-filtro:hover {
-    border: 3px solid var(--azul-oscuro);
+.boton-filtro::before {
+    background-color: #;
 }
 
 
