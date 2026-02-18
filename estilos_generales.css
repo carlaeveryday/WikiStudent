@@ -1,8 +1,8 @@
 :root {
-    --azul-fondo: #0a192f;      /* Azul noche muy oscuro */
-    --azul-sidebar: #071629;   /* Un pelín más oscuro que el fondo */
-    --azul-neon: #00d2ff;      /* Para el efecto ola */
-    --naranja-neon: #FF7F50;   /* Tu color pop original */
+    --azul-fondo: #0a192f;
+    --azul-sidebar: #071629; 
+    --azul-neon: #00d2ff;
+    --naranja-neon: #FF7F50;
     --texto-principal: #e6f1ff;
     --texto-secundario: #8892b0;
     --blanco: #ffffff;
@@ -64,7 +64,7 @@ p {
     padding: 30px 0 0 0;
     transition: appear 2s both alternate;
     border-right: 1px solid rgba(0, 210, 255, 0.1);
-    box-shadow: 0 0px 40px 0 rgba(82, 91, 210, 0.533);
+    box-shadow: 0 0px 20px 0 rgba(82, 91, 210, 0.533);
 }
 
 @keyframes appear {
@@ -98,6 +98,7 @@ p {
     transition: all 0.3s ease;
     width: 100%;
     background-color: transparent;
+    
 }
 
 .sidebar__item a {
@@ -108,12 +109,14 @@ p {
     padding-right: 6px;
     padding: 15px;
     text-wrap: balance;
+    text-shadow: 0 2px 40px #fcfcfc3c;
 }
 
 .sidebar__item span {
     padding-left: 12px;
     padding-right: 16px;
     font-size: clamp(24px, 1.5vw, 40px);
+    text-shadow: 0 2px 20px #fcfcfc3c;
 }
 
 .sidebar__item:hover {

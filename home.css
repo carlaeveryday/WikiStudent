@@ -4,8 +4,9 @@
     --azul-neon: #00d2ff;
     --naranja-neon: #FF7F50;
     --texto-principal: #e6f1ff;
-    --texto-secundario: #8892b0;
+    --texto-secundario: #abb1c8;
     --blanco: #ffffff;
+    --azul-cartas: rgba(255, 255, 255, 0.03)
 }
 
 span {
@@ -41,7 +42,7 @@ main {
 .word-wiki, .word-student {
     font-weight: 900;
     font-size: clamp(2.2rem, 3.5vw, 6rem);
-    text-shadow: 0 8px 40px #ff7f5057;
+    text-shadow: 0 8px 40px #ff7f506a;
 }
 
 .word-wiki {
@@ -160,6 +161,7 @@ main {
     color: var(--naranja-neon);
     margin-bottom: 10px;
     font-size: clamp(16px, 1.2vw, 22px);
+    text-shadow: 0 2px 8px #ff7f5040;
 }
 
 .card p {
