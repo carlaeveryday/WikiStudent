@@ -72,76 +72,106 @@
 <!--- FILTROS SECTION --->
 
     <div class="seccion-filtros">
-        <input type="radio" class="btn-todas" name="filtro-directorio">
-        <input type="radio" class="btn-ia" name="filtro-directorio">
-        <input type="radio" class="btn-organizacion" name="filtro-directorio">
-        <input type="radio" class="btn-apuntes" name="filtro-directorio">
-        <input type="radio" class="btn-concentracion" name="filtro-directorio">
+        <input type="radio" id="btn-todas" name="filtro-directorio">
+        <input type="radio" id="btn-ia" name="filtro-directorio">
+        <input type="radio" id="btn-organizacion" name="filtro-directorio">
+        <input type="radio" id="btn-apuntes" name="filtro-directorio">
+        <input type="radio" id="btn-concentracion" name="filtro-directorio">
     </div>
 
     <div class="contenedor-botones">
         <label for="btn-todas" class="boton-filtro">Todas</label>
-        <label for="btn-todas" class="boton-filtro">Inteligencia Artificial</label>
-        <label for="btn-todas" class="boton-filtro">Organización y Productividad</label>
-        <label for="btn-todas" class="boton-filtro">Apuntes y Comunidad</label>
-        <label for="btn-todas" class="boton-filtro">Concentración</label>
+        <label for="btn-ia" class="boton-filtro">Inteligencia Artificial</label>
+        <label for="btn-organizacion" class="boton-filtro">Organización y Productividad</label>
+        <label for="btn-apuntes" class="boton-filtro">Apuntes y Comunidad</label>
+        <label for="btn-concentracion" class="boton-filtro">Concentración</label>
     </div>
 
 <!--- CARDS SECTION --->
 
 <div class="directorio">
-    <div class="directorio__card perplexity-card">
+    <div class="directorio__card ai-card perplexity-card">
         <div class="app-logo"><img src="perplexity-ai-icon.png" alt="Perplexity icono"></div>
         <h4>Perplexity</h4>
         <p>Buscador con IA que responde tus dudas citando fuentes reales y fiables al momento.</p>
         <div class="link-container"><a class="card-link" href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card gemini-card">
+    <div class="directorio__card ai-card gemini-card">
         <div class="app-logo"><img src="gemini-icon.png" alt="Gemini icono"></div>
         <h4>Gemini</h4>
         <p>La IA de Google para analizar documentos, resolver dudas lógicas y organizar tus sesiones de estudio con precisión.</p>
-        <div class="link-container"><a class="card-link" href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
+        <div class="link-container"><a class="card-link" href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card astraai-card">
+    <div class="directorio__card ai-card astraai-card">
         <div class="app-logo"><img src="astraai-icon.png" alt="Astra AI icono"></div>
         <h4>Astra AI</h4>
         <p>Tu tutor personal de IA para resolver dudas académicas complejas y explicar conceptos difíciles paso a paso.</p>
         <div class="link-container"><a class="card-link" href="https://astra-ai.co/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card notebooklm-card">
+    <div class="directorio__card ai-card notebooklm-card">
         <div class="app-logo"><img src="notebookLM-icon.png" alt="NotebookLM icono"></div>
         <h4>NotebookLM</h4>
         <p>Analiza tus propios apuntes y PDFs con esta IA de Google que genera resúmenes, guías de estudio y podcasts explicativos.</p>
         <div class="link-container"><a class="card-link" href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card gammaai-card">
+    <div class="directorio__card ai-card gammaai-card">
         <div class="app-logo"><img src="gammaai-icon.png" alt="Gamma AI icono"></div>
         <h4>Gamma AI</h4>
         <p>Crea presentaciones y documentos profesionales en segundos a partir de un texto.</p>
         <div class="link-container"><a class="card-link" href="https://gamma.app/es" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card knowunity-card">
+    <div class="directorio__card apuntes-card knowunity-card">
         <div class="app-logo"><img src="knowunity-icon.webp" alt="Knowunity icono"></div>
         <h4>Knowunity</h4>
         <p>Accede a miles de apuntes, resúmenes y presentaciones compartidos por otros estudiantes para aprobarlo todo.</p>
         <div class="link-container"><a class="card-link" href="https://knowunity.es/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card forest-card">
+    <div class="directorio__card concentracion-card forest-card">
         <div class="app-logo"><img src="forest-icon.webp" alt="Forest icono"></div>
         <h4>Forest</h4>
         <p>Concéntrate en tus estudios plantando árboles virtuales que crecen mientras no usas el móvil.</p>
         <div class="link-container"><a class="card-link" href="https://www.forestapp.cc/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
-    <div class="directorio__card imissmycafe-card">
+    <div class="directorio__card concentracion-card imissmycafe-card">
         <div class="app-logo"><img src="imissmycafe-icon.webp" alt="I miss my cafe icono"></div>
-        <h4>Forest</h4>
+        <h4>I miss my cafe</h4>
         <p>Sumérgete en el ambiente de una cafetería con sonidos personalizables de lluvia, tazas y charla suave. Perfecto para estudiar con calma y foco.</p>
         <div class="link-container"><a class="card-link" href="https://imissmycafe.com/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
     </div>
+    <div class="directorio__card apuntes-card genially-card">
+        <div class="app-logo"><img src="genially-icon.webp" alt="Genially icono"></div>
+        <h4>Genially</h4>
+        <p>Sumérgete en el ambiente de una cafetería con sonidos personalizables de lluvia, tazas y charla suave. Perfecto para estudiar con calma y foco.</p>
+        <div class="link-container"><a class="card-link" href="https://genially.com/es/" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
+    </div>
+    <div class="directorio__card organizacion-card notion-card">
+        <div class="app-logo"><img src="notion-logo..webp" alt="Notion icono"></div>
+        <h4>Notion</h4>
+        <p>Sumérgete en el ambiente de una cafetería con sonidos personalizables de lluvia, tazas y charla suave. Perfecto para estudiar con calma y foco.</p>
+        <div class="link-container"><a class="card-link" href="https://www.notion.com/es-es/product" target="_blank" rel="noopener noreferrer">➡ <span>Visitar Web</span></a></div>
+    </div>
     
 </div>
-
 </main>
+
+    <!--- FOOTER SECTION --->
+
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">
+                © 2026 Carla.studio_ | Todos los derechos reservados.
+            </p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+
 
 
 

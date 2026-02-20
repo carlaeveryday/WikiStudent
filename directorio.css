@@ -103,6 +103,30 @@ input[type="radio"] {
     left: -18%
 }
 
+body:has(#btn-ia:checked) .apuntes-card,
+body:has(#btn-ia:checked) .concentracion-card,
+body:has(#btn-ia:checked) .organizacion-card {
+    display: none
+}
+
+body:has(#btn-apuntes:checked) .ai-card,
+body:has(#btn-apuntes:checked) .concentracion-card,
+body:has(#btn-apuntes:checked) .organizacion-card {
+    display: none
+}
+
+body:has(#btn-concentracion:checked) .perplexity-card,
+body:has(#btn-concentracion:checked) .gemini-card,
+body:has(#btn-concentracion:checked) .gammaai-card,
+body:has(#btn-concentracion:checked) .astraai-card,
+body:has(#btn-concentracion:checked) .notebooklm-card,
+body:has(#btn-concentracion:checked) .knowunity-card,
+body:has(#btn-concentracion:checked) .forest-card,
+body:has(#btn-concentracion:checked) .notion-card,
+body:has(#btn-concentracion:checked) .genially-card {
+    display: none
+}
+
 
 /* --- CARDS --- */
 
@@ -111,7 +135,6 @@ input[type="radio"] {
     grid-template-columns: repeat(3, minmax(100px, 1fr));
     gap: 30px;
     margin-top: 20px;
-    margin-left: 25px;
 }
 
 .directorio__card {
@@ -150,3 +173,5 @@ input[type="radio"] {
     width: 100px;
     border-radius: 25px;
 }
+
+
