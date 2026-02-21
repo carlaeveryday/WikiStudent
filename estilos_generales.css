@@ -48,6 +48,57 @@ p {
     font-weight: 300;
 }
 
+
+/* --- HEADER APARTADOS --- */
+
+.header__apartados {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.title__apartados {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: clamp(1rem, 5vw, 1.9rem);
+    color: var(--naranja-neon);
+    font-weight: 900;
+    text-shadow: 4px 4px 3px #07223822;
+    text-shadow: 0 8px 40px #ff7f506a;
+}
+
+.final-title {
+    color: var(--blanco);
+}
+
+.header__apartados h3 {
+    text-transform: uppercase;
+    margin-top: 30px;
+    color: var(--azul-neon);
+    text-shadow: 0 10px 30px rgba(0, 208, 255, 0.174);
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+}
+
+.header__apartados p {
+    font-size: clamp(0.9rem, 2vw, 16px);
+    font-weight: 600;
+    Color: var(--blanco);
+    margin-top: 15px;
+    margin-bottom: 30px;
+    padding-left: 15px;
+    text-align: center;
+    border-left: 2px solid var(--blanco);
+    text-shadow: 0 2px 20px #fcfcfc2d;
+}
+
+
+
+
+
+
+
+
 /* --- SIDEBAR SECTION --- */
 
 .sidebar {
@@ -186,7 +237,8 @@ input[type="checkbox"]:checked ~ label {
 
 footer {
     display: flex;
-    background-color: #fff;
+    background: var(--azul-sidebar);
+    box-shadow: 0 0px 20px 0 rgba(82, 91, 210, 0.533);
     border-top: 3px solid var(--azul-oscuro);
     padding: 45px 20px;
     width: 100%;
@@ -196,10 +248,12 @@ footer {
     justify-content: center;
     font-size: 1.1rem;
     font-weight: bolder;
+    margin-top: 35px;
 }
 
 .copyright {
-    color: var(--azul-oscuro);
+    color: var(--azul-neon);
+    text-shadow: 0 10px 30px rgba(0, 208, 255, 0.174);
     font-size: clamp(0.75em, 2vw, 1.1rem);
     font-weight: 600;
 }
@@ -208,16 +262,18 @@ footer {
     display: block;
     padding-top: 20px;
     font-size: clamp(0.8rem, 2vw, 1.1rem);
+    text-shadow: 0 2px 8px #ff7f5040;
 }
 
 .footer-links a {
     text-decoration: none;
-    color: var(--azul-acento);
+    color: var(--naranja-neon);
 }
 
 .footer-links span {
     padding: 20px;
-    color: #769eb6c5;
+    color: #ff7f505a;
+    text-shadow: 0 2px 8px #ff7f5040;
 }
 
 

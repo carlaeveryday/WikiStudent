@@ -4,45 +4,6 @@ main {
     align-items: center; 
 }
 
-.test__header {
-    text-align: center;
-    margin-top: 30px;
-    max-width: 500px;
-}
-
-span {
-    text-transform: uppercase;
-    text-align: center;
-    font-size: clamp(1rem, 5vw, 1.9rem);
-    color: var(--azul-acento);
-    font-weight: 900;
-    text-shadow: 4px 4px 3px #07223822
-}
-
-.final-title {
-    color: var(--azul-oscuro);
-}
-
-.test__header h3 {
-    text-transform: uppercase;
-    margin-top: 20px;
-    color: var(--azul-oscuro);
-    font-weight: 900;
-    letter-spacing: 1px;
-    font-size: clamp(1rem, 3vw, 1.3rem);
-}
-
-.test__header p {
-    font-size: clamp(0.9rem, 2vw, 16px);
-    font-weight: 600;
-    Color: var(--color-pop);
-    margin-top: 15px;
-    margin-bottom: 30px;
-    padding-left: 15px;
-    text-align: center;
-    border-left: 2px solid var(--color-pop);
-}
-
 iframe {
     background-color: var(--blanco);
     border: 1px solid #ff7f502a;

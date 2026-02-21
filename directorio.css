@@ -15,48 +15,6 @@ main {
     align-items: center; 
 }
 
-.directorio__header {
-    text-align: center;
-    margin-top: 30px;
-    max-width: 500px;
-}
-
-.directorio__title {
-    text-transform: uppercase;
-    text-align: center;
-    font-size: clamp(1rem, 5vw, 1.9rem);
-    color: var(--naranja-neon);
-    font-weight: 900;
-    text-shadow: 4px 4px 3px #07223822;
-    text-shadow: 0 8px 40px #ff7f506a;
-}
-
-.final-title {
-    color: var(--blanco);
-}
-
-.directorio__header h3 {
-    text-transform: uppercase;
-    margin-top: 30px;
-    color: var(--azul-neon);
-    text-shadow: 0 10px 30px rgba(0, 208, 255, 0.174);
-    font-weight: 900;
-    letter-spacing: 1px;
-    font-size: clamp(1rem, 3vw, 1.3rem);
-}
-
-.directorio__header p {
-    font-size: clamp(0.9rem, 2vw, 16px);
-    font-weight: 600;
-    Color: var(--blanco);
-    margin-top: 15px;
-    margin-bottom: 30px;
-    padding-left: 15px;
-    text-align: center;
-    border-left: 2px solid var(--blanco);
-    text-shadow: 0 2px 20px #fcfcfc2d;
-}
-
 /* --- FILTROS SECTION --- */
 
 input[type="radio"] {
@@ -132,8 +90,8 @@ body:has(#btn-concentracion:checked) .genially-card {
 
 .directorio {
     display: grid;
-    grid-template-columns: repeat(3, minmax(100px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));    
+    gap: 50px;
     margin-top: 20px;
 }
 
@@ -141,7 +99,7 @@ body:has(#btn-concentracion:checked) .genially-card {
     display: flex;
     flex-direction: column;
     background-color: var(--azul-cartas);
-    padding: 50px 40px;
+    padding: 30px 20px;
     border-radius: 25px;
     justify-content: center;
     align-items: center;
@@ -170,7 +128,7 @@ body:has(#btn-concentracion:checked) .genially-card {
 }
 
 .app-logo img {
-    width: 100px;
+    width: 80px;
     border-radius: 25px;
 }
 
