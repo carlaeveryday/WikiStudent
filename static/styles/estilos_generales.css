@@ -1,0 +1,344 @@
+:root {
+    --azul-fondo: #0a192f;
+    --azul-sidebar: #071629; 
+    --azul-neon: #00d2ff;
+    --naranja-neon: #FF7F50;
+    --texto-principal: #e6f1ff;
+    --texto-secundario: #8892b0;
+    --blanco: #ffffff;
+}
+
+
+@font-face {
+    font-family: "Montserrat";
+    src: url(/static/Montserrat-ExtraBold.ttf) format(truetype);
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url(/static/Montserrat-Bold.ttf) format(truetype);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url(/static/Montserrat-Medium.ttf) format(truetype);
+    font-weight: 300;
+}
+
+
+body {
+    display: flex;
+    background-color: var(--azul-fondo);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Montserrat;
+}
+
+h1, h2, h3 {
+    font-weight: 800;
+}
+
+p {
+    font-weight: 300;
+}
+
+
+/* --- HEADER APARTADOS --- */
+
+.header__apartados {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.title__apartados {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: clamp(1rem, 5vw, 1.9rem);
+    color: var(--naranja-neon);
+    font-weight: 900;
+    text-shadow: 4px 4px 3px #07223822;
+    text-shadow: 0 8px 40px #ff7f506a;
+}
+
+.final-title {
+    color: var(--blanco);
+}
+
+.header__apartados h3 {
+    text-transform: uppercase;
+    margin-top: 30px;
+    color: var(--azul-neon);
+    text-shadow: 0 10px 30px rgba(0, 208, 255, 0.174);
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+}
+
+.header__apartados p {
+    font-size: clamp(0.9rem, 2vw, 16px);
+    font-weight: 600;
+    Color: var(--blanco);
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    padding-left: 15px;
+    border-left: 2px solid var(--blanco);
+    text-shadow: 0 2px 20px #fcfcfc2d;
+}
+
+
+/* --- SIDEBAR SECTION --- */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 100vh;
+    width: 65%;
+    background-color: var(--azul-sidebar);
+    color: #b8e0fa;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0 0 0;
+    transition: appear 2s both alternate;
+    border-right: 1px solid rgba(0, 210, 255, 0.1);
+    box-shadow: 0 0px 20px 0 rgba(82, 91, 210, 0.533);
+}
+
+@keyframes appear {
+    from  {
+    opacity: 15%}
+    
+    to {
+        width: 65%
+    }
+}
+
+.sidebar__nav {
+    flex: 1;
+    display: flex;
+}
+
+.sidebar__nav ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex-grow: 1
+}
+
+.sidebar__item {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    border-radius: 36px;
+    position: relative;
+    transition: all 0.3s ease;
+    width: 100%;
+    background-color: transparent;
+    
+}
+
+.sidebar__item a {
+    font-weight: 600;
+    font-size: clamp(0.7rem, 0.92vw, 1.2rem);
+    color: inherit;
+    text-decoration: none;
+    padding-right: 6px;
+    padding: 15px;
+    text-wrap: balance;
+    text-shadow: 0 2px 40px #fcfcfc3c;
+}
+
+.sidebar__item span {
+    padding-left: 12px;
+    padding-right: 16px;
+    font-size: clamp(24px, 1.5vw, 40px);
+    text-shadow: 0 2px 20px #fcfcfc3c;
+}
+
+.sidebar__item:hover {
+    background-color: #ecf7fd;
+    width: 100%;
+}
+
+.sidebar__item a,
+.sidebar__item span {
+    color: var(--texto-principal);
+    transition: color 0.3s ease;
+}
+
+.sidebar__item:hover a,
+.sidebar__item:hover span {
+    color: #072238;
+}
+
+.sidebar__menu-logo {
+    display: flex;
+    margin: 5px auto 8px auto;
+    width: clamp(5.2rem, 5.5vw, 12rem);
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.sidebar__form {
+    position: absolute;
+    z-index: 200;
+    right:-1rem;
+    top: 90px;
+}
+
+.sidebar__form label {
+    position: relative;
+    color: #072238;
+    background-color: var(--color-pop);
+    border-radius: 50%;
+    padding: 0.4rem;
+    user-select: none;
+}
+
+input[type="checkbox"]:checked ~ label {
+    background-color: #072238;
+    color: var(--color-pop);
+}
+
+.sidebar:has(input[type="checkbox"]:checked) {
+    width: 15%;
+}
+
+.sidebar:has(input[type="checkbox"]:checked) .sidebar__item a{
+    display: none;
+}
+
+.sidebar:has(input[type="checkbox"]:checked) .sidebar__item span {
+    margin: auto;
+}
+
+.sidebar:has(input[type="checkbox"]:checked) .sidebar__menu-logo {
+    width: clamp(3rem, 4.8vw, 6rem);
+}
+
+/* --- FOOTER SECTION --- */
+
+footer {
+    display: flex;
+    background: var(--azul-sidebar);
+    box-shadow: 0 0px 20px 0 rgba(82, 91, 210, 0.533);
+    border-top: 3px solid var(--azul-oscuro);
+    padding: 45px 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: bolder;
+    margin-top: 35px;
+}
+
+.copyright {
+    color: var(--azul-neon);
+    text-shadow: 0 10px 30px rgba(0, 208, 255, 0.174);
+    font-size: clamp(0.75em, 2vw, 1.1rem);
+    font-weight: 600;
+}
+
+.footer-links {
+    display: block;
+    padding-top: 20px;
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
+    text-shadow: 0 2px 8px #ff7f5040;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: var(--naranja-neon);
+}
+
+.footer-links span {
+    padding: 20px;
+    color: #ff7f505a;
+    text-shadow: 0 2px 8px #ff7f5040;
+}
+
+
+/*--- QUERIES ---*/
+
+@media (max-width: 700px) {
+    body {
+        display: block;
+        position: relative;
+    }
+
+    footer {
+        position: relative; 
+        margin-left: 15%;
+        padding: 20px 0;
+        z-index: 10;
+        width: auto;
+    }
+
+    .copyright {
+        text-align: center;
+    }
+
+    .footer-links span {
+        display: none;
+    }
+
+    .footer-links a {
+        display: block;
+        text-align: center;
+        padding: 5px
+    }
+}
+
+@media (min-width: 700px) {
+    body {
+        display: grid;
+        grid-template-columns: 20% 80%;
+        grid-template-rows: 1fr auto;
+        grid-template-areas: 
+        "sidebar main"
+        "sidebar footer"
+    }
+
+    .main__header-content {
+        justify-self: flex-start;
+        align-self: flex-start;
+    }
+
+    .sidebar {
+        grid-area: sidebar;
+        position: sticky;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    body:has(input[type="checkbox"]:checked) {
+        grid-template-columns: 8% 92%
+    }
+
+    .sidebar:has(input[type="checkbox"]:checked) {
+        width: 100% !important; 
+    }
+
+    main {
+        grid-area: main;
+        padding-left: 20px !important;
+        width: 100%; 
+    }
+
+    footer {
+        grid-area: footer;
+    }
+}

@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.calculator-container {
+    margin-top: 20px;
+    width: 550px;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.03);
+    margin: auto;
+    padding: 30px 30px; 
+    border-radius: 8px;
+    box-shadow: 0 0px 25px rgba(82, 90, 210, 0.297);
+}
+
+.paso_1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+input, select {
+    display: inline-block;
+    color: #dedada;
+    padding: 6px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.03);
+    font-size: 16px;
+    border: 1px solid var(--naranja-neon);
+}
+
+.fase_obligatoria {
+    width: 18%
+}
+
+h4 {
+    padding: 20px;
+    color: #dedada;
+    font-size: 14px;
+}
+
+p {
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+legend {
+    font-size: 18px;
+    padding: 0px 10px;
+    font-weight: 600;
+    color: var(--texto-secundario);
+        text-shadow: 0 5px 20px rgba(0, 210, 255, 0.2);
+}
+
+.paso_2 {
+    margin-top: 30px
+}
+
+fieldset {
+    border: 1px solid rgba(255, 100, 0, 0.8);
+    padding: 5px 15px;
+}
+

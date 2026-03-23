@@ -1,0 +1,51 @@
+
+header p {
+    max-width: 700px; 
+    margin: auto   /* Esto limita el ancho para que no se estire */
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+    margin-bottom: 40px;
+}
+
+.search-input {
+    width: 70%;
+    padding: 10px 50px;
+    border-radius: 25px;
+}
+
+svg {
+    width: 900px;
+    height: auto;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+}
+
+/* Forzamos el color neón aunque el SVG diga que es verde */
+path {
+    fill: #1a1a2e; 
+    stroke: #00d4ff ; 
+    stroke-width: 1px;
+    transition: 0.3s;
+}
+
+path:hover {
+    fill: #00d4ff;
+    filter: drop-shadow(0 0 10px #00d4ff);
+    cursor: pointer;
+}
+
+/* Escondemos los puntos si solo quieres que se pinche en la provincia */
+circle {
+    display: none; 
+}
+
+#ESTF, #ESGC {
+    /* Mueve las islas hacia arriba y hacia la derecha */
+    /* Ajusta los números hasta que queden debajo de Huelva/Cádiz */
+    transform: translate(150px, -450px) scale(1.2); 
+}
