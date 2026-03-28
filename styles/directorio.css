@@ -73,17 +73,20 @@ body:has(#btn-apuntes:checked) .organizacion-card {
     display: none
 }
 
-body:has(#btn-concentracion:checked) .perplexity-card,
-body:has(#btn-concentracion:checked) .gemini-card,
-body:has(#btn-concentracion:checked) .gammaai-card,
-body:has(#btn-concentracion:checked) .astraai-card,
-body:has(#btn-concentracion:checked) .notebooklm-card,
-body:has(#btn-concentracion:checked) .knowunity-card,
-body:has(#btn-concentracion:checked) .forest-card,
-body:has(#btn-concentracion:checked) .notion-card,
-body:has(#btn-concentracion:checked) .genially-card {
+body:has(#btn-concentracion:checked) .ai-card,
+body:has(#btn-concentracion:checked) .organizacion-card,
+body:has(#btn-concentracion:checked) .apuntes-card,
+body:has(#btn-concentracion:checked) .ai_apu-card {
     display: none
 }
+
+body:has(#btn-organizacion:checked) .ai-card,
+body:has(#btn-organizacion:checked) .apuntes-card,
+body:has(#btn-organizacion:checked) .concentracion-card,
+body:has(#btn-concentracion:checked) .ai_apu-card {
+    display: none;
+}
+
 
 
 /* --- CARDS --- */
@@ -106,6 +109,7 @@ body:has(#btn-concentracion:checked) .genially-card {
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 15px 0 rgba(82, 91, 210, 0.533);
     cursor: pointer;
+    transition: all 0.3s;
 }
 
 .directorio__card:hover {
@@ -127,7 +131,7 @@ body:has(#btn-concentracion:checked) .genially-card {
     text-align: center;
 }
 
-.app-logo img {
+.app-logo:not(.notion-card) img {
     width: 80px;
     border-radius: 25px;
 }

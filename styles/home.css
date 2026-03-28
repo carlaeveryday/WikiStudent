@@ -135,7 +135,7 @@ main {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));    
     justify-content: center;
-    gap: 40px;
+    gap: 65px;
     max-width: 1300px;
     text-align: center;
     justify-content: center;

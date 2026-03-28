@@ -72,67 +72,111 @@
 
         <fieldset class="paso_2">
             <legend class="paso_2">PASO 2 — CARRERA Y FASE VOLUNTARIA</legend>
-            <h4>Carrera a la que quieres acceder</h4>
-            <p>Introduce las asignaturas de la fase voluntaria de las que te has examinado o piensas examinarte. Puedes dejar una en blanco si solo usas una.</p>
-            <h4>Asignatura 1</h4>
-            <select>
-            <optgroup label="Ciencias y Tecnología">
-                <option value="biologia">Biología</option>
-                <option value="quimica">Química</option>
-                <option value="fisica">Física</option>
-                <option value="matematicasII">Matemáticas II</option>
-                <option value="geologia">Geología y Ciencias Ambientales</option>
-                <option value="dibujo_tecnico">Dibujo Técnico II</option>
-                <option value="tecnlogia_ingenieria">Tecnología e Ingeniería</option>
-            <optgroup label="Humanidades y Ciencias Sociales">
-                <option value="latinII">Latín II</option>
-                <option value="griegoII">Griego II</option>
-                <option value="matematicas_aplicadas">Matemáticas Aplicadas a las CC.SS. II</option>
-                <option value="empresa">Empresa y Diseño de Modelos de Negocio</option>
-                <option value="historia_arte">Historia del arte</option>
-                <option value="geografia">Geografía</option>
-            <optgroup label="Artes">
-                <option value="artes_escenicas">Artes Escénicas II</option>
-                <option value="analisis_musica">Análisis Musical II</option>
-                <option value="dibujo_artistico">Dibujo Artístico II</option>
-            <optgroup label="Otras">
-                <option value="historia_españa">Historia de España</option>
-                <option value="historia_filosofia">Historia de la Filosofía</option>
-                <option value="segunda_lengua">Segunda Lengua Extranjera</option>
-                <option value="ciencias_generales">Ciencias Generales</option>
-        </select>
-
-        <h4>Asignatura 2</h4>
-            <select>
-            <optgroup label="Ciencias y Tecnología">
-                <option value="biologia">Biología</option>
-                <option value="quimica">Química</option>
-                <option value="fisica">Física</option>
-                <option value="matematicasII">Matemáticas II</option>
-                <option value="geologia">Geología y Ciencias Ambientales</option>
-                <option value="dibujo_tecnico">Dibujo Técnico II</option>
-                <option value="tecnlogia_ingenieria">Tecnología e Ingeniería</option>
-            <optgroup label="Humanidades y Ciencias Sociales">
-                <option value="latinII">Latín II</option>
-                <option value="griegoII">Griego II</option>
-                <option value="matematicas_aplicadas">Matemáticas Aplicadas a las CC.SS. II</option>
-                <option value="empresa">Empresa y Diseño de Modelos de Negocio</option>
-                <option value="historia_arte">Historia del arte</option>
-                <option value="geografia">Geografía</option>
-            <optgroup label="Artes">
-                <option value="artes_escenicas">Artes Escénicas II</option>
-                <option value="analisis_musica">Análisis Musical II</option>
-                <option value="dibujo_artistico">Dibujo Artístico II</option>
-            <optgroup label="Otras">
-                <option value="historia_españa">Historia de España</option>
-                <option value="historia_filosofia">Historia de la Filosofía</option>
-                <option value="segunda_lengua">Segunda Lengua Extranjera</option>
-                <option value="ciencias_generales">Ciencias Generales</option>
-        </select>
-
-        
+                <h4>Carrera a la que quieres acceder</h4>
+                <select id="carrera-select">
+                    <option value="selecciona">— Selecciona una rama —</option>
+                    <option value="ing_arq">Ingeniería y Arquitectura</option>
+                    <option value="ciencias_salud">Ciencias de la Salud</option>
+                    <option value="ciencias">Ciencias</option>
+                    <option value="ccss">Ciencias Sociales y Jurídicas</option>
+                    <option value="arte_humanidades">Artes y Humanidades</option>
+                </select>
+                <p>Introduce las asignaturas de la fase voluntaria de las que te has examinado o piensas examinarte. Puedes dejar una en blanco si solo usas una.</p>
+            <div class="select_wrapper2">
+                <div>
+                    <h4>Asignatura 1</h4>
+                        <select id="asig1">
+                            <optgroup label="Ciencias y Tecnología">
+                                <option value="biologia">Biología</option>
+                                <option value="quimica">Química</option>
+                                <option value="fisica">Física</option>
+                                <option value="matematicasII">Matemáticas II</option>
+                                <option value="geologia">Geología y Ciencias Ambientales</option>
+                                <option value="dibujo_tec">Dibujo Técnico II</option>
+                                <option value="tec_ing">Tecnología e Ingeniería</option>
+                            </optgroup>
+                        
+                            <optgroup label="Humanidades y Ciencias Sociales">
+                                <option value="latinII">Latín II</option>
+                                <option value="griegoII">Griego II</option>
+                                <option value="matematicas_aplicadas">Matemáticas Aplicadas a las CC.SS. II</option>
+                                <option value="empresa">Empresa y Diseño de Modelos de Negocio</option>
+                                <option value="historia_arte">Historia del arte</option>
+                                <option value="geografia">Geografía</option>
+                            </optgroup>
+                        
+                            <optgroup label="Artes">
+                                <option value="artes_escenicas">Artes Escénicas II</option>
+                                <option value="analisis_musical">Análisis Musical II</option>
+                                <option value="dibujo_art">Dibujo Artístico II</option>
+                            </optgroup>
+                        
+                            <optgroup label="Otras">
+                                <option value="historia_españa">Historia de España</option>
+                                <option value="historia_filosofia">Historia de la Filosofía</option>
+                                <option value="segunda_lengua">Segunda Lengua Extranjera</option>
+                                <option value="ciencias_generales">Ciencias Generales</option>
+                            </optgroup>
+                        </select>
+                    <h4>Asignatura 2</h4>
+                        <select id="asig2">
+                            <optgroup label="Ciencias y Tecnología">
+                                <option value="biologia">Biología</option>
+                                <option value="quimica">Química</option>
+                                <option value="fisica">Física</option>
+                                <option value="matematicasII">Matemáticas II</option>
+                                <option value="geologia">Geología y Ciencias Ambientales</option>
+                                <option value="dibujo_tec">Dibujo Técnico II</option>
+                                <option value="tec_ing">Tecnología e Ingeniería</option>
+                            </optgroup>
+                        
+                            <optgroup label="Humanidades y Ciencias Sociales">
+                                <option value="latinII">Latín II</option>
+                                <option value="griegoII">Griego II</option>
+                                <option value="matematicas_aplicadas">Matemáticas Aplicadas a las CC.SS. II</option>
+                                <option value="empresa">Empresa y Diseño de Modelos de Negocio</option>
+                                <option value="historia_arte">Historia del arte</option>
+                                <option value="geografia">Geografía</option>
+                            </optgroup>
+                        
+                            <optgroup label="Artes">
+                                <option value="artes_escenicas">Artes Escénicas II</option>
+                                <option value="analisis_musical">Análisis Musical II</option>
+                                <option value="dibujo_art">Dibujo Artístico II</option>
+                            </optgroup>
+                        
+                            <optgroup label="Otras">
+                                <option value="historia_españa">Historia de España</option>
+                                <option value="historia_filosofia">Historia de la Filosofía</option>
+                                <option value="segunda_lengua">Segunda Lengua Extranjera</option>
+                                <option value="ciencias_generales">Ciencias Generales</option>
+                            </optgroup>
+                        </select>
+                </div>
+                <div>
+                    <h4>Nota(0-10)</h4>
+                    <input type="number" step="0.01" id="nota1">
+                    <h4>Nota(0-10)</h4>
+                    <input type="number" step="0.01" id="nota2">
+                </div>
         </fieldset>
+        <button onclick="calcular()">Calcular mi nota de admisión</button>
+            <div id="popup-overlay">
+                <div id="popup">
+                    <p>Nota de acceso base</p>
+                    <p id="resultado-acceso"></p>
+                    <p>Puntos extra fase voluntaria</p>
+                    <p id="resultado-extra"></p>
+                    <p>Nota de admisión final</p>
+                    <p id="resultado-final"></p>
+                    <button onclick="cerrarPopup()">Cerrar</button>
+                </div>
+            </div>
     </div>
+        
+        
+    
     <script src="/select.js"></script>
+    <script src="/calculadora.js"></script>
 </body>
 </html>

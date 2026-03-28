@@ -5,6 +5,7 @@
 }
 
 .calculator-container {
+    position: relative;
     margin-top: 20px;
     width: 550px;
     height: fit-content;
@@ -15,7 +16,7 @@
     box-shadow: 0 0px 25px rgba(82, 90, 210, 0.297);
 }
 
-.paso_1 {
+.paso_1, .select_wrapper2{
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
@@ -52,7 +53,7 @@ legend {
     padding: 0px 10px;
     font-weight: 600;
     color: var(--texto-secundario);
-        text-shadow: 0 5px 20px rgba(0, 210, 255, 0.2);
+    text-shadow: 0 5px 20px rgba(0, 210, 255, 0.2);
 }
 
 .paso_2 {
@@ -64,3 +65,52 @@ fieldset {
     padding: 5px 15px;
 }
 
+#popup-overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    height: 100%;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+
+#popup {
+    background-color: var(--azul-fondo);
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    height: 300px;
+    margin: auto;
+    text-align: center;
+}
+
+
+/* 1. Cambiamos la caja principal del selector */
+.ts-control {
+    background-color: #0f172a !important; /* El fondo oscuro de tu web */
+    border: 1.5px solid #f97316 !important; /* El naranja de tus inputs */
+    color: #ffffff !important;             /* Texto blanco */
+    border-radius: 8px !important;        /* Redondeado como los otros */
+    padding: 7px !important;
+}
+
+/* 2. Cambiamos el color del texto cuando ya hay algo seleccionado */
+.ts-wrapper.single .ts-control .item {
+    color: #ffffff !important;
+}
+
+/* 3. Personalizamos el desplegable que sale al hacer clic */
+.ts-dropdown {
+    background-color: #0f172a !important;
+    border: 1.px solid #f97316 !important;
+    color: #ffffff !important;
+}
+
+/* 4. El color de las opciones al pasar el ratón */
+.ts-dropdown .option.active {
+    background-color: #f97316 !important; /* Fondo naranja al seleccionar */
+    color: #ffffff !important;
+}
