@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WikiStudent | Recursos y Orientación para Estudiantes</title>
+    <link rel="icon" href="/wiki/favicon.png" type="image/png">
+    <meta name="description" content="La plataforma definitiva para estudiantes: test vocacional, plantillas de Canva, prompts de IA y consejos para tu carrera.">
+    <meta name="author" content="Carla">
+    <meta name="robots" content="index, follow">
+
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link rel="stylesheet" href="/styles/kanban.css">
+    <link rel="stylesheet" href="/styles/calendario.css">
+    <link rel="stylesheet" href="/styles/pomodoro.css">
+    <link rel="stylesheet" href="/styles/ranking.css">
+    <link rel="stylesheet" href="/styles/settings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body data-username="<%= user.username %>">
+    <!--- HAMBURGUESA MÓVIL (fuera del sidebar) --->
+    <input type="checkbox" id="open-menu-mobile">
+    <label class="hamburger-btn label-mobile" for="open-menu-mobile">
+        <span class="material-symbols-outlined">menu</span>
+    </label>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!--- SIDEBAR SECTION --->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="top-menu">
+            <div id="img-container">
+                <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+            </div>
+            <div class="sidebar__brand"><span class="orange-word">Wiki</span><span class="white-word">Student</span></div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <ul>
+                <!-- Principal -->
+                <li class="sidebar__item sidebar__item--active">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <a href="/web">Dashboard</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">tag</span>
+                    <a href="/pages/discord.html">Discord</a>
+                    <span class="sidebar__badge">Nuevo</span>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">emoji_events</span>
+                    <a href="/pages/ranking.html">Ranking</a>
+                </li>
+
+                <!-- Herramientas -->
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Herramientas</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">timer</span>
+                    <a href="/pages/pomodoro.html">Pomodoro</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">style</span>
+                    <a href="/pages/flashcards.html">Flashcards</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">quiz</span>
+                    <a href="/pages/quizzes.html">Quizzes</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <a href="/pages/recursos.html">Recursos Comunidad</a>
+                </li>
+                <!-- Universidad -->
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Orientación</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">account_tree</span>
+                    <a href="/pages/mapa.html">Mapa de grados</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">psychology</span>
+                    <a href="/pages/test.html">Tests vocacionales</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">calculate</span>
+                    <a href="/pages/calculadora.html">Calc. Selectividad</a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Perfil + Plan al final -->
+        <div class="sidebar__footer">
+            <div class="sidebar__user">
+                <div class="sidebar__avatar"><%= user.username.slice(0, 2).toUpperCase() %></div>
+                <div class="sidebar__user-info">
+                    <span class="sidebar__user-name"><%= user.username %></span>
+                    <span class="sidebar__user-plan">
+                        <span class="material-symbols-outlined">lock</span>
+                        Plan gratuito
+                    </span>
+                </div>
+            </div>
+            <button class="sidebar__pro-btn">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                <span class="sidebar__pro-text">Hazte Pro</span>
+            </button>
+        </div>
+
+    </aside>
+
+    <!--- MAIN SECTION --->
+    <header class="main__header">
+        <div class="main__header-content">
+            <div id="daily-overview">
+                <div class="welcome">
+                    <span class="orange-word">¡Bienvenido/a, </span><span class="white-word"><%= user.username %></span><span class="orange-word">!</span>
+                </div>
+                <p class="main__header-info">
+                    Cargando fecha...
+                </p>
+            </div>
+            <div id="header-center">
+                <div class="header-stat-pill" id="header-streak-pill">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    <span id="header-streak-val">—</span>
+                    <span class="header-stat-label">días de racha</span>
+                </div>
+                <div class="header-stat-pill" id="header-pts-pill">
+                    <span class="material-symbols-outlined">star</span>
+                    <span id="header-pts-val">—</span>
+                    <span class="header-stat-label">pts hoy</span>
+                </div>
+                <div class="header-stat-pill" id="header-time-pill">
+                    <span class="material-symbols-outlined">timer</span>
+                    <span id="header-time-val">—</span>
+                    <span class="header-stat-label">estudiado</span>
+                </div>
+            </div>
+            <div id="header-buttons">
+                <div class="material-symbols-outlined" id="notifications-symbol">notifications</div>
+                <div class="material-symbols-outlined" id="settings-symbol">settings</div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Stats -->
+        <div id="stats-container">
+            <div class="stats" id="pomodoro-timer">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">timer</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="time-studied">2h 20m</div>
+                    <div class="desc-stats">Estudiado hoy</div>
+                </div>
+            </div>
+            <div class="stats" id="racha">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">local_fire_department</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="racha-days">7</div>
+                    <div class="desc-stats">Días de racha</div>
+                </div>
+            </div>
+            <div class="stats" id="ranking-t">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">military_tech</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="position-rk">#7</div>
+                    <div class="desc-stats">Ranking nacional</div>
+                </div>
+            </div>
+            <div class="stats" id="puntos">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">star</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="points">80</div>
+                    <div class="desc-stats">Puntos hoy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FILA 1: Agenda + Kanban  |  Calendario + Nota + Estado ===== -->
+        <div id="grid-main-1">
+
+            <!-- COLUMNA IZQUIERDA: Planificador -->
+            <div class="planner-section">
+                <div class="agenda-header">
+                    <p class="agenda-title">Tu agenda de hoy</p>
+                    <button id="btn-anadir-bloque">
+                        <span class="material-symbols-outlined">add</span>
+                        Añadir bloque
+                    </button>
+                </div>
+
+                <div class="agenda-list" id="agenda-list">
+                </div>
+
+                <!-- Staging: tarjetas creadas, pendientes de asignar a columna -->
+                <p class="staging-label">Sin asignar — arrastra a una columna</p>
+                <div id="kb-staging">
+                    <div class="kb-staging-hint">Crea un bloque arriba para empezar</div>
+                </div>
+
+                <div class="kanban-board">
+                    <div class="kanban-col" id="pendiente">
+                        <div class="kb-col-header">
+                            <h3 class="col-title">Por hacer</h3>
+                            <div class="contador" id="contador-pendiente">0</div>
+                        </div>
+                        <div class="kb-cards">
+                            <div class="kb-drop-hint">Arrastra aquí</div>
+                        </div>
+                    </div>
+                    <div class="kanban-col" id="en-proceso">
+                        <div class="kb-col-header">
+                            <h3 class="col-title">En progreso</h3>
+                            <div class="contador" id="contador-enProceso">0</div>
+                        </div>
+                        <div class="kb-cards">
+                            <div class="kb-drop-hint">Arrastra aquí</div>
+                        </div>
+                    </div>
+                    <div class="kanban-col" id="terminada">
+                        <div class="kb-col-header">
+                            <h3 class="col-title">Hecho</h3>
+                            <div class="contador" id="contador-terminada">0</div>
+                        </div>
+                        <div class="kb-cards">
+                            <div class="kb-drop-hint">Arrastra aquí</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Calendario + Nota + Estado -->
+            <div id="grid-main-1__rows">
+                <div id="calendario"></div>
+
+                <div id="nota">
+                    <div id="nota-top">
+                        <div id="nota-title">Nota rápida</div>
+                        <div id="editar-btn">Editar</div>
+                    </div>
+                    <textarea id="nota-user" placeholder="Escribe tus pensamientos o algo que quieras recordar."></textarea>
+                </div>
+
+                <div id="estado">
+                    <div id="estado-title">¿Qué tal ha ido el día hoy?</div>
+                    <div id="estado-buttons-container">
+                        <div class="mood-list">
+                            <img src="/directorio images/Slightly_smiling_face_3D.png" class="mood-emoji" alt="Feliz">
+                            <img src="/directorio images/Worried_face_3D.png" class="mood-emoji" alt="Agobiado">
+                            <img src="/directorio images/Frowning_face_3D.png" class="mood-emoji" alt="Cansado">
+                            <img src="/directorio images/Exploding_head_3D.png" class="mood-emoji" alt="Cansado">
+                            <img src="/directorio images/Crying_face_3D.png" class="mood-emoji" alt="Pensativo">
+                            <div class="material-symbols-outlined arrow_emojis">arrow_forward</div>
+                        </div>
+                    </div>
+                    <p class="info-emojis">Puedes elegir hasta tres estados*</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- ===== FILA 2: Pomodoro (1fr) | Ranking (2fr) ===== -->
+        <div id="grid-main-2">
+
+            <!-- COLUMNA POMODORO -->
+            <div id="pomodoro">
+                <div id="time-wrapper">
+                    <svg width="100%" viewBox="0 0 370 370">
+                        <circle class="progress-ring__exterior" cx="185" cy="185" r="175" />
+                        <circle class="progress-ring__exterior" cx="185" cy="185" r="165" />
+                        <circle class="progress-ring__segments" cx="185" cy="185" r="145" />
+                        <circle class="progress-ring__bg-2" cx="185" cy="185" r="155" />
+                        <circle class="progress-ring__bar" cx="185" cy="185" r="155" />
+                        <circle class="progress-ring__bg" cx="185" cy="185" r="135" />
+                        <circle class="progress-ring__bar" cx="185" cy="185" r="135" />
+                        <text x="185" y="185" class="timer-number-svg">25:00</text>
+                        <text x="185" y="230" class="timer-label-svg">ENFOQUE</text>
+                    </svg>
+                </div>
+                <div id="time-controllers">
+                    <div id="min-less">-1 min</div>
+                    <div id="min-more">+1 min</div>
+                </div>
+                <div id="presets-container">
+                    <div class="btn">20 MIN</div>
+                    <div class="btn">30 MIN</div>
+                    <div class="btn">1 HORA</div>
+                </div>
+                <div id="btn-pomodoro-container">
+                    <button class="pomodoro-btn play">
+                        <svg viewBox="0 0 100 100">
+                            <polygon points="20,10 20,90 90,50" />
+                            <text x="32" y="55">PLAY</text>
+                        </svg>
+                    </button>
+                    <div class="pomodoro-btn reset">
+                        <div class="circle">RESET</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA RANKING -->
+            <div id="ranking-section">
+                <div id="podio">
+                    <div id="top-2__wrapper">
+                        <div class="avatar"></div>
+                        <div class="user">User 3</div>
+                        <div class="puntos">95 pts</div>
+                        <div id="top-2">2</div>
+                    </div>
+                    <div id="top-1__wrapper">
+                        <div class="avatar"></div>
+                        <div class="user">Carla_.studio</div>
+                        <div class="puntos">200 pts</div>
+                        <div id="top-1">1</div>
+                    </div>
+                    <div id="top-3__wrapper">
+                        <div class="avatar"></div>
+                        <div class="user">User 2</div>
+                        <div class="puntos">120 pts</div>
+                        <div id="top-3">3</div>
+                    </div>
+                </div>
+
+                <div id="ranking-list">
+                    <div class="userCard">
+                        <div class="user-rank">
+                            <div class="user-rank-left">
+                                <div class="number">4</div>
+                                <div class="avatar-rk"></div>
+                            </div>
+                            <div>
+                                <div class="user-rk">User 3</div>
+                                <div class="racha"><span class="dot"></span>Racha de 9 días</div>
+                            </div>
+                        </div>
+                        <div class="info-rk">
+                            <div class="barra"><div class="progreso"></div></div>
+                            <div class="pts-pos">
+                                <div class="pts-rk">90 pts</div>
+                                <div class="posicion"><span class="n-position">—</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="userCard">
+                        <div class="user-rank">
+                            <div class="user-rank-left">
+                                <div class="number">5</div>
+                                <div class="avatar-rk"></div>
+                            </div>
+                            <div>
+                                <div class="user-rk">User 3</div>
+                                <div class="racha"><span class="dot"></span>Racha de 9 días</div>
+                            </div>
+                        </div>
+                        <div class="info-rk">
+                            <div class="barra"><div class="progreso"></div></div>
+                            <div class="pts-pos">
+                                <div class="pts-rk">90 pts</div>
+                                <div class="posicion">
+                                    <span class="n-position material-symbols-outlined">arrow_drop_up</span>2
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="userCard">
+                        <div class="user-rank">
+                            <div class="user-rank-left">
+                                <div class="number">6</div>
+                                <div class="avatar-rk"></div>
+                            </div>
+                            <div>
+                                <div class="user-rk">User 3</div>
+                                <div class="racha"><span class="dot"></span>Racha de 9 días</div>
+                            </div>
+                        </div>
+                        <div class="info-rk">
+                            <div class="barra"><div class="progreso"></div></div>
+                            <div class="pts-pos">
+                                <div class="pts-rk">90 pts</div>
+                                <div class="posicion">
+                                    <span class="n-position material-symbols-outlined">arrow_drop_down</span>1
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- fin grid-main-2 -->
+
+    </main>
+
+    <!--- FOOTER SECTION --->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <!-- ===== MODAL: Añadir bloque ===== -->
+    <div id="modal-overlay">
+        <div id="modal-bloque">
+            <p class="modal-title">Nuevo bloque</p>
+            <div class="modal-field">
+                <label for="modal-asignatura">Materia</label>
+                <input type="text" id="modal-asignatura" placeholder="Ej: Matemáticas II">
+            </div>
+            <div class="modal-field">
+                <label for="modal-subtitulo">Tarea</label>
+                <input type="text" id="modal-subtitulo" placeholder="Ej: Integrales — Tema 5">
+            </div>
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label for="modal-hora">Hora</label>
+                    <input type="time" id="modal-hora">
+                </div>
+                <div class="modal-field">
+                    <label for="modal-urgencia">Urgencia</label>
+                    <select id="modal-urgencia">
+                        <option value="baja">Baja</option>
+                        <option value="media">Medio</option>
+                        <option value="urgente">Urgente</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-modal-cancel" id="btn-modal-cancel">Cancelar</button>
+                <button class="btn-modal btn-modal-confirm" id="btn-modal-confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== POPUP: Detalle de tarjeta ===== -->
+    <div id="kanban-overlay">
+        <div id="tarea-popup">
+            <p id="detalle-tarea">Detalle de tarea</p>
+            <p id="tarea"></p>
+            <p id="fecha-limite">Fecha límite</p>
+            <input type="date" id="fecha-input">
+            <div id="dias-restantes"></div>
+            <div class="popup-btns">
+                <div id="btn-cancelar">Cancelar</div>
+                <div id="btn-guardar">Guardar</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+     MODAL CONFIGURACIÓN — WikiStudent
+     Pega esto justo antes de </body> en app.ejs
+     Requiere: settings.css y settings.js
+     ===================================================== -->
+
+<div id="settings-overlay" class="cfg-overlay" aria-modal="true" role="dialog" aria-label="Configuración">
+  <div class="cfg-panel" id="cfg-panel">
+
+    <!-- CABECERA -->
+    <div class="cfg-header">
+      <div class="cfg-header-left">
+        <div class="cfg-header-icon">
+          <span class="material-symbols-outlined">settings</span>
+        </div>
+        <div>
+          <div class="cfg-title">Configuración</div>
+          <div class="cfg-subtitle">WikiStudent · <span id="cfg-username">Usuario</span></div>
+        </div>
+      </div>
+      <button class="cfg-close" id="cfg-close-btn" aria-label="Cerrar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- PESTAÑAS -->
+    <div class="cfg-tabs" role="tablist">
+      <button class="cfg-tab cfg-tab--active" data-tab="perfil" role="tab">Perfil</button>
+      <button class="cfg-tab" data-tab="apariencia" role="tab">Apariencia</button>
+      <button class="cfg-tab" data-tab="sonido" role="tab">Sonido</button>
+      <button class="cfg-tab" data-tab="notificaciones" role="tab">Notificaciones</button>
+      <button class="cfg-tab" data-tab="plan" role="tab">Plan</button>
+      <button class="cfg-tab" data-tab="cuenta" role="tab">Cuenta</button>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="cfg-content" id="cfg-content">
+
+      <!-- ─── PERFIL ─── -->
+      <div class="cfg-panel-tab cfg-panel-tab--active" id="cfg-tab-perfil">
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Tu perfil</div>
+          <div class="cfg-row cfg-avatar-row">
+            <div class="cfg-row-info">
+              <div class="cfg-avatar-upload-wrap">
+                <img class="cfg-avatar-img" id="cfg-avatar-img" src="<%= user.avatar_url || '' %>" alt="Foto de perfil">
+                <div class="cfg-avatar" id="cfg-avatar-preview"><%= user.username.slice(0, 2).toUpperCase() %></div>
+                <button class="cfg-avatar-upload-btn" id="cfg-edit-foto-btn" title="Cambiar foto" type="button">
+                  <span class="material-symbols-outlined" style="font-size:12px">photo_camera</span>
+                </button>
+              </div>
+              <input type="file" id="cfg-avatar-file-input" accept="image/*">
+              <div class="cfg-row-text">
+                <div class="cfg-row-name" id="cfg-display-name"><%= user.username %></div>
+                <div class="cfg-row-desc">Plan gratuito · Estudiante</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--neon" id="cfg-edit-foto-btn-alt" type="button">Cambiar foto</button>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Datos personales</div>
+          <div class="cfg-field-group">
+            <label class="cfg-label" for="cfg-input-username">Nombre de usuario</label>
+            <div class="cfg-input-row">
+              <input class="cfg-input" type="text" id="cfg-input-username" value="<%= user.username %>" placeholder="Tu nombre">
+              <button class="cfg-btn cfg-btn--naranja" id="cfg-save-username">Guardar</button>
+            </div>
+          </div>
+          <div class="cfg-field-group">
+            <label class="cfg-label" for="cfg-input-email">Correo electrónico</label>
+            <div class="cfg-input-row">
+              <input class="cfg-input" type="email" id="cfg-input-email" value="<%= user.email %>" placeholder="tu@email.com">
+              <button class="cfg-btn cfg-btn--naranja" id="cfg-save-email">Guardar</button>
+            </div>
+          </div>
+          <div class="cfg-field-group">
+            <label class="cfg-label" for="cfg-input-recovery">Correo de recuperación</label>
+            <div class="cfg-input-row">
+              <input class="cfg-input" type="email" id="cfg-input-recovery" value="<%= user.recovery_email || '' %>" placeholder="recuperacion@email.com">
+              <button class="cfg-btn cfg-btn--neon" id="cfg-save-recovery">Vincular</button>
+            </div>
+            <span class="cfg-field-hint">Úsalo para recuperar tu cuenta si olvidas la contraseña</span>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Seguridad</div>
+          <div class="cfg-field-group">
+            <label class="cfg-label" for="cfg-pass-current">Contraseña actual</label>
+            <div class="cfg-pass-wrap">
+              <input class="cfg-input" type="password" id="cfg-pass-current" placeholder="••••••••" autocomplete="current-password">
+              <button class="cfg-pass-toggle" type="button" aria-label="Mostrar contraseña">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+            </div>
+          </div>
+          <div class="cfg-field-group">
+            <label class="cfg-label" for="cfg-pass-new">Nueva contraseña</label>
+            <div class="cfg-pass-wrap">
+              <input class="cfg-input" type="password" id="cfg-pass-new" placeholder="••••••••" autocomplete="new-password">
+              <button class="cfg-pass-toggle" type="button" aria-label="Mostrar contraseña">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+            </div>
+          </div>
+          <div class="cfg-field-group">
+            <label class="cfg-label" for="cfg-pass-confirm">Confirmar nueva contraseña</label>
+            <div class="cfg-input-row">
+              <div class="cfg-pass-wrap" style="flex:1">
+                <input class="cfg-input" type="password" id="cfg-pass-confirm" placeholder="••••••••" autocomplete="new-password">
+                <button class="cfg-pass-toggle" type="button" aria-label="Mostrar contraseña">
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+              </div>
+              <button class="cfg-btn cfg-btn--naranja" id="cfg-save-password">Cambiar</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /perfil -->
+
+      <!-- ─── APARIENCIA ─── -->
+      <div class="cfg-panel-tab" id="cfg-tab-apariencia">
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Tema de color</div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(255,230,100,0.1);color:#f5d742">
+                <span class="material-symbols-outlined">light_mode</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Modo claro</div>
+                <div class="cfg-row-desc">Fondo blanco para entornos con luz natural</div>
+              </div>
+            </div>
+            <label class="cfg-toggle" aria-label="Activar modo claro">
+              <input type="checkbox" id="toggle-light-mode">
+              <div class="cfg-toggle-track"></div>
+              <div class="cfg-toggle-thumb"></div>
+            </label>
+          </div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">dark_mode</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Modo oscuro</div>
+                <div class="cfg-row-desc">Activo por defecto. Reduce la fatiga visual</div>
+              </div>
+            </div>
+            <label class="cfg-toggle" aria-label="Activar modo oscuro">
+              <input type="checkbox" id="toggle-dark-mode" checked>
+              <div class="cfg-toggle-track"></div>
+              <div class="cfg-toggle-thumb"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Interfaz</div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">format_size</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Tamaño de fuente</div>
+                <div class="cfg-row-desc">Ajusta el tamaño del texto en el dashboard</div>
+              </div>
+            </div>
+            <div class="cfg-slider-wrap">
+              <input type="range" class="cfg-slider" id="slider-font-size" min="80" max="120" value="100" step="5">
+              <span class="cfg-slider-val" id="val-font-size">100%</span>
+            </div>
+          </div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(255,107,43,0.1);color:var(--naranja-neon)">
+                <span class="material-symbols-outlined">palette</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Color de acento</div>
+                <div class="cfg-row-desc">Personaliza el color principal de la interfaz</div>
+              </div>
+            </div>
+          </div>
+          <div class="cfg-color-grid" style="margin:0 0 8px 0">
+            <div class="cfg-color-swatch cfg-color-swatch--active" data-color="#ff6b2b" style="background:#ff6b2b" title="Naranja (por defecto)"></div>
+            <div class="cfg-color-swatch" data-color="#00b4d8" style="background:#00b4d8" title="Cian"></div>
+            <div class="cfg-color-swatch" data-color="#7f25f5" style="background:#7f25f5" title="Violeta"></div>
+            <div class="cfg-color-swatch" data-color="#16d644" style="background:#16d644" title="Verde"></div>
+            <div class="cfg-color-swatch" data-color="#e716d6" style="background:#e716d6" title="Rosa"></div>
+            <div class="cfg-color-swatch" data-color="#f5d742" style="background:#f5d742" title="Amarillo"></div>
+            <div class="cfg-color-swatch" data-color="#ff4d4d" style="background:#ff4d4d" title="Rojo"></div>
+            <div class="cfg-color-swatch" data-color="#ffffff" style="background:#fff" title="Blanco"></div>
+          </div>
+        </div>
+
+      </div><!-- /apariencia -->
+
+      <!-- ─── SONIDO ─── -->
+      <div class="cfg-panel-tab" id="cfg-tab-sonido">
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Alarma del Pomodoro</div>
+          <div class="cfg-row cfg-row--col">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(231,22,214,0.1);color:#e716d6">
+                <span class="material-symbols-outlined">alarm</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Sonido al terminar sesión</div>
+                <div class="cfg-row-desc">Elige qué suena al acabar el temporizador</div>
+              </div>
+            </div>
+            <select class="cfg-select" id="select-pomodoro-sound">
+              <option value="campana">🔔 Campana suave</option>
+              <option value="chime" selected>🎵 Chime digital</option>
+              <option value="pitido">🔊 Pitido corto</option>
+              <option value="nivel">🎮 Nivel completado</option>
+              <option value="ola">🌊 Ola de playa</option>
+              <option value="espacio">🚀 Despegue espacial</option>
+            </select>
+          </div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(231,22,214,0.1);color:#e716d6">
+                <span class="material-symbols-outlined">volume_up</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Volumen de alarma</div>
+              </div>
+            </div>
+            <div class="cfg-slider-wrap">
+              <input type="range" class="cfg-slider" id="slider-pomodoro-vol" min="0" max="100" value="70">
+              <span class="cfg-slider-val" id="val-pomodoro-vol">70%</span>
+            </div>
+          </div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(231,22,214,0.1);color:#e716d6">
+                <span class="material-symbols-outlined">replay</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Repetir alarma</div>
+                <div class="cfg-row-desc">Suena 3 veces hasta que confirmes</div>
+              </div>
+            </div>
+            <label class="cfg-toggle">
+              <input type="checkbox" id="toggle-alarm-repeat" checked>
+              <div class="cfg-toggle-track"></div>
+              <div class="cfg-toggle-thumb"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Notificaciones sonoras</div>
+          <div class="cfg-row cfg-row--col">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">notifications</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Sonido de notificación</div>
+              </div>
+            </div>
+            <select class="cfg-select" id="select-notif-sound">
+              <option value="none" selected>🔕 Sin sonido</option>
+              <option value="msg">💬 Mensaje</option>
+              <option value="soft">🎵 Suave</option>
+              <option value="alert">📣 Alerta</option>
+            </select>
+          </div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">volume_down</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Volumen notificaciones</div>
+              </div>
+            </div>
+            <div class="cfg-slider-wrap">
+              <input type="range" class="cfg-slider" id="slider-notif-vol" min="0" max="100" value="40">
+              <span class="cfg-slider-val" id="val-notif-vol">40%</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sonido -->
+
+      <!-- ─── NOTIFICACIONES ─── -->
+      <div class="cfg-panel-tab" id="cfg-tab-notificaciones">
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Permiso del navegador</div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">notifications_active</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Notificaciones del navegador</div>
+                <div class="cfg-row-desc" id="cfg-perm-status">Sin permiso concedido</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--neon" id="cfg-perm-btn">Activar</button>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Qué quieres recibir</div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(231,22,214,0.1);color:#e716d6">
+                <span class="material-symbols-outlined">timer</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Pomodoro terminado</div>
+                <div class="cfg-row-desc">Aviso cuando acaba la sesión de estudio</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(214,197,22,0.12);color:#d6c516">
+                <span class="material-symbols-outlined">event</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Recordatorio de agenda</div>
+                <div class="cfg-row-desc">15 min antes de cada bloque</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(127,22,214,0.12);color:#a855f7">
+                <span class="material-symbols-outlined">military_tech</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Actualización de ranking</div>
+                <div class="cfg-row-desc">Cuando alguien te supera o subes posición</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox"><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(127,22,214,0.12);color:#7f25f5">
+                <span class="material-symbols-outlined">local_fire_department</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Racha en peligro</div>
+                <div class="cfg-row-desc">Si llevas más de 20h sin estudiar</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(22,214,68,0.1);color:#16d644">
+                <span class="material-symbols-outlined">emoji_events</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Logros desbloqueados</div>
+                <div class="cfg-row-desc">Cuando consigues un nuevo badge o hito</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+        </div>
+      </div><!-- /notificaciones -->
+
+      <!-- ─── PLAN ─── -->
+      <div class="cfg-panel-tab" id="cfg-tab-plan">
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Tu plan actual: Gratuito</div>
+          <div class="cfg-plan-grid">
+            <div class="cfg-plan-card cfg-plan-card--active">
+              <div class="cfg-plan-name">Free</div>
+              <div class="cfg-plan-price">0€<span>/mes</span></div>
+              <ul class="cfg-plan-features">
+                <li class="has">Dashboard completo</li>
+                <li class="has">Pomodoro básico</li>
+                <li class="has">Kanban (10 tarjetas)</li>
+                <li>Sin estadísticas avanzadas</li>
+                <li>Sin exportación</li>
+              </ul>
+            </div>
+            <div class="cfg-plan-card">
+              <div class="cfg-plan-badge">Popular</div>
+              <div class="cfg-plan-name">Pro</div>
+              <div class="cfg-plan-price">4,99€<span>/mes</span></div>
+              <ul class="cfg-plan-features">
+                <li class="has">Todo lo de Free</li>
+                <li class="has">Estadísticas avanzadas</li>
+                <li class="has">Kanban ilimitado</li>
+                <li class="has">Exportar PDF/CSV</li>
+                <li class="has">Sonidos premium</li>
+              </ul>
+            </div>
+          </div>
+          <button class="cfg-btn cfg-btn--naranja cfg-btn--full">
+            <span class="material-symbols-outlined">workspace_premium</span>
+            Hazte Pro — 4,99€/mes
+          </button>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Facturación</div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">credit_card</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Método de pago</div>
+                <div class="cfg-row-desc">No tienes ninguno vinculado</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--neon">Añadir</button>
+          </div>
+        </div>
+
+      </div><!-- /plan -->
+
+      <!-- ─── CUENTA ─── -->
+      <div class="cfg-panel-tab" id="cfg-tab-cuenta">
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Sesión</div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
+                <span class="material-symbols-outlined">logout</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Cerrar sesión</div>
+                <div class="cfg-row-desc">Salir de tu cuenta en este dispositivo</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--neon" id="cfg-logout-btn">Cerrar sesión</button>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Exportar mis datos</div>
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(95,202,125,0.1);color:#5fca7d">
+                <span class="material-symbols-outlined">download</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Exportar todo en JSON</div>
+                <div class="cfg-row-desc">Agenda, kanban, pomodoros y estadísticas</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--success" id="cfg-export-btn">Exportar</button>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">Zona de peligro</div>
+          <div class="cfg-danger-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(255,60,60,0.1);color:#ff4d4d">
+                <span class="material-symbols-outlined">delete_sweep</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name" style="color:#ff6b6b">Borrar mis datos</div>
+                <div class="cfg-row-desc">Elimina agenda, kanban, pomodoros y estadísticas</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--danger" id="cfg-delete-data-btn">Borrar datos</button>
+          </div>
+          <div class="cfg-danger-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(255,60,60,0.1);color:#ff4d4d">
+                <span class="material-symbols-outlined">person_remove</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name" style="color:#ff6b6b">Eliminar cuenta</div>
+                <div class="cfg-row-desc">Acción permanente e irreversible</div>
+              </div>
+            </div>
+            <button class="cfg-btn cfg-btn--danger" id="cfg-delete-account-btn">Eliminar cuenta</button>
+          </div>
+        </div>
+
+      </div><!-- /cuenta -->
+
+    </div><!-- /cfg-content -->
+  </div><!-- /cfg-panel -->
+</div><!-- /settings-overlay -->
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
+
+<script src="/notificaciones.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="/scripts/kanban.js"></script>
+    <script src="/scripts/calendario.js"></script>
+    <script src="/scripts/ranking-db.js"></script>
+    <script src="/scripts/pomodoro.js"></script>
+    <script src="/scripts/dashboard_username_sync.js"></script>
+    <script src="/scripts/settings.js"></script>
+
+    <script>
+        document.getElementById('sidebar-overlay').addEventListener('click', function() {
+            document.getElementById('open-menu-mobile').checked = false;
+        });
+
+        // ── Sincronizar pills del header con los stats ──
+        function syncHeaderPills(data) {
+            const sv = document.getElementById('header-streak-val');
+            const pv = document.getElementById('header-pts-val');
+            const tv = document.getElementById('header-time-val');
+            if (sv && data.streak !== undefined) sv.textContent = data.streak;
+            if (pv && data.todayPoints !== undefined) pv.textContent = data.todayPoints;
+            if (tv && data.todaySeconds !== undefined) {
+                const h = Math.floor(data.todaySeconds / 3600);
+                const m = Math.floor((data.todaySeconds % 3600) / 60);
+                tv.textContent = h > 0 ? h + 'h ' + m + 'm' : (m > 0 ? m + 'm' : '0m');
+            }
+        }
+        // Observar cambios en los stat cards (ranking-db.js los actualiza)
+        const _origActualizar = window.actualizarStatsDashboard;
+        window.actualizarStatsDashboard = function(data) {
+            if (_origActualizar) _origActualizar(data);
+            syncHeaderPills(data);
+        };
+        document.addEventListener('DOMContentLoaded', () => {
+            // Leer desde los stat cards una vez cargados
+            setTimeout(() => {
+                const racha = document.getElementById('racha-days')?.textContent;
+                const pts   = document.getElementById('points')?.textContent;
+                const time  = document.getElementById('time-studied')?.textContent;
+                const sv = document.getElementById('header-streak-val');
+                const pv = document.getElementById('header-pts-val');
+                const tv = document.getElementById('header-time-val');
+                if (sv && racha) sv.textContent = racha;
+                if (pv && pts)   pv.textContent = pts;
+                if (tv && time)  tv.textContent = time;
+            }, 800);
+        });
+    </script>
+</body>
+</html>
