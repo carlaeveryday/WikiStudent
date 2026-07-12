@@ -19,6 +19,13 @@ const { supabaseAdmin, createUserClient } = require('./lib/supabase');
 
 // ── 1. APP EXPRESS ────────────────────────────────────────────────────────────
 const app = express();
+
+// Render (y la mayoría de hostings) ponen un proxy delante que gestiona el
+// HTTPS. Sin esto, Express no reconoce la conexión como segura y se niega
+// a guardar la cookie de sesión (que marcamos como "secure" más abajo) —
+// eso hacía que el login pareciera fallar silenciosamente en producción.
+app.set('trust proxy', 1);
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
