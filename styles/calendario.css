@@ -1,0 +1,900 @@
+/* ============================================================
+   calendario.css — Estilos del sistema de calendario
+   Wiki Student · Paleta: azul neon + naranja neon
+   ============================================================ */
+
+/* ════════════════════════════════════════════════════════════
+   CONTENEDOR PRINCIPAL
+   ════════════════════════════════════════════════════════════ */
+
+#calendario {
+    width: 100%;
+    height: auto;
+    background: rgba(0, 180, 216, 0.04);
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    border-radius: 16px;
+    padding: 16px 14px 12px;
+    user-select: none;
+}
+
+/* ── Cabecera mes ──────────────────────────────────────────── */
+
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.cal-month-label {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.cal-nav-btn {
+    background: rgba(0, 210, 255, 0.06);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: 8px;
+    color: var(--azul-neon);
+    font-size: 1.3rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    line-height: 1;
+    padding: 0;
+}
+
+.cal-nav-btn:hover {
+    background: rgba(0, 210, 255, 0.15);
+    transform: scale(1.08);
+}
+
+/* ── Grid de días ──────────────────────────────────────────── */
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.cal-weekday {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: rgba(0, 210, 255, 0.45);
+    text-align: center;
+    padding: 4px 0 6px;
+    letter-spacing: 0.06em;
+}
+
+/* ── Celda de día ──────────────────────────────────────────── */
+
+.cal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 7px;
+    padding: 5px 2px 4px;
+    min-height: 42px;
+    transition: background 0.15s, transform 0.12s;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.cal-day:not(.other-month) {
+    cursor: pointer;
+}
+
+.cal-day:not(.other-month):hover {
+    background: rgba(0, 210, 255, 0.07);
+    transform: scale(1.05);
+}
+
+/* Número del día */
+.cal-day-num {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    text-align: center;
+    line-height: 1;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* ── Estados especiales ────────────────────────────────────── */
+
+/* HOY: círculo naranja sólido */
+.cal-day.today .cal-day-num {
+    background: var(--naranja-neon);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 0 8px rgba(255, 107, 43, 0.4);
+}
+
+/* SELECTED: círculo naranja con borde */
+.cal-day.selected:not(.today) .cal-day-num {
+    background: transparent;
+    color: var(--naranja-neon);
+    border: 1.5px solid var(--naranja-neon);
+    box-shadow: 0 0 6px rgba(255, 107, 43, 0.35);
+}
+
+/* HOY + SELECTED: naranja sólido con halo */
+.cal-day.selected.today .cal-day-num {
+    background: var(--naranja-neon);
+    color: #fff;
+    border: 2px solid rgba(255, 107, 43, 0.6);
+    box-shadow: 0 0 12px rgba(255, 107, 43, 0.5);
+}
+
+/* Fin de semana: número más atenuado */
+.cal-day.weekend:not(.today):not(.selected) .cal-day-num {
+    color: rgba(230, 241, 255, 0.35);
+}
+
+/* Días de otro mes */
+.cal-day.other-month .cal-day-num {
+    color: rgba(230, 241, 255, 0.15);
+}
+
+/* ── Puntos de eventos ─────────────────────────────────────── */
+
+.cal-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+    min-height: 6px;
+    align-items: center;
+    justify-content: center;
+}
+
+.cal-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cal-dot.exam {
+    background: #ff4d6d;
+    box-shadow: 0 0 4px rgba(255, 77, 109, 0.6);
+}
+
+.cal-dot.event {
+    background: var(--azul-neon);
+    box-shadow: 0 0 4px rgba(0, 210, 255, 0.6);
+}
+
+/* ── Leyenda ───────────────────────────────────────────────── */
+
+.cal-legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 210, 255, 0.08);
+}
+
+.cal-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: Montserrat, sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: rgba(230, 241, 255, 0.45);
+}
+
+.cal-legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.cal-legend-dot.exam  { background: #ff4d6d; }
+.cal-legend-dot.event { background: var(--azul-neon); }
+
+
+/* ════════════════════════════════════════════════════════════
+   PANEL LATERAL DE DÍA
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Overlay de fondo ─────────────────────────────────────── */
+#cal-panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1200;
+    backdrop-filter: blur(2px);
+    align-items: center;
+    justify-content: center;
+}
+
+#cal-panel-overlay.visible {
+    display: flex;
+}
+
+#cal-side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    background: #041b41f5;
+    border: 1px solid rgba(0, 210, 255, 0.22);
+    border-radius: 18px;
+    padding: 22px 20px 22px;
+    width: 90%;
+    max-width: 420px;
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    animation: panelSlideIn 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
+    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0,210,255,0.08);
+    position: relative;
+}
+
+@keyframes panelSlideIn {
+    from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Cabecera del panel ───────────────────────────────────── */
+
+.cp-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cp-header-left {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cp-date-label {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    text-transform: capitalize;
+}
+
+.cp-today-badge {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--naranja-neon);
+    background: rgba(255, 107, 43, 0.12);
+    border: 1px solid rgba(255, 107, 43, 0.35);
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.cp-header-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.cp-edit-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 210, 255, 0.08);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+    border-radius: 8px;
+    color: var(--azul-neon);
+    font-family: Montserrat, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.cp-edit-btn:hover {
+    background: rgba(0, 210, 255, 0.18);
+    transform: scale(1.04);
+}
+
+.cp-edit-btn .material-symbols-outlined {
+    font-size: 0.85rem;
+}
+
+.cp-close-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(230, 241, 255, 0.5);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.cp-close-btn:hover {
+    background: rgba(255, 77, 109, 0.12);
+    color: #ff4d6d;
+    border-color: rgba(255, 77, 109, 0.3);
+}
+
+.cp-close-btn .material-symbols-outlined { font-size: 1rem; }
+
+/* ── Secciones del panel ───────────────────────────────────── */
+
+.cp-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cp-section-title {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(0, 210, 255, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cp-s-icon {
+    font-size: 0.85rem !important;
+}
+
+/* ── Vista: Eventos ────────────────────────────────────────── */
+
+.cpv-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cpv-event-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid transparent;
+    animation: chipIn 0.18s ease;
+}
+
+@keyframes chipIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.cpv-event-chip.exam  { border-color: rgba(255, 77, 109, 0.2); }
+.cpv-event-chip.event { border-color: rgba(0, 210, 255, 0.15); }
+
+.cpv-chip-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cpv-chip-dot.exam  { background: #ff4d6d; box-shadow: 0 0 5px rgba(255,77,109,0.5); }
+.cpv-chip-dot.event { background: var(--azul-neon); box-shadow: 0 0 5px rgba(0,210,255,0.4); }
+
+.cpv-event-chip > span:nth-child(2) {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    flex: 1;
+}
+
+.cpv-chip-badge {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(230, 241, 255, 0.4);
+    flex-shrink: 0;
+}
+
+/* ── Vista: Nota ───────────────────────────────────────────── */
+
+.cpv-note-text {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: rgba(230, 241, 255, 0.75);
+    line-height: 1.55;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 210, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+/* ── Vista: Moods ──────────────────────────────────────────── */
+
+.cpv-moods-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cpv-mood-chip {
+    font-size: 1.3rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 107, 43, 0.08);
+    border: 1px solid rgba(255, 107, 43, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cpv-empty {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.72rem;
+    color: rgba(230, 241, 255, 0.28);
+    font-style: italic;
+}
+
+/* ── Edición: lista de eventos ─────────────────────────────── */
+
+.cpe-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-height: 24px;
+}
+
+.cpe-event-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+}
+
+.cpe-event-row.exam  { border-color: rgba(255, 77, 109, 0.2); }
+.cpe-event-row.event { border-color: rgba(0, 210, 255, 0.15); }
+
+.cpe-event-label {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cpe-event-type-tag {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(230, 241, 255, 0.35);
+    flex-shrink: 0;
+}
+
+.cpe-del-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(230, 241, 255, 0.25);
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    border-radius: 5px;
+    transition: color 0.2s, background 0.2s;
+    flex-shrink: 0;
+}
+
+.cpe-del-btn:hover {
+    color: #ff4d6d;
+    background: rgba(255, 77, 109, 0.1);
+}
+
+.cpe-del-btn .material-symbols-outlined { font-size: 0.9rem; }
+
+/* ── Edición: añadir evento ────────────────────────────────── */
+
+.cpe-add-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.cpe-type-select {
+    background: rgba(0, 180, 216, 0.07);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: 8px;
+    color: var(--texto-principal);
+    font-family: Montserrat, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 6px 5px;
+    cursor: pointer;
+    outline: none;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+}
+
+.cpe-type-select:focus { border-color: rgba(0,210,255,0.45); }
+
+.cpe-input {
+    flex: 1;
+    background: rgba(0, 180, 216, 0.05);
+    border: 1px solid rgba(0, 210, 255, 0.18);
+    border-radius: 8px;
+    color: var(--texto-principal);
+    font-family: Montserrat, sans-serif;
+    font-size: 0.76rem;
+    font-weight: 500;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    min-width: 0;
+}
+
+.cpe-input::placeholder { color: rgba(230, 241, 255, 0.28); }
+.cpe-input:focus { border-color: rgba(0, 210, 255, 0.4); }
+
+.cpe-add-btn {
+    background: rgba(0, 210, 255, 0.1);
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    border-radius: 8px;
+    color: var(--azul-neon);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 10px;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.cpe-add-btn:hover {
+    background: rgba(0, 210, 255, 0.2);
+    transform: scale(1.06);
+}
+
+.cpe-add-btn .material-symbols-outlined { font-size: 1.1rem; }
+
+/* ── Botón guardar del panel ───────────────────────────────── */
+
+.cp-save-btn {
+    background: rgba(255, 107, 43, 0.1);
+    border: 1px solid rgba(255, 107, 43, 0.4);
+    border-radius: 10px;
+    color: var(--naranja-neon);
+    font-family: Montserrat, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 11px 0;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.04em;
+}
+
+.cp-save-btn:hover {
+    background: rgba(255, 107, 43, 0.2);
+    transform: translateY(-1px);
+}
+
+.cp-save-btn .material-symbols-outlined { font-size: 1rem; }
+
+
+/* ════════════════════════════════════════════════════════════
+   WIDGETS INDEPENDIENTES: NOTA RÁPIDA + ESTADO DE ÁNIMO
+   ════════════════════════════════════════════════════════════ */
+
+/* Nota */
+#nota {
+    width: 100%;
+    background: rgba(0, 180, 216, 0.04);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    padding: 18px 15px;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#nota-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#nota-title {
+    color: var(--texto-principal);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+#nota-date-badge,
+#estado-date-badge {
+    font-family: Montserrat, sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: rgba(0, 210, 255, 0.6);
+    background: rgba(0, 210, 255, 0.07);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+#nota-user {
+    width: 100%;
+    min-height: 100px;
+    max-height: 180px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    background-color: rgba(0, 180, 216, 0.04);
+    resize: none;
+    font-family: Montserrat, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    color: var(--blanco);
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+}
+
+#nota-user::placeholder { color: rgba(230, 241, 255, 0.35); }
+#nota-user:focus { border-color: rgba(0, 210, 255, 0.4); }
+
+/* Estado */
+#estado {
+    background-color: rgba(0, 180, 216, 0.04);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    padding: 18px 15px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#estado-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#estado-title {
+    color: var(--texto-principal);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.info-emojis {
+    color: rgba(230, 241, 255, 0.4);
+    font-size: 0.72rem;
+    margin-top: 0;
+    font-style: italic;
+}
+
+.mood-list {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.mood-emoji {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    padding: 4px;
+    border: 1px solid rgba(255, 107, 43, 0.2);
+    background: rgba(255, 107, 43, 0.05);
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.mood-emoji:hover {
+    background: rgba(255, 107, 43, 0.15);
+    transform: scale(1.1);
+}
+
+.mood-emoji.mood-active {
+    border-color: var(--naranja-neon);
+    background: rgba(255, 107, 43, 0.18);
+    box-shadow: 0 0 10px rgba(255, 107, 43, 0.3);
+    transform: scale(1.1);
+}
+
+/* Botón guardar compartido */
+.widget-save-btn {
+    width: 100%;
+    background: rgba(0, 210, 255, 0.07);
+    border: 1px solid rgba(0, 210, 255, 0.28);
+    border-radius: 10px;
+    color: var(--azul-neon);
+    font-family: Montserrat, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 10px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.03em;
+    margin-top: 4px;
+}
+
+.widget-save-btn:hover {
+    background: rgba(0, 210, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.widget-save-btn .material-symbols-outlined { font-size: 0.95rem; }
+
+
+/* ════════════════════════════════════════════════════════════
+   TOAST DE ÉXITO
+   ════════════════════════════════════════════════════════════ */
+
+#cal-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(4, 27, 65, 0.96);
+    border: 1px solid rgba(22, 214, 68, 0.4);
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: Montserrat, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #16d644;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 20px rgba(22,214,68,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9999;
+    white-space: nowrap;
+}
+
+#cal-toast.success {
+    border-color: rgba(22, 214, 68, 0.4);
+    color: #16d644;
+}
+
+#cal-toast.error {
+    border-color: rgba(255, 77, 109, 0.4);
+    color: #ff4d6d;
+}
+
+#cal-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+#cal-toast .material-symbols-outlined { font-size: 1rem; }
+
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+    #cal-side-panel {
+        max-width: 95vw;
+    }
+
+    .cpe-add-row {
+        flex-wrap: wrap;
+    }
+
+    .cpe-type-select {
+        width: 100%;
+    }
+}
+/* ── Fila de recordatorio en panel edición ─────────────────── */
+.cpe-reminder-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 210, 255, 0.04);
+    border: 1px solid rgba(0, 210, 255, 0.18);
+    border-radius: 8px;
+    flex-wrap: wrap;
+}
+
+.cpe-reminder-icon {
+    font-size: 1rem;
+    color: var(--azul-neon);
+    flex-shrink: 0;
+}
+
+.cpe-reminder-label {
+    color: rgba(230, 241, 255, 0.65);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cpe-reminder-input {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: var(--texto-principal);
+    font-family: Montserrat;
+    font-size: 0.82rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.cpe-reminder-input:focus {
+    border-color: rgba(0, 210, 255, 0.55);
+}
+
+.cpe-reminder-hint {
+    color: rgba(230, 241, 255, 0.3);
+    font-size: 0.65rem;
+    font-weight: 500;
+    flex: 1;
+    min-width: 100px;
+}

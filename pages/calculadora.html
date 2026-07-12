@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Selectividad</title>
+    <link rel="stylesheet" href="/styles/calculadora.css">
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+</head>
+<body>
+
+    <!--- SIDEBAR SECTION --->
+    <aside class="sidebar" id="sidebar">
+        <div class="top-menu">
+            <div id="img-container">
+                <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+            </div>
+            <div class="sidebar__brand"><span class="orange-word">Wiki</span><span class="white-word">Student</span></div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <a href="/">Dashboard</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">tag</span>
+                    <a href="/pages/discord.html">Discord</a>
+                    <span class="sidebar__badge">Nuevo</span>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">emoji_events</span>
+                    <a href="/pages/ranking.html">Ranking</a>
+                </li>
+
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Herramientas</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">timer</span>
+                    <a href="/pages/pomodoro.html">Pomodoro</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">style</span>
+                    <a href="/pages/flashcards.html">Flashcards</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">quiz</span>
+                    <a href="/pages/quizzes.html">Quizzes</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">smart_toy</span>
+                    <a href="/pages/directorio.html">Directorio IA</a>
+                </li>
+
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Universidad</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">account_tree</span>
+                    <a href="/pages/mapa.html">Mapa de grados</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">psychology</span>
+                    <a href="/pages/vocacional.html">Tests vocacionales</a>
+                </li>
+                <li class="sidebar__item sidebar__item--active">
+                    <span class="material-symbols-outlined">calculate</span>
+                    <a href="/pages/calculadora.html">Calc. Selectividad</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <a href="/pages/recursos.html">Recursos Universidad</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar__footer">
+            <div class="sidebar__user">
+                <div class="sidebar__avatar">CG</div>
+                <div class="sidebar__user-info">
+                    <span class="sidebar__user-name">Carla G.</span>
+                    <span class="sidebar__user-plan">
+                        <span class="material-symbols-outlined">lock</span>
+                        Plan gratuito
+                    </span>
+                </div>
+            </div>
+            <button class="sidebar__pro-btn">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                <span class="sidebar__pro-text">Hazte Pro</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN SECTION -->
+    <main>
+        <header class="test__header header__apartados">
+            <span class="title__apartados inicio-title">CALCULA TU</span><span class="title__apartados final-title"> NOTA DE SELECTIVIDAD</span>
+            <h3>¿A QUÉ CARRERA PUEDES ASPIRAR?</h3>
+        </header>
+
+        <div class="calculator-container">
+
+            <!-- NOTA DE ACCESO -->
+            <p class="title-acceso">Nota de acceso</p>
+            <div id="aviso-acceso">
+                Introduce tu nota <strong>original sin ponderar</strong> (0-10). Si la nota supera el 10, estás usando una nota ya multiplicada — eso duplicaría el cálculo.
+            </div>
+            <div class="fila_nota">
+                    <span>Nota media de bachillerato</span>
+                    <span>Nota fase obligatoria PAU</span>
+                </div>
+                
+            <div id="nota-acceso">
+                
+                <div>
+                    <input type="number" step="0.01" min="0" max="10" id="bachillerato" placeholder="Ej: 8.50">
+                </div>
+                <div>
+                    <input type="number" step="0.01" min="0" max="10" id="fase_obligatoria" placeholder="Ej: 6.50">
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- NOTA DE ADMISIÓN -->
+            <div class="title-admision-wrap">
+                <p class="title-admision">Nota de admisión</p>
+                <div class="info-tooltip">
+                    <span class="material-symbols-outlined info-icon">info</span>
+                    <div class="tooltip-box">
+                        <p><strong>3 cosas importantes:</strong></p>
+                        <p>· Puedes incluir asignaturas de la fase obligatoria si ponderan para tu carrera.</p>
+                        <p>· No se suman dos veces — el coeficiente solo aplica una vez.</p>
+                        <p>· Solo cuentan las <strong>2 mejores</strong> ponderaciones (máx. +4 puntos).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="nota-admision">
+                <div class="fila_titulos">
+                    <span>Nota (0-10)</span>
+                    <span>Ponderación</span>
+                    <span>Resultado</span>
+                </div>
+
+                <div class="fila_asignatura">
+                    <div class="campo-nota">
+                        <input type="number" step="0.01" min="0" max="10" id="nota1" placeholder="0.00" oninput="calcPond(1)">
+                    </div>
+                    <div class="campo-pond">
+                        <select id="pond1" onchange="calcPond(1)">
+                            <option value="0">—</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.2">0.2</option>
+                        </select>
+                    </div>
+                    <div class="campo-resultado">
+                        <span id="res1" class="resultado-span">—</span>
+                    </div>
+                </div>
+
+                <div class="fila_asignatura">
+                    <div class="campo-nota">
+                        <input type="number" step="0.01" min="0" max="10" id="nota2" placeholder="0.00" oninput="calcPond(2)">
+                    </div>
+                    <div class="campo-pond">
+                        <select id="pond2" onchange="calcPond(2)">
+                            <option value="0">—</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.2">0.2</option>
+                        </select>
+                    </div>
+                    <div class="campo-resultado">
+                        <span id="res2" class="resultado-span">—</span>
+                    </div>
+                </div>
+
+                <div class="fila_asignatura">
+                    <div class="campo-nota">
+                        <input type="number" step="0.01" min="0" max="10" id="nota3" placeholder="0.00" oninput="calcPond(3)">
+                    </div>
+                    <div class="campo-pond">
+                        <select id="pond3" onchange="calcPond(3)">
+                            <option value="0">—</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.2">0.2</option>
+                        </select>
+                    </div>
+                    <div class="campo-resultado">
+                        <span id="res3" class="resultado-span">—</span>
+                    </div>
+                </div>
+
+                <div class="fila_asignatura">
+                    <div class="campo-nota">
+                        <input type="number" step="0.01" min="0" max="10" id="nota4" placeholder="0.00" oninput="calcPond(4)">
+                    </div>
+                    <div class="campo-pond">
+                        <select id="pond4" onchange="calcPond(4)">
+                            <option value="0">—</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.2">0.2</option>
+                        </select>
+                    </div>
+                    <div class="campo-resultado">
+                        <span id="res4" class="resultado-span">—</span>
+                    </div>
+                </div>
+
+                <p class="aviso-pond" id="aviso-pond" style="display:none">
+                    <span class="material-symbols-outlined" style="font-size:14px;vertical-align:-2px">info</span>
+                    Solo se suman las 2 mejores ponderaciones. Las demás se ignoran.
+                </p>
+            </div>
+
+            <div onclick="calcular()" id="btn-calcular">
+                Calcular mi nota de admisión
+            </div>
+
+            <!-- POPUP RESULTADOS -->
+            <div id="popup-overlay">
+                <div id="popup">
+                    <div onclick="cerrarPopup()" class="material-symbols-outlined" id="cerrar-popup">close</div>
+                    <p id="popup-titulo">Tu resultado</p>
+
+                    <div id="popup-fila-superior">
+                        <div class="popup-card">
+                            <p class="popup-label">Nota de acceso base</p>
+                            <p class="popup-numero" id="resultado-acceso">0.000</p>
+                        </div>
+                        <div class="popup-card">
+                            <p class="popup-label">Puntos fase voluntaria</p>
+                            <p class="popup-numero popup-numero--extra" id="resultado-extra">0.000</p>
+                        </div>
+                    </div>
+
+                    <div class="popup-card popup-card--final">
+                        <p id="admision-final">Nota de admisión final</p>
+                        <p class="popup-numero popup-numero--final" id="resultado-final">0.000</p>
+                    </div>
+
+                    <p id="popup-mensaje"></p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!--- FOOTER --->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <script src="/scripts/select.js"></script>
+    <script src="/scripts/calculadora.js"></script>
+</body>
+</html>

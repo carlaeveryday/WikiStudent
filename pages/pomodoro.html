@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards | WikiStudent</title>
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/pomodoro.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+</head>
+<body>
+
+    <!--- SIDEBAR --->
+    <form class="sidebar__form">
+        <input type="checkbox" id="open-menu-mobile">
+        <label class="material-symbols-outlined label-mobile" for="open-menu-mobile">menu</label>
+    </form>
+    <aside class="sidebar">
+        <form class="sidebar__form">
+            <input type="checkbox" id="open-menu">
+            <label class="material-symbols-outlined label-desktop" for="open-menu">menu</label>
+        </form>
+        <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Home</span><a href="index.html">Inicio</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">explore</span><a href="/pages/test.html">Orientación vocacional</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Grid_view</span><a href="/pages/directorio.html">Directorio apps/webs</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Article</span><a href="/pages/mapa.html">Artículos</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Auto_awesome_motion</span><a href="#">Plantillas de Canva</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Smart_toy</span><a href="#">Biblioteca de Prompts</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">mail</span><a href="/pages/calculadora.html">Calculadora de selectividad</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+    <header class="test__header header__apartados">
+        <span class="title__apartados inicio-title">MÉTODO </span><span class="title__apartados final-title"> POMODORO</span>
+        <h3>MEMORIZA EN BLOQUES</h3>
+        <p>Lleva tu estudio al último nivel mientras compites con otros jugadores</p>
+    </header>
+
+<div id="pomodoro">
+    <div id="time-wrapper">
+        <svg width="570" height="570" viewBox="0 0 370 370">
+            <!-- Todos centrados en 185 (la mitad de 370) -->
+            <circle class="progress-ring__exterior" cx="185" cy="185" r="175" />
+            <circle class="progress-ring__exterior" cx="185" cy="185" r="165" />
+            <circle class="progress-ring__segments" cx="185" cy="185" r="145" />
+            <circle class="progress-ring__bg-2" cx="185" cy="185" r="155" />
+            <circle class="progress-ring__bar" cx="185" cy="185" r="155" />
+            <circle class="progress-ring__bg" cx="185" cy="185" r="135" />
+            <circle class="progress-ring__bar" cx="185" cy="185" r="135" />
+            
+            <text x="185" y="185" class="timer-number-svg">25:00</text>
+            <text x="185" y="230" class="timer-label-svg">ENFOQUE</text>
+        </svg>
+    </div>
+    <div id="time-controllers">
+        <div id="min-less">
+            -1 min
+        </div>
+        <div id="min-more">
+            +1 min
+        </div>
+    </div>
+    <div id="presets-container">
+        <div class="btn">20 MIN</div>
+        <div class="btn">30 MIN</div>
+        <div class="btn">1 HORA</div>
+    </div>
+    <div id="btn-pomodoro-container">
+        <button class="pomodoro-btn play">
+            <svg viewBox="0 0 100 100">
+                <polygon points="20,10 20,90 90,50" />
+                <text x="32" y="55">PLAY</text>
+            </svg>
+        </button>
+        <div class="pomodoro-btn reset">
+            <div class="circle">RESET</div>
+        </div>
+    </div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a><span>|</span>
+            <a href="#">Política de cookies</a><span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <script src="/scripts/pomodoro.js"></script>
+</body>
+</html>
