@@ -1,0 +1,18 @@
+{
+  "name": "wikistudent",
+  "version": "1.0.0",
+  "description": "WikiStudent - plataforma de recursos y organización para estudiantes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0",
+    "firebase-admin": "^12.5.0",
+    "node-cron": "^3.0.3"
+  }
+}
