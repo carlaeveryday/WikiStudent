@@ -1,0 +1,144 @@
+<%- /* ============================================================
+     WikiStudent — views/onboarding.ejs
+     Pantalla de bienvenida para usuarios nuevos de Google OAuth.
+     Se muestra cuando perfil_completado = false (username vacío).
+     ============================================================ */ %>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WikiStudent — Bienvenido</title>
+
+  <!-- Fuente del sistema de diseño -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Estilos globales del proyecto -->
+  <link rel="stylesheet" href="/static/estilos_generales.css" />
+
+  <!-- Estilos exclusivos de este paso -->
+  <link rel="stylesheet" href="/static/onboarding.css" />
+</head>
+<body class="onboarding-body">
+
+  <!-- ══════════════════════════════════════════════════
+       PARTÍCULAS DE FONDO (decorativas, puro CSS/JS)
+       ══════════════════════════════════════════════════ -->
+  <div class="ob-bg" aria-hidden="true">
+    <div class="ob-bg__orb ob-bg__orb--1"></div>
+    <div class="ob-bg__orb ob-bg__orb--2"></div>
+    <div class="ob-bg__grid"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       CARD PRINCIPAL
+       ══════════════════════════════════════════════════ -->
+  <main class="ob-card" role="main">
+
+    <!-- Logo + marca -->
+    <header class="ob-card__header">
+      <div class="ob-logo" aria-label="WikiStudent">
+        <img src="/wiki/menu-logo.webp" alt="WikiStudent logo" class="ob-logo__img" />
+        <span class="ob-logo__wordmark">Wiki<em>Student</em></span>
+      </div>
+      <div class="ob-step-pill">Paso único de configuración</div>
+    </header>
+
+    <!-- Saludo personalizado con avatar de Google -->
+    <section class="ob-greeting">
+      <!-- Avatar con inicial del email como fallback -->
+      <div class="ob-avatar" id="ob-avatar" aria-hidden="true">
+        <% if (user && user.email) { %>
+          <%= user.email[0].toUpperCase() %>
+        <% } else { %>
+          ?
+        <% } %>
+      </div>
+
+      <div class="ob-greeting__text">
+        <h1 class="ob-greeting__title">
+          ¡Hola, bienvenido/a a WikiStudent!
+        </h1>
+        <p class="ob-greeting__subtitle">
+          Solo necesitamos un detalle para dejarte el espacio listo.
+          Elige el nombre con el que te verán en la plataforma.
+        </p>
+      </div>
+    </section>
+
+    <!-- Separador decorativo -->
+    <div class="ob-divider" aria-hidden="true"></div>
+
+    <!-- ── Formulario de username ───────────────────────────────── -->
+    <section class="ob-form-section">
+      <label class="ob-label" for="username-input">
+        <span class="material-symbols-rounded ob-label__icon">badge</span>
+        Tu nombre de usuario
+      </label>
+
+      <div class="ob-input-wrap" id="ob-input-wrap">
+        <input
+          type="text"
+          id="username-input"
+          name="username"
+          class="ob-input"
+          placeholder="p. ej. AlexEstudiante99"
+          maxlength="30"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-describedby="ob-feedback"
+        />
+        <!-- Indicador de disponibilidad (inline) -->
+        <div class="ob-input__status" id="ob-input-status" aria-live="polite">
+          <span class="material-symbols-rounded" id="ob-status-icon"></span>
+        </div>
+      </div>
+
+      <!-- Mensaje de feedback (error o éxito) -->
+      <p class="ob-feedback" id="ob-feedback" role="alert" aria-live="assertive"></p>
+
+      <!-- Reglas rápidas de formato -->
+      <ul class="ob-rules" aria-label="Reglas del nombre de usuario">
+        <li class="ob-rule" id="rule-length">
+          <span class="material-symbols-rounded">circle</span>
+          Entre 3 y 30 caracteres
+        </li>
+        <li class="ob-rule" id="rule-chars">
+          <span class="material-symbols-rounded">circle</span>
+          Solo letras, números, guiones y puntos
+        </li>
+        <li class="ob-rule" id="rule-unique">
+          <span class="material-symbols-rounded">circle</span>
+          Nombre disponible
+        </li>
+      </ul>
+    </section>
+
+    <!-- Botón de guardar -->
+    <button
+      class="ob-btn"
+      id="ob-save-btn"
+      type="button"
+      disabled
+      aria-busy="false"
+    >
+      <span class="ob-btn__text">Guardar y entrar al Dashboard</span>
+      <span class="material-symbols-rounded ob-btn__icon">arrow_forward</span>
+      <!-- Spinner oculto mientras carga -->
+      <span class="ob-btn__spinner" aria-hidden="true"></span>
+    </button>
+
+    <!-- Nota de pie pequeña -->
+    <p class="ob-footnote">
+      Podrás cambiar tu nombre en cualquier momento desde
+      <strong>Configuración → Perfil</strong>.
+    </p>
+
+  </main>
+
+  <!-- ── Script del flujo de onboarding ─────────────────────────── -->
+  <script src="/static/onboarding.js"></script>
+</body>
+</html>

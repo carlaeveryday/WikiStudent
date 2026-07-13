@@ -1,0 +1,546 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================================================================
+   PAGE HEADER
+   ================================================================ */
+
+.test__header.header__apartados {
+    margin-bottom: 45px;
+    padding-bottom: 0;
+    margin-top: 30px;
+}
+
+.test__header .inicio-title {
+    color: #fff;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.test__header .final-title {
+    color: var(--naranja-neon);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.test__header h3 {
+    font-size: 0.85rem !important;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--azul-neon);
+    font-weight: 600;
+    margin: 6px 0 0 0;
+    opacity: 0.8;
+}
+
+/* ================================================================
+   CONTAINER
+   ================================================================ */
+
+.calculator-container {
+    position: relative;
+    width: min(800px, 95%);
+    height: fit-content;
+    margin: 0 auto 60px auto;
+    padding: 30px 30px;
+    border-radius: 10px;
+    z-index: 0;
+}
+
+/* ================================================================
+   TÍTULOS DE SECCIÓN
+   ================================================================ */
+
+.title-acceso,
+.title-admision {
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--naranja-neon);
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    opacity: 0.9;
+}
+
+.title-admision-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.title-admision-wrap .title-admision {
+    margin-bottom: 0;
+}
+
+/* ================================================================
+   TOOLTIP INFO
+   ================================================================ */
+
+.info-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.info-icon {
+    font-size: 16px !important;
+    color: rgba(0, 210, 255, 0.5);
+    cursor: help;
+    transition: color 0.2s;
+}
+
+.info-icon:hover {
+    color: var(--azul-neon);
+}
+
+.tooltip-box {
+    display: none;
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--azul-sidebar);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-left: 3px solid var(--azul-neon);
+    border-radius: 8px;
+    padding: 12px 14px;
+    width: 260px;
+    z-index: 100;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.info-tooltip:hover .tooltip-box {
+    display: block;
+}
+
+.tooltip-box p {
+    font-size: 12px;
+    color: rgba(230, 241, 255, 0.7);
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.tooltip-box p:last-child {
+    margin-bottom: 0;
+}
+
+.tooltip-box strong {
+    color: var(--texto-principal);
+}
+
+/* ================================================================
+   AVISO ACCESO
+   ================================================================ */
+
+#aviso-acceso {
+    border-left: 3px solid var(--azul-verdoso);
+    padding: 10px 12px;
+    font-size: 12px;
+    color: rgba(230, 241, 255, 0.55);
+    line-height: 1.6;
+    background: rgba(0, 210, 255, 0.05);
+    margin: 0 0 18px 0;
+}
+
+strong {
+    color: var(--texto-principal);
+}
+
+/* ================================================================
+   GRID NOTA ACCESO
+   ================================================================ */
+
+#nota-acceso {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.fila_nota {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 30px
+}
+
+/* ================================================================
+   LABELS E INPUTS
+   ================================================================ */
+
+
+p {
+    color: var(--texto-secundario);
+    font-size: 13px;
+}
+
+input,
+select {
+    display: block;
+    width: 100%;
+    color: #dedada;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background-color: var(--azul-sidebar);
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    border: 1px solid rgba(255, 107, 43, 0.5);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--naranja-neon);
+}
+
+input::placeholder {
+    color: rgba(230, 241, 255, 0.2);
+}
+
+/* ================================================================
+   DIVISOR
+   ================================================================ */
+
+.section-divider {
+    display: block;
+    width: 100% !important;
+    height: 2px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 107, 43, 0.5) 20%,
+        rgba(0, 210, 255, 0.4) 50%,
+        rgba(255, 107, 43, 0.5) 80%,
+        transparent
+    );
+    margin: 50px 0 !important;
+}
+
+/* ================================================================
+   TABLA FASE VOLUNTARIA
+   ================================================================ */
+
+.fila_titulos {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 30px
+}
+
+.fila_titulos span, .fila_nota span {
+    color: rgba(230, 241, 255, 0.4);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+#nota-acceso label {
+    color: rgba(230, 241, 255, 0.4);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+.fila_asignatura {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Input de nota dentro de la fila — sin ancho fijo */
+.campo-nota input,
+.campo-pond select {
+    width: 100%;
+}
+
+/* Span de resultado — mismo aspecto que input */
+.resultado-span {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background-color: var(--azul-sidebar);
+    border: 1px solid rgba(255, 107, 43, 0.2);
+    font-size: 14px;
+    color: rgba(230, 241, 255, 0.35);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.resultado-span.activo {
+    color: #4ecb71;
+    border-color: rgba(78, 203, 113, 0.4);
+}
+
+/* Aviso "solo 2 mejores" */
+.aviso-pond {
+    font-size: 12px;
+    color: rgba(0, 210, 255, 0.6);
+    margin-top: 4px;
+    padding: 6px 10px;
+    background: rgba(0, 210, 255, 0.05);
+    border-radius: 6px;
+    border-left: 2px solid rgba(0, 210, 255, 0.3);
+}
+
+/* ================================================================
+   BOTÓN CALCULAR
+   ================================================================ */
+
+#btn-calcular {
+    display: block;
+    font-weight: 600;
+    text-align: center;
+    color: var(--blanco);
+    overflow: hidden;
+    position: relative;
+    padding: 12px 20px;
+    border-radius: 50px;
+    margin: 40px auto 0 auto;
+    border: 2px solid var(--naranja-neon);
+    box-shadow: 0 3px 20px #ff7f5057;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    transition: color 0.3s;
+    max-width: 400px;
+}
+
+#btn-calcular::before {
+    content: '';
+    display: block;
+    background-color: var(--naranja-neon);
+    width: 140%;
+    height: 230%;
+    border-radius: 50%;
+    position: absolute;
+    top: 100%;
+    left: 38%;
+    transition: top .6s, left .6s;
+    z-index: -1;
+}
+
+#btn-calcular:hover::before {
+    top: -40%;
+    left: -18%;
+}
+
+/* ================================================================
+   POPUP
+   ================================================================ */
+
+#popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none;
+    height: 100%;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+#popup {
+    background: linear-gradient(145deg, #0d1e35, #071527);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    padding: 28px 24px 24px 24px;
+    border-radius: 14px;
+    width: min(420px, 90%);
+    margin: auto;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 107, 43, 0.1);
+}
+
+#popup-titulo {
+    color: var(--naranja-neon) !important;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin: 0 0 20px 0;
+    opacity: 0.9;
+}
+
+#popup-fila-superior {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.popup-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 210, 255, 0.1);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-align: center;
+}
+
+.popup-card--final {
+    border-color: rgba(255, 107, 43, 0.25);
+    background: rgba(255, 107, 43, 0.05);
+}
+
+.popup-label, #admision-final {
+    color: rgba(230, 241, 255, 0.45) !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px !important;
+    font-weight: 700 !important;
+
+}
+
+.popup-label {
+    max-width: 120px;        /* ← añade esto */
+    margin-left: auto;       /* ← y esto */
+    margin-right: auto;
+}
+
+.popup-numero {
+    color: var(--texto-principal) !important;
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px !important;
+}
+
+.popup-numero--extra {
+    color: #4ecb71 !important;
+}
+
+.popup-numero--final {
+    color: var(--azul-neon) !important;
+    font-size: 40px !important;
+}
+
+.popup-formula {
+    font-size: 11px !important;
+    color: rgba(230, 241, 255, 0.25) !important;
+    margin-top: 2px;
+}
+
+#popup-mensaje {
+    font-size: 12px;
+    border-radius: 20px;
+    padding: 6px 14px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+#cerrar-popup {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: rgba(230, 241, 255, 0.3);
+    cursor: pointer;
+    font-size: 20px !important;
+    transition: color 0.2s;
+}
+
+#cerrar-popup:hover {
+    color: var(--naranja-neon);
+}
+
+/* ================================================================
+   TOM SELECT
+   ================================================================ */
+
+.ts-control {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1.5px solid #f97316 !important;
+    color: #ffffff !important;
+    border-radius: 5px !important;
+    padding: 7px !important;
+}
+
+.ts-wrapper.single .ts-control .item {
+    color: #ffffff !important;
+}
+
+.ts-dropdown {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+}
+
+.ts-dropdown .option.active {
+    background-color: rgba(255, 255, 255, 0.073) !important;
+    color: #ffffff !important;
+}
+
+/* ================================================================
+   RESPONSIVE — MÓVIL
+   ================================================================ */
+
+@media (max-width: 700px) {
+    .calculator-container {
+        padding: 20px 15px;
+    }
+
+    #nota-acceso {
+        grid-template-columns: 1fr;
+    }
+
+    .fila_titulos {
+        display: none;
+    }
+
+    .fila_asignatura {
+        grid-template-columns: 1fr 1fr;
+        margin-bottom: 16px;
+    }
+
+    .campo-resultado {
+        grid-column: 1 / -1;
+    }
+
+    .resultado-span {
+        text-align: left;
+    }
+
+    .label-movil {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--texto-principal);
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .tooltip-box {
+        left: auto;
+        right: 0;
+        top: 28px;
+        transform: none;
+    }
+
+    #popup-fila-superior {
+        grid-template-columns: 1fr;
+    }
+
+    #popup {
+        max-width: 340px;
+    }
+}

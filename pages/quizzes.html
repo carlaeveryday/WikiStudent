@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards | WikiStudent</title>
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/quizzes.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+
+    <style>
+        /* ── Skeleton loaders ── */
+        @keyframes shimmer {
+            0%   { background-position: -600px 0; }
+            100% { background-position:  600px 0; }
+        }
+        .skeleton-card {
+            border-radius: 14px;
+            background: rgba(255,255,255,0.04);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255,255,255,0.03) 0%,
+                rgba(255,255,255,0.08) 40%,
+                rgba(255,255,255,0.03) 80%
+            );
+            background-size: 600px 100%;
+            animation: shimmer 1.4s infinite linear;
+            min-height: 120px;
+        }
+        #repositorio {
+            transition: opacity 0.22s ease;
+        }
+        #repositorio.loading {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        /* cursor: pointer en todos los interactivos */
+        .rep-card.carpeta:not(.carpeta-nueva),
+        .rep-card .btn-estudiar,
+        .rep-card .btn-editar,
+        .kebab-btn,
+        .kebab-menu button,
+        .bc-link,
+        #btnBuscar,
+        #btnNuevaCarpeta,
+        .crear-option,
+        .qty-btn,
+        #btnGenerar,
+        #btnAnadir,
+        #btnAnterior,
+        #btnSiguiente,
+        #btnAcierto,
+        #btnFallo,
+        #btnRepetir,
+        #btnSalirEstudio,
+        #btnVolver,
+        #btnVolverDesdeEstudio,
+        #btnGuardarCambios,
+        .modal-confirm,
+        .modal-cancel,
+        .btn-premium-upgrade,
+        .btn-premium-cancel,
+        #modalMoverGuardar,
+        #modalMoverCancelar,
+        .move-option,
+        #tarjeta,
+        #tarjeta-estudio {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+        <!--- SIDEBAR SECTION --->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="top-menu">
+            <div id="img-container">
+                <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+            </div>
+            <div class="sidebar__brand"><span class="orange-word">Wiki</span><span class="white-word">Student</span></div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <ul>
+                <!-- Principal -->
+                <li class="sidebar__item sidebar__item--active">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <a href="/views/app.ejs">Dashboard</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">tag</span>
+                    <a href="/pages/discord.html">Discord</a>
+                    <span class="sidebar__badge">Nuevo</span>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">emoji_events</span>
+                    <a href="/pages/ranking.html">Ranking</a>
+                </li>
+
+                <!-- Herramientas -->
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Herramientas</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">timer</span>
+                    <a href="/pages/pomodoro.html">Pomodoro</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">style</span>
+                    <a href="/pages/flashcards.html">Flashcards</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">quiz</span>
+                    <a href="/pages/quizzes.html">Quizzes</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">smart_toy</span>
+                    <a href="/pages/directorio.html">Directorio IA</a>
+                </li>
+
+                <!-- Universidad -->
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Universidad</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">account_tree</span>
+                    <a href="/pages/mapa.html">Mapa de grados</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">psychology</span>
+                    <a href="/pages/vocacional.html">Tests vocacionales</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">calculate</span>
+                    <a href="/pages/calculadora.html">Calc. Selectividad</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <a href="/pages/recursos.html">Recursos Universidad</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Perfil + Plan al final -->
+        <div class="sidebar__footer">
+            <div class="sidebar__user">
+                <div class="sidebar__avatar">CG</div>
+                <div class="sidebar__user-info">
+                    <span class="sidebar__user-name">Carla G.</span>
+                    <span class="sidebar__user-plan">
+                        <span class="material-symbols-outlined">lock</span>
+                        Plan gratuito
+                    </span>
+                </div>
+            </div>
+            <button class="sidebar__pro-btn">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                <span class="sidebar__pro-text">Hazte Pro</span>
+            </button>
+        </div>
+
+    </aside>
+
+    <main>
+        <!-- PAGE HEADER -->
+        <header class="test__header header__apartados">
+            <span class="title__apartados inicio-title">Generador de </span><span class="title__apartados final-title"> Quizzes</span>
+            <h3>TU REPOSITORIO PERSONAL</h3>
+        </header>
+
+        <div class="flashcards-wrapper">
+
+            <!-- ======== PANTALLA: REPOSITORIO ======== -->
+            <div id="screen-repositorio">
+
+                <div id="buscador">
+                    <input type="text" id="busc-rep" placeholder="Buscar carpetas o quizzes...">
+                    <div id="btnBuscar"><span class="material-symbols-outlined">search</span></div>
+                </div>
+
+                <div class="breadcrumb"></div>
+
+                <div id="repositorio">
+                    <!-- cards injected by JS -->
+                    <div class="rep-card carpeta carpeta-nueva" id="btnNuevaCarpeta">
+                        <div class="crear-dropdown" id="crearDropdown">
+                            <button class="crear-option" data-crear="carpeta">
+                                <span class="material-symbols-outlined">folder_open</span> Nueva Carpeta
+                            </button>
+                            <button class="crear-option" data-crear="mazo">
+                                <span class="material-symbols-outlined">stacks</span> Nuevo Quiz
+                            </button>
+                        </div>
+                        <span class="material-symbols-outlined carpeta-symbol">add_2</span>
+                        <div class="carpeta-title"><p>+ Crear Nueva Carpeta / Quizz</p></div>
+                    </div>
+                </div><!-- /#repositorio -->
+
+            </div><!-- /#screen-repositorio -->
+
+            <!-- ======== PANTALLA: EDITOR / GENERADOR ======== -->
+            <div id="screen-editor">
+
+                <div class="editor-topbar">
+                    <button id="btnVolver">
+                        <span class="material-symbols-outlined">arrow_back</span> Volver
+                    </button>
+                    <p class="editor-deck-title" id="editor-deck-name">Editando: —</p>
+                    <button id="btnGuardarCambios">
+                        <span class="material-symbols-outlined">save</span> Guardar
+                    </button>
+                </div>
+
+                <!-- Generador IA -->
+                <p class="fc-title">GENERAR CON <span>IA</span></p>
+                <div id="generador">
+                    <input type="text" id="tema" placeholder="¿Sobre qué quieres estudiar?">
+                    <label for="file-upload" class="upload-label" style="cursor:pointer;">
+                        <span class="material-symbols-outlined">attach_file</span>
+                        <input id="file-upload" type="file" accept="image/*" multiple style="display:none;">
+                    </label>
+                    <div id="btnGenerar">Generar <span class="material-symbols-outlined">arrow_outward</span></div>
+                </div>
+                <p id="generador-error" class="generador-error-msg" style="display:none;"></p>
+
+                <div class="ia-options">
+                    <span>Cantidad:</span>
+                    <div class="btn-group">
+                        <button type="button" class="qty-btn" data-qty="10">10</button>
+                        <button type="button" class="qty-btn active" data-qty="15">15</button>
+                        <button type="button" class="qty-btn" data-qty="20">20</button>
+                    </div>
+                    <span>Tipo:</span>
+                    <div class="btn-group">
+                        <button type="button" class="qty-btn" data-qty="10">Verdadero/Falso</button>
+                        <button type="button" class="qty-btn active" data-qty="15">Múltiple opción</button>
+                        <button type="button" class="qty-btn" data-qty="20">Mixto</button>
+                    </div>
+                </div>
+                
+
+                <!-- Tarjeta quiz (editor) -->
+                <div id="tarjeta">
+                    <div id="badge-tipo"><span id="dot"></span><span id="badge-label">VERDADERO / FALSO</span></div>
+                    <p id="pregunta">El fotosíntesis es el proceso por el cual las plantas producen energía a partir de la luz solar.</p>
+                    <div id="opciones-container">
+                        <div class="opcion seleccionada">Verdadero</div>
+                        <div class="opcion">Falso</div>
+                    </div>
+                </div>
+
+                <div id="dots"></div>
+                <div class="generador-nav">
+                    <div id="btnAnterior"><span class="material-symbols-outlined">arrow_back</span> Anterior</div>
+                    <span id="contador">— / —</span>
+                    <div id="btnSiguiente">Siguiente <span class="material-symbols-outlined">arrow_forward</span></div>
+                </div>
+
+                <!-- Añadir manual -->
+                <p class="manual-title">AÑADIR PREGUNTA <span>MANUAL</span></p>
+                <div id="generador-manual">
+                    <!-- 1. Selector de tipo (encima de todo) -->
+                    <select id="manual-tipo-select" class="manual-tipo-select">
+                        <option value="verdadero-falso">Verdadero / Falso</option>
+                        <option value="multiple">Múltiple opción</option>
+                    </select>
+
+                    <!-- 2. Input de la pregunta -->
+                    <input type="text" id="nuevaPregunta" placeholder="Escribe la pregunta aquí...">
+
+                    <!-- 3. Opciones dinámicas según tipo -->
+                    <div class="manual-opciones" id="manual-opciones">
+                        <!-- Rellenado por JS según el tipo seleccionado -->
+                    </div>
+
+                    <div id="btnAnadir"><span class="material-symbols-outlined">add</span> Añadir</div>
+                </div>
+
+            </div><!-- /#screen-editor -->
+
+            <!-- ======== PANTALLA: ESTUDIO ======== -->
+            <div id="screen-estudio">
+
+                <div class="editor-topbar">
+                    <button id="btnVolverDesdeEstudio">
+                        <span class="material-symbols-outlined">arrow_back</span> Volver
+                    </button>
+                    <p class="editor-deck-title" id="estudio-deck-name">Estudiando: —</p>
+                </div>
+
+                <!-- Tarjeta flip estudio -->
+                <div id="tarjeta-estudio">
+                    <div id="frente-estudio"><p id="pregunta-estudio">Cargando preguntas...</p></div>
+                    <div id="dorso-estudio"><p id="respuesta-estudio">Respuesta</p></div>
+                </div>
+
+                <div id="dots-estudio"></div>
+                <div class="generador-nav estudio-nav">
+                    <div id="btnAcierto"><span class="material-symbols-outlined">thumb_up</span> Sí lo sé</div>
+                    <span id="contador-estudio">— / —</span>
+                    <div id="btnFallo"><span class="material-symbols-outlined">thumb_down</span> No lo sé</div>
+                </div>
+
+            </div><!-- /#screen-estudio -->
+
+        </div><!-- /.flashcards-wrapper -->
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a><span>|</span>
+            <a href="#">Política de cookies</a><span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <!-- ======== POPUP: RESULTADOS ======== -->
+    <div class="modal-overlay" id="popupResultados">
+        <div class="popup-resultados-box">
+            <div class="popup-grafica-wrap">
+                <div id="grafica-circular"></div>
+                <p id="popup-percent">0%</p>
+            </div>
+            <p class="popup-label-aciertos">Aciertos</p>
+            <div class="popup-stats">
+                <span id="popup-aciertos" class="stat-acierto">0 aciertos</span>
+                <span class="stat-sep">/</span>
+                <span id="popup-fallos" class="stat-fallo">0 fallos</span>
+            </div>
+            <div class="popup-actions">
+                <div id="btnRepetir"><span class="material-symbols-outlined">replay</span> Repetir</div>
+                <div id="btnSalirEstudio"><span class="material-symbols-outlined">home</span> Salir</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nombre de carpeta / mazo -->
+    <div class="modal-overlay" id="modalCrear">
+        <div class="modal-box">
+            <h3>Nueva Carpeta</h3>
+            <input type="text" id="modalNombre" placeholder="Nombre de la carpeta">
+            <div class="modal-actions">
+                <button class="modal-cancel" id="modalCancelar">Cancelar</button>
+                <button class="modal-confirm" id="modalConfirmar">Crear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Función Premium -->
+    <div class="modal-overlay" id="modalPremium">
+        <div class="modal-box" style="text-align:center; max-width:340px;">
+            <div class="modal-premium-icon">
+                <span class="material-symbols-outlined">workspace_premium</span>
+            </div>
+            <h3 style="margin:0 0 12px 0;">Función Premium</h3>
+            <p class="modal-premium-desc">
+                La opción <strong>Hacer Privada</strong> solo está disponible para usuarios
+                con plan <strong>Premium</strong>.<br>Actualiza tu cuenta para controlar
+                la visibilidad de tus mazos y carpetas.
+            </p>
+            <div class="modal-premium-actions">
+                <button class="btn-premium-upgrade" onclick="window.location.href='#'">
+                    <span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:4px;">bolt</span>
+                    Actualizar a Premium
+                </button>
+                <button class="btn-premium-cancel" id="modalPremiumCerrar">Ahora no</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Mover carpeta / mazo -->
+    <div class="modal-overlay" id="modalMover">
+        <div class="modal-box" style="width:400px;">
+            <p class="modal-mover-header">Mover elemento</p>
+            <p class="modal-mover-sub">Selecciona la carpeta de destino</p>
+            <div id="moveModalList"></div>
+            <div class="modal-actions">
+                <button class="modal-cancel" id="modalMoverCancelar">Cancelar</button>
+                <button class="modal-confirm" id="modalMoverGuardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar eliminación -->
+    <div class="modal-overlay" id="modalEliminar">
+        <div class="modal-box modal-box--delete" style="max-width:360px; text-align:center;">
+            <div class="modal-delete-icon">
+                <span class="material-symbols-outlined">delete_forever</span>
+            </div>
+            <h3 style="margin:0 0 10px 0;">Eliminar elemento</h3>
+            <p class="modal-delete-desc">¿Seguro que quieres eliminar <strong id="modalEliminarNombre"></strong>?</p>
+            <div id="no-eliminar">Esta acción no se puede deshacer.</div>
+            <div class="modal-actions" style="justify-content:center; gap:12px; margin-top:24px;">
+                <button class="modal-cancel" id="modalEliminarCancelar">Cancelar</button>
+                <button class="modal-confirm modal-confirm--danger" id="modalEliminarConfirmar">
+                    <span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:4px;">delete</span>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/generador-quizzes.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<div id="auth-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:white; max-width:400px; margin:100px auto; padding:20px; border-radius:10px; position:relative;">
+        <button onclick="closeAuth()" style="position:absolute; right:10px; top:10px;">X</button>
+        
+        <h2 id="auth-title">Crear cuenta en Wiki Student</h2>
+        
+        <form action="/auth/register" method="POST">
+            <input type="text" name="username" placeholder="Nombre de usuario" required style="width:100%; margin-bottom:10px;">
+            <input type="email" name="email" placeholder="Correo electrónico" required style="width:100%; margin-bottom:10px;">
+            <input type="password" name="password" placeholder="Contraseña" required style="width:100%; margin-bottom:10px;">
+            
+            <label>Género:</label>
+            <select name="gender" style="width:100%; margin-bottom:10px;">
+                <option value="male">Masculino</option>
+                <option value="female">Femenino</option>
+                <option value="other">Otro</option>
+            </select>
+            
+            <label>Fecha de nacimiento:</label>
+            <input type="date" name="date_of_birth" required style="width:100%; margin-bottom:10px;">
+            
+            <div style="margin-bottom:10px;">
+                <input type="checkbox" name="notifications" value="1" checked> Quiero recibir notificaciones
+            </div>
+            
+            <div style="margin-bottom:10px;">
+                <input type="checkbox" value="1" required> Acepto las cookies (obligatorio)
+            </div>
+            
+            <button type="submit" style="width:100%; background:#4CAF50; color:white; padding:10px; border:none; border-radius:5px;">Registrarse</button>
+        </form>
+        
+        <hr style="margin:20px 0;">
+        <a href="/auth/google" style="display:block; text-align:center; text-decoration:none; color:black; border:1px solid #ccc; padding:10px; border-radius:5px;">Continuar con Google</a>
+    </div>
+</div>
+
+<script>
+    function openAuth(mode) {
+        document.getElementById('auth-modal').style.display = 'block';
+        if(mode === 'login') {
+            document.getElementById('auth-title').innerText = 'Iniciar Sesión';
+            // Aquí podrías cambiar el action del form a /auth/login si quisieras
+        }
+    }
+    function closeAuth() {
+        document.getElementById('auth-modal').style.display = 'none';
+    }
+</script>

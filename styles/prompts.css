@@ -1,0 +1,139 @@
+
+/* Contenedor generador */
+
+#generador {
+    position: relative;
+    margin-top: 20px;
+    width: 600px;
+    background-color: rgba(255, 255, 255, 0.03);
+    margin: auto;
+    padding: 30px 30px; 
+    border-radius: 10px;
+    box-shadow: 0 0px 25px rgba(82, 90, 210, 0.297);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilos campos */
+
+label {
+    color: var(--texto-principal);
+    font-size: 14px;
+    text-shadow: 0 4px 10px rgba(0, 210, 255, 0.2);
+    font-weight: 600;
+}
+
+input, select {
+    width: 100%;
+    display: block;
+    color: #dedada;
+    padding: 6px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.05);
+    font-size: 16px;
+    border: 1px solid var(--naranja-neon);
+    margin-top: 15px
+}
+
+input::placeholder {
+    color: var(--texto-secundario);
+}
+
+/* Botón generar */
+
+#btn-generar {
+    font-weight: 600;
+    text-align: center;
+    color: var(--blanco);
+    overflow: hidden;
+    position: relative;
+    padding: 10px 15px;
+    border-radius: 50px;
+    margin-top: 35px;
+    margin: 20px auto;
+    border: 2px solid var(--naranja-neon);
+    box-shadow: 0 3px 20px #ff7f5057;
+    width: 100%;
+    grid-column: span 2;
+}
+
+#btn-generar::before {
+    content: '';
+    display: block;
+    background-color: var(--naranja-neon);
+    width: 140%;
+    height: 230%;
+    border-radius: 50%;
+    position: absolute;
+    top: 100%;
+    left: 38%;
+    transition: top .6s, left .6s;
+    z-index: -1;
+    overflow: hidden;
+}
+
+#btn-generar:hover::before {
+    top: -40%;
+    left: -18%
+}
+
+/* Overlay */
+.overlay-prompt {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    height: 100%;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.overlay-prompt.active {
+    display: flex;
+}
+
+.prompt-caja {
+    background-color: var(--azul-fondo);
+    border: 1px solid var(--naranja-neon);
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: auto;
+    text-align: left;
+}
+
+h4 {
+    color: var(--naranja-neon);
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+
+#prompt-generado {
+    color: var(--texto-principal);
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 15px 0 20px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--azul-neon);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.prompt-acciones {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    color: #dedada;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards | WikiStudent</title>
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/ranking.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+</head>
+<body>
+
+    <!--- SIDEBAR --->
+    <form class="sidebar__form">
+        <input type="checkbox" id="open-menu-mobile">
+        <label class="material-symbols-outlined label-mobile" for="open-menu-mobile">menu</label>
+    </form>
+    <aside class="sidebar">
+        <form class="sidebar__form">
+            <input type="checkbox" id="open-menu">
+            <label class="material-symbols-outlined label-desktop" for="open-menu">menu</label>
+        </form>
+        <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Home</span><a href="index.html">Inicio</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">explore</span><a href="/pages/test.html">Orientación vocacional</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Grid_view</span><a href="/pages/directorio.html">Directorio apps/webs</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Article</span><a href="/pages/mapa.html">Artículos</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Auto_awesome_motion</span><a href="#">Plantillas de Canva</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">Smart_toy</span><a href="#">Biblioteca de Prompts</a></li>
+                <li class="sidebar__item"><span class="material-symbols-outlined">mail</span><a href="/pages/calculadora.html">Calculadora de selectividad</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <header class="test__header header__apartados">
+            <span class="title__apartados inicio-title">COMPITE CON OTROS</span><span class="title__apartados final-title"> ESTUDIANTES</span>
+            <h3>RANKING DE ESTUDIO</h3>
+            <p>La élite del estudio. ¿Estás entre los mejores?</p>
+        </header>
+
+        
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/scripts/flashcards.js"></script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Orientación | WikiStudent</title>
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link rel="stylesheet" href="/styles/test.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <form class="sidebar__form">
+        <input type="checkbox" id="open-menu-mobile">
+        <label class="material-symbols-outlined label-mobile" for="open-menu-mobile">menu</label>
+    </form>
+    <aside class="sidebar">
+        <form class="sidebar__form">
+            <input type="checkbox" id="open-menu">
+            <label class="material-symbols-outlined label-desktop" for="open-menu">menu</label>
+        </form>
+        <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Home</span>
+                    <a href="index.html">Inicio</a>
+                </li>
+                <li class="sidebar__item sidebar__item--active">
+                    <span class="material-symbols-outlined">explore</span>
+                    <a href="/pages/test.html">Orientación vocacional</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Grid_view</span>
+                    <a href="/pages/directorio.html">Directorio apps/webs</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Article</span>
+                    <a href="/pages/mapa.html">Artículos</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Auto_awesome_motion</span>
+                    <a href="#">Plantillas de Canva</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Smart_toy</span>
+                    <a href="#">Biblioteca de Prompts</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">mail</span>
+                    <a href="/pages/calculadora.html">Calculadora de selectividad</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+
+        <!-- ══════════════════════════════════════════════
+             SCREEN HOME — pantalla de bienvenida completa
+             ══════════════════════════════════════════════ -->
+        <div id="screenHome">
+
+            <!-- HEADER -->
+            <header class="test__header header__apartados">
+                <div class="welcome-eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    Tests Vocacionales · WikiStudent
+                </div>
+                <h1 class="welcome-title">
+                    Tu futuro empieza aquí.<br>
+                    <span class="welcome-title__accent">¿En qué punto te encuentras?</span>
+                </h1>
+                <p class="welcome-subtitle">
+                    Selecciona tu situación y te llevaremos al test perfecto para ti.
+                </p>
+            </header>
+
+            <!-- PASO 1: TARJETAS DE DECISIÓN -->
+            <div class="decision-section">
+                <p class="step-label">— Paso 1 · Elige tu situación</p>
+
+                <div class="decision-grid">
+
+                    <!-- TARJETA A: Ya sé mi rama -->
+                    <div class="decision-card card-a"
+                         id="card-a"
+                         tabindex="0"
+                         onclick="selectCard('a')"
+                         onkeydown="if(event.key==='Enter'||event.key===' ')selectCard('a')">
+                        <div class="decision-card__accent-bar"></div>
+                        <div class="decision-card__check" id="check-a">
+                            <span class="material-symbols-outlined" id="check-icon-a">check</span>
+                        </div>
+                        <div class="decision-card__icon">
+                            <span class="material-symbols-outlined">school</span>
+                        </div>
+                        <h3 class="decision-card__title">Ya sé mi rama académica</h3>
+                        <p class="decision-card__desc">Para quienes tienen claro si son de ciencias, letras, ingeniería... pero no saben qué carrera elegir.</p>
+                    </div>
+
+                    <!-- TARJETA B: No sé mi rama -->
+                    <div class="decision-card card-b"
+                         id="card-b"
+                         tabindex="0"
+                         onclick="selectCard('b')"
+                         onkeydown="if(event.key==='Enter'||event.key===' ')selectCard('b')">
+                        <div class="decision-card__accent-bar"></div>
+                        <div class="decision-card__check" id="check-b">
+                            <span class="material-symbols-outlined" id="check-icon-b">check</span>
+                        </div>
+                        <div class="decision-card__icon">
+                            <span class="material-symbols-outlined">explore</span>
+                        </div>
+                        <h3 class="decision-card__title">No sé qué rama elegir</h3>
+                        <p class="decision-card__desc">Para quienes están totalmente perdidos y necesitan descubrir su vocación desde cero.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PASO 2: SELECTOR DE RAMA (solo visible al elegir tarjeta A) -->
+            <div class="expand-zone" id="expand-rama">
+                <div class="expand-inner">
+                    <p class="step-label">— Paso 2 · ¿Cuál es tu rama?</p>
+                    <div class="ramas-grid">
+
+                        <button class="rama-btn" id="rama-ING"
+                                onclick="selectRama('ING','Ing. y Arquitectura')">
+                            <span class="rama-btn__icon material-symbols-outlined">engineering</span>
+                            <span class="rama-btn__code">ING</span>
+                            <span class="rama-btn__name">Ing. y Arquitectura</span>
+                        </button>
+
+                        <button class="rama-btn" id="rama-SLD"
+                                onclick="selectRama('SLD','Ciencias de la Salud')">
+                            <span class="rama-btn__icon material-symbols-outlined">stethoscope</span>
+                            <span class="rama-btn__code">SLD</span>
+                            <span class="rama-btn__name">Ciencias de la Salud</span>
+                        </button>
+
+                        <button class="rama-btn" id="rama-CIEN"
+                                onclick="selectRama('CIEN','Ciencias y Naturaleza')">
+                            <span class="rama-btn__icon material-symbols-outlined">science</span>
+                            <span class="rama-btn__code">CIEN</span>
+                            <span class="rama-btn__name">Ciencias y Naturaleza</span>
+                        </button>
+
+                        <button class="rama-btn" id="rama-SOC"
+                                onclick="selectRama('SOC','CC. Sociales y Jurídicas')">
+                            <span class="rama-btn__icon material-symbols-outlined">balance</span>
+                            <span class="rama-btn__code">SOC</span>
+                            <span class="rama-btn__name">CC. Sociales</span>
+                        </button>
+
+                        <button class="rama-btn" id="rama-ART"
+                                onclick="selectRama('ART','Artes y Humanidades')">
+                            <span class="rama-btn__icon material-symbols-outlined">palette</span>
+                            <span class="rama-btn__code">ART</span>
+                            <span class="rama-btn__name">Artes y Humanidades</span>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ZONA CTA — botones de lanzamiento -->
+            <div class="cta-zone" id="cta-zone">
+
+                <!-- CTA Rama (tarjeta B) -->
+                <button class="cta-btn cta-btn--azul" id="cta-rama"
+                        onclick="startTest('rama')">
+                    <span class="cta-btn__main">
+                        Empezar Test de Rama Académica
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </span>
+                    <span class="cta-btn__sub">15 preguntas · ~2 min</span>
+                </button>
+
+                <!-- CTA Carrera (tarjeta A + rama seleccionada) -->
+                <button class="cta-btn cta-btn--naranja" id="cta-carrera"
+                        onclick="startTestEspecialista()">
+                    <span class="cta-btn__main">
+                        Empezar Test de Carreras
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </span>
+                    <span class="cta-btn__sub" id="cta-carrera-sub">40 preguntas · ~8 min · 99% accuracy</span>
+                    <span class="cta-rama-tag" id="cta-rama-tag"></span>
+                </button>
+
+            </div>
+
+            <!-- DIVISOR + ACCESO DIRECTO A LOS 3 TESTS -->
+            <div class="tests-directos-wrap">
+                <div class="tests-directos-divider">
+                    <span>o accede directamente a un test</span>
+                </div>
+
+                <div class="test-grid">
+
+                    <button onclick="startTest('rama')" class="test-card" id="testRama">
+                        <div class="test-card__icon-wrap">
+                            <span class="material-symbols-outlined">psychology</span>
+                        </div>
+                        <div class="test-card__badge">15 preguntas</div>
+                        <p class="test-titulo">Test 1 · Rama Académica</p>
+                        <p class="test-desc">Descubre si tu mente es más de ingeniería, salud, ciencias, letras o artes.</p>
+                        <div class="test-card__cta">Empezar <span class="material-symbols-outlined">arrow_forward</span></div>
+                    </button>
+
+                    <button onclick="startTest('grado-rapido')" class="test-card test-card--secondary" id="testGradoRapido">
+                        <div class="test-card__icon-wrap">
+                            <span class="material-symbols-outlined">bolt</span>
+                        </div>
+                        <div class="test-card__badge test-card__badge--orange">8 preguntas</div>
+                        <p class="test-titulo">Test 2 · Grado Rápido</p>
+                        <p class="test-desc">Orientación rápida sobre qué carrera universitaria encaja contigo.</p>
+                        <div class="test-card__cta">Empezar <span class="material-symbols-outlined">arrow_forward</span></div>
+                    </button>
+
+                    <button onclick="startTestEspecialista()" class="test-card test-card--detailed" id="testGradoDetallado">
+                        <div class="test-card__icon-wrap">
+                            <span class="material-symbols-outlined">school</span>
+                        </div>
+                        <div class="test-card__badge test-card__badge--purple">20 preguntas</div>
+                        <p class="test-titulo">Test 3 · Grado Detallado</p>
+                        <p class="test-desc">Análisis profundo para elegir tu grado universitario con seguridad.</p>
+                        <div class="test-card__cta">Empezar <span class="material-symbols-outlined">arrow_forward</span></div>
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- /screenHome -->
+
+
+        <!-- ══════════════════════════════════════════════
+             OVERLAY — modal de preguntas y resultados
+             ══════════════════════════════════════════════ -->
+        <div id="overlay" class="overlay">
+            <div class="overlay__caja">
+                <div onclick="cerrarTest()" class="material-symbols-outlined" id="cerrar-test">close</div>
+
+                <!-- BARRA DE PROGRESO -->
+                <div class="progreso-wrap">
+                    <div class="progreso-barra">
+                        <div id="barra-progreso" class="progreso-relleno"></div>
+                    </div>
+                </div>
+
+                <!-- PANTALLA TEST -->
+                <div id="screenTest" class="screen active">
+                    <h5 id="num-pregunta"></h5>
+                    <h4 id="pregunta-texto"></h4>
+                    <div id="contenedor-opciones" class="opciones-grid"></div>
+                </div>
+
+                <!-- PANTALLA RESULTADOS -->
+                <div id="screenResultados" class="screen">
+                    <div class="resultado-header">
+                        <h2 id="resultado-titulo"></h2>
+                        <p id="resultado-descripcion"></p>
+                    </div>
+                    <div class="pastel-wrap">
+                        <canvas id="grafico-pastel" width="220" height="220"></canvas>
+                        <div id="leyenda-pastel" class="leyenda-pastel"></div>
+                    </div>
+                    <button class="boton-cerrar" onclick="cerrarOverlay()">
+                        Cerrar resultados
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                if (window.innerWidth < 700) sidebar.classList.toggle('sidebar--open');
+            });
+        }
+    </script>
+    <script src="/scripts/test.js"></script>
+</body>
+</html>

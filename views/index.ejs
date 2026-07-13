@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto landing page</title>
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/landing.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- NAVEGADOR -->
+    <nav>
+        <div id="nav__left">
+            <div id="nav__logo-container">
+                <img src="/wiki/menu-logo.webp" alt="Logo WikiStudent" id="logo-nav">
+            </div>
+            <div id="web-name">
+                <span id="wiki">Wiki</span><span id="student">Student</span>
+            </div>
+        </div>
+
+        <ul class="nav-ul">
+            <li class="nav-btn">Herramientas IA</li>
+            <li class="nav-btn">Más herramientas</li>
+            <li class="nav-btn">Tu futuro</li>
+        </ul>
+
+        <div id="nav__right">
+            <li><div class="nav-btn" id="pro-btn">&#x2726; WikiStudent Pro</div></li>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="main__header">
+        <div class="header-badge">
+            <span id="badge-dot"></span>
+            La plataforma #1 para estudiantes españoles
+        </div>
+        <div class="main__header-content">
+            <div class="main-title">
+                <span id="estudia-title">Estudia.</span>
+                <span id="organizate-title">Organízate.</span>
+                <div id="animation-container">
+                    <span id="triunfa-title">Triunfa.</span>
+                </div>
+            </div>
+            <div class="header-slogan">
+                <p>Mapa de carreras, calculadora de selectividad, flashcards IA, kanban, pomodoro y mucho más. Todo gratis, todo en un lugar.</p>
+            </div>
+        </div>
+        <div id="cuenta">
+            <div class="link-container" id="sign-up-btn" onclick="openAuth('register')">Únete para empezar</div>
+            <div class="link-container" id="log-in-btn" onclick="openAuth('login')">Ya tengo cuenta</div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+        <!-- DROPDOWNS NAV -->
+        <div class="dropdown-mas-her">
+            <div id="organizate-container">
+                <span class="category-title">ORGANÍZATE Y COMPITE</span>
+                <div class="menu-grid">
+                    <a href="#" class="menu-item">
+                        <div class="icon-box pink"><span class="icon-kanban material-symbols-rounded">view_kanban</span></div>
+                        <div class="text">
+                            <p class="title">Planner Kanban</p>
+                            <p class="desc">Tableros visuales para tus tareas</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <div class="icon-box green"><span class="icon-horario material-symbols-rounded">calendar_today</span></div>
+                        <div class="text">
+                            <p class="title">Horario Académico</p>
+                            <p class="desc">Clases, notas y exámenes organizados</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <div class="icon-box blue"><span class="icon-pomodoro material-symbols-rounded">schedule</span></div>
+                        <div class="text">
+                            <p class="title">Pomodoro</p>
+                            <p class="desc">Estudia en bloques con descansos</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <div class="icon-box yellow"><span class="icon-ranking material-symbols-rounded">social_leaderboard</span></div>
+                        <div class="text">
+                            <p class="title">Ranking de Estudio</p>
+                            <p class="desc">Estudia y compite con otros usuarios</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div id="comunidad-container">
+                <span class="category-title">COMUNIDAD</span>
+                <div class="menu-grid">
+                    <a href="#" class="menu-item">
+                        <div class="icon-box purple"><span class="icon-discord material-symbols-rounded">forum</span></div>
+                        <div class="text">
+                            <p class="title">Comunidad Discord</p>
+                            <p class="desc">Miles de estudiantes compartiendo recursos, estudiando en grupo...</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown-her-ia">
+            <div id="con-ia-container">
+                <span class="category-title">CON INTELIGENCIA ARTIFICIAL</span>
+                <div class="menu-grid">
+                    <a href="#" class="menu-item" id="menu-item-ia">
+                        <div class="icon-box pink"><span class="icon-quizzes material-symbols-rounded">how_to_reg</span></div>
+                        <div class="text">
+                            <div class="title-row">
+                                <p class="title">Generador de Quizzes</p>
+                                <div class="info-box orange">IA</div>
+                            </div>
+                            <p class="desc">Crea tests desde tus apuntes al instante</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item" id="menu-item-ia">
+                        <div class="icon-box green"><span class="icon-flashcards material-symbols-rounded">desktop_windows</span></div>
+                        <div class="text">
+                            <div class="title-row">
+                                <p class="title">Flashcards con IA</p>
+                                <div class="info-box orange">IA</div>
+                            </div>
+                            <p class="desc">Flashcards generadas automática o con opción manualmente</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <div class="icon-box blue"><span class="icon-directorio material-symbols-rounded">search</span></div>
+                        <div class="text">
+                            <p class="title">Directorio de recursos IA</p>
+                            <p class="desc">Las mejores herramientas IA para estudiar</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown-tu-futuro">
+            <div id="futuro-container">
+                <span class="category-title">DECIDE CON DATOS</span>
+                <div class="menu-grid">
+                    <a href="#" class="menu-item" id="menu-item-ia">
+                        <div class="icon-box pink"><span class="icon-mapa material-symbols-rounded">language</span></div>
+                        <div class="text">
+                            <div class="title-row">
+                                <p class="title">Mapa de Carreras</p>
+                                <div class="info-box orange">ÚNICO</div>
+                            </div>
+                            <p class="desc">Notas de corte por provincia y universidad</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <div class="icon-box yellow"><span class="icon-calculadora material-symbols-rounded">calculate</span></div>
+                        <div class="text">
+                            <p class="title">Calculadora de Selectividad</p>
+                            <p class="desc">Tu nota con ponderaciones reales</p>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <div class="icon-box purple"><span class="icon-tests material-symbols-rounded">border_color</span></div>
+                        <div class="text">
+                            <p class="title">Tests Vocacionales</p>
+                            <p class="desc">Descubre qué rama y carrera académica encaja contigo</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- KIT HERO -->
+        <div class="kit-wrapper">
+            <p id="top">HERRAMIENTAS TOP</p>
+            <div id="kit-estudiante">
+                <span class="kit-white">Explora todo lo que </span><span id="kit-orange">puedes hacer</span>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="seccion-filtros">
+            <input type="radio" id="btn-comunidad" name="filtro-herramientas">
+            <input type="radio" id="btn-productividad" name="filtro-herramientas">
+            <input type="radio" id="btn-ia" name="filtro-herramientas" checked>
+            <input type="radio" id="btn-orientacion" name="filtro-herramientas">
+
+        </div>
+
+        <div class="contenedor-botones">
+            <label for="btn-ia" class="boton-filtro">Estudio con IA</label>
+            <label for="btn-productividad" class="boton-filtro">Productividad</label>
+            <label for="btn-orientacion" class="boton-filtro">Orientación</label>
+            <label for="btn-comunidad" class="boton-filtro">Comunidad</label>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN IA — color: PINK #e716d6
+             Alternancia: oscuro / claro / oscuro / claro / ...
+        ============================================================ -->
+        <div id="ia-section">
+            
+
+            <!-- GENERADOR — bg oscuro | texto izq, visual der -->
+            <div id="generador" class="container-recursos bg-dark z-normal">
+                <div class="info">
+                    <div class="tarjeta-badge" id="ia-badge">
+                <span class="badge-dot"></span>
+                ESTUDIO CON IA
+            </div>
+                    <div class="info-title pink-title">GENERADOR DE QUIZZES</div>
+                    <span class="info-white">Ponte a prueba</span><span class="info-pink"> al instante</span>
+                    <p class="desc-apar">La herramienta definitiva para autoevaluarte antes del examen real. Convierte cualquier temario en un simulacro de examen profesional.</p>
+                    <ul class="desc-ul">
+                        <li class="pink-li"><span class="li-text"><span class="strong">Del texto al test:</span> Genera preguntas de opción múltiple, verdadero/falso o desarrollo en segundos.</span></li>
+                        <li class="pink-li"><span class="li-text"><span class="strong">Sin miedo a las pruebas:</span> Disfruta de límites de generación muy generosos para que puedas practicar hasta que domines el tema.</span></li>
+                        <li class="pink-li"><span class="li-text"><span class="strong">IA de alta precisión:</span> Preguntas basadas fielmente en el contenido de tus documentos.</span></li>
+                        <li class="pink-li"><span class="li-text"><span class="strong">Feedback inmediato:</span> Aprende de tus errores en el momento.</span></li>
+                    </ul>
+                    <div class="btn-her pink-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+
+            <!-- FLASHCARDS — bg claro | visual izq, texto der (Z invertido) -->
+            <div id="flashcards" class="container-recursos bg-mid z-reverse">
+
+                <div class="info">
+                    <div class="info-title green-title">FLASHCARDS CON IA</div>
+                    <span class="info-white">Memoriza</span><span class="info-green"> sin esfuerzo</span>
+                    <p class="desc-apar">De tus apuntes a un mazo completo en segundos. Repasa en cualquier momento con un sistema inteligente que sabe qué necesitas repasar.</p>
+                    <ul class="desc-ul">
+                        <li class="green-li"><span class="li-text"><span class="strong">De PDF a mazo:</span> Sube tus archivos y genera cientos de flashcards automáticas con conceptos clave.</span></li>
+                        <li class="green-li"><span class="li-text"><span class="strong">Personalización total:</span> Edita, añade imágenes o pide a la IA que simplifique explicaciones complejas.</span></li>
+                        <li class="green-li"><span class="li-text"><span class="strong">Modo estudio rápido:</span> Sesiones intensivas diseñadas para repasos de última hora antes de clase.</span></li>
+                        <li class="green-li"><span class="li-text"><span class="strong">Organización:</span> Mantén tus mazos en carpetas siempre a mano.</span></li>
+                    </ul>
+                    <div class="btn-her green-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+
+            <!-- DIRECTORIO — bg oscuro | texto izq, visual der -->
+            <div id="directorio" class="container-recursos bg-dark z-normal">
+                <div class="info">
+                    <div class="info-title blue-title">DIRECTORIO DE RECURSOS IA</div>
+                    <span class="info-white">Las mejores IAs,</span><span class="info-blue"> en un solo lugar</span>
+                    <p class="desc-apar">Encuentra la herramienta perfecta para cada tarea académica. Nuestro directorio curado reúne las mejores IAs para estudiar, organizar y crear.</p>
+                    <ul class="desc-ul">
+                        <li class="blue-li"><span class="li-text"><span class="strong">Curado por estudiantes:</span> Solo herramientas realmente útiles para el entorno académico.</span></li>
+                        <li class="blue-li"><span class="li-text"><span class="strong">Filtros por uso:</span> Busca por redacción, matemáticas, idiomas, código y más.</span></li>
+                        <li class="blue-li"><span class="li-text"><span class="strong">Acceso directo:</span> Links directos a cada herramienta sin rodeos.</span></li>
+                        <li class="blue-li"><span class="li-text"><span class="strong">Actualizado:</span> Añadimos nuevas herramientas cada semana.</span></li>
+                    </ul>
+                    <div class="btn-her blue-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN PRODUCTIVIDAD — color: BLUE #16a1d6 + GREEN #16d644
+             Alternancia: oscuro / claro / oscuro
+        ============================================================ -->
+        <div id="productividad-section">
+            
+
+            <!-- POMODORO — bg oscuro | texto izq, visual der -->
+            
+
+            <!-- KANBAN — bg claro | visual izq, texto der -->
+            <div id="kanban" class="container-recursos bg-mid z-reverse">
+                
+                <div class="info">
+                    <div class="tarjeta-badge bg-mid" id="productividad-badge">
+                <span class="badge-dot badge-blue"></span>
+                PRODUCTIVIDAD
+            </div>
+                    <div class="info-title green-title">PLANNER KANBAN</div>
+                    <span class="info-white">Organiza tus tareas</span><span class="info-green"> sin caos</span>
+                    <p class="desc-apar">Visualiza todas tus tareas académicas en tableros intuitivos. Mueve, prioriza y completa. El control total de tu carga de trabajo en un vistazo.</p>
+                    <ul class="desc-ul">
+                        <li class="green-li"><span class="li-text"><span class="strong">Columnas personalizables:</span> Crea tu propio flujo: "Por hacer", "En progreso", "Entregado"… como tú quieras.</span></li>
+                        <li class="green-li"><span class="li-text"><span class="strong">Etiquetas por asignatura:</span> Colorea y filtra tareas por materia para no perder el hilo de ninguna.</span></li>
+                        <li class="green-li"><span class="li-text"><span class="strong">Fechas de entrega:</span> Añade deadlines a cada tarjeta y recibe avisos antes de que venza el plazo.</span></li>
+                        <li class="green-li"><span class="li-text"><span class="strong">Vista compacta o expandida:</span> Elige cómo prefieres ver tu board según el nivel de detalle que necesites.</span></li>
+                    </ul>
+                    <div class="btn-her green-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+
+            <div id="pomodoro" class="container-recursos bg-dark z-normal">
+                
+                <div class="info">
+                    
+
+                    <div class="info-title blue-title">TEMPORIZADOR POMODORO</div>
+                    <span class="info-white">Domina tu </span><span class="info-blue">enfoque</span>
+                    <p class="desc-apar">Utiliza la mejor técnica de productividad para dividir tu tiempo de estudio en bloques de alta concentración y descansos reparadores.</p>
+                    <ul class="desc-ul">
+                        <li class="blue-li"><span class="li-text"><span class="strong">Ciclos personalizados:</span> Configura tus tiempos de estudio y descanso (25/5 o el método que mejor te funcione) según tu capacidad de concentración.</span></li>
+                        <li class="blue-li"><span class="li-text"><span class="strong">Gestión de tareas integrada:</span> Vincula cada pomodoro a una tarea concreta y ve tachando objetivos en tiempo real.</span></li>
+                        <li class="blue-li"><span class="li-text"><span class="strong">Notificaciones inteligentes:</span> Alertas sonoras y visuales para avisarte cuándo es momento de parar y cuándo toca volver a la carga.</span></li>
+                        <li class="blue-li"><span class="li-text"><span class="strong">Estadísticas de sesión:</span> Mira cuánto tiempo real de estudio has acumulado en el día y mantén tu racha de productividad.</span></li>
+                    </ul>
+                    <div class="btn-her blue-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+
+            <!-- RANKING — bg oscuro | texto izq, visual der -->
+            <div id="ranking" class="container-recursos bg-mid z-normal">
+                <div class="preview">Preview</div>
+                <div class="info">
+                    <div class="info-title yellow-title">RANKING DE ESTUDIO</div>
+                    <span class="info-white">Alcanza la </span><span class="info-yellow">cima</span>
+                    <p class="desc-apar">Compite con toda la comunidad de WikiStudent. Acumula puntos y sube puestos en la clasificación global mientras dominas cada tema.</p>
+                    <ul class="desc-ul">
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Puntos por actividad:</span> Gana XP completando flashcards, quizzes, pomodoros y sesiones de estudio.</span></li>
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Ranking semanal y global:</span> Compite en la clasificación de la semana o aspira al top histórico de la plataforma.</span></li>
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Logros y medallas:</span> Desbloquea insignias por rachas, hitos de estudio y retos especiales.</span></li>
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Estadísticas de sesión:</span> Mira cuánto tiempo real de estudio has acumulado en el día y mantén tu racha de productividad.</span></li>
+                    </ul>
+                    <div class="btn-her yellow-btn">Probar herramienta</div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECCIÓN ORIENTACIÓN — color: YELLOW #d6d316 + GREEN #10b981
+             Alternancia: oscuro / claro / oscuro
+        ============================================================ -->
+        <div id="orientacion-section">
+            
+
+            <!-- MAPA — bg oscuro | texto izq, visual der -->
+            <div id="mapa" class="container-recursos bg-dark z-normal">
+                <div class="info">
+                    <div class="tarjeta-badge" id="orientacion-badge">
+                <span class="badge-dot badge-green"></span>
+                ORIENTACIÓN ACADÉMICA
+            </div>
+                    <div class="info-title green2-title">MAPA DE CARRERAS</div>
+                    <span class="info-white">Descubre </span><span class="info-green2">tu camino</span>
+                    <p class="desc-apar">Navega por el mapa interactivo y descubre dónde se imparten los grados que te interesan. Toda la oferta universitaria de España organizada por provincias, universidades y notas de corte.</p>
+                    <ul class="desc-ul">
+                        <li class="green2-li"><span class="li-text"><span class="strong">Buscador inteligente:</span> Filtra por rama de conocimiento o nombre del grado y mira cómo se iluminan las provincias en el mapa.</span></li>
+                        <li class="green2-li"><span class="li-text"><span class="strong">Notas de corte al día:</span> Accede a las últimas notas de acceso publicadas por cada universidad para que sepas qué nivel se exige.</span></li>
+                        <li class="green2-li"><span class="li-text"><span class="strong">Filtros por ubicación:</span> Pincha en tu provincia para ver qué opciones tienes cerca de casa o explora nuevas ciudades donde estudiar.</span></li>
+                        <li class="green2-li"><span class="li-text"><span class="strong">Fichas de universidad:</span> Consulta directamente qué centros imparten cada carrera y organiza tus opciones favoritas.</span></li>
+                    </ul>
+                    <div class="btn-her green2-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+
+            <!-- CALCULADORA — bg claro | visual izq, texto der -->
+            <div id="calculadora" class="container-recursos bg-mid z-reverse">
+                <div class="info">
+                    <div class="info-title yellow-title">CALCULADORA DE SELECTIVIDAD</div>
+                    <span class="info-white">Tu nota en </span><span class="info-yellow">un clic</span>
+                    <p class="desc-apar">Una herramienta rápida y precisa para obtener tu nota de admisión introduciendo directamente tus calificaciones y ponderaciones.</p>
+                    <ul class="desc-ul">
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Cálculo instantáneo:</span> Introduce tus notas de la Fase General y Específica y obtén el resultado matemático al momento.</span></li>
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Ponderaciones personalizadas:</span> Tú tienes el control. Define manualmente si tus materias ponderan 0.1 o 0.2 para adaptarlo a cualquier grado.</span></li>
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Precisión total:</span> Sistema configurado con la fórmula oficial de acceso a la universidad para garantizar un resultado exacto.</span></li>
+                        <li class="yellow-li"><span class="li-text"><span class="strong">Interfaz minimalista:</span> Sin distracciones. Una herramienta diseñada para darte el dato que necesitas en menos de 10 segundos.</span></li>
+                    </ul>
+                    <div class="btn-her yellow-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+
+            <!-- TESTS VOCACIONALES — bg oscuro | texto izq, visual der -->
+            <div id="tests" class="container-recursos bg-dark z-normal">
+                <div class="info">
+                    <div class="info-title purple-title">TESTS VOCACIONALES</div>
+                    <span class="info-white">Encuentra </span><span class="info-purple">tu vocación</span>
+                    <p class="desc-apar">No sabes qué estudiar? Nuestros tests analizan tus intereses, habilidades y valores para orientarte hacia las carreras y ramas que mejor encajan contigo.</p>
+                    <ul class="desc-ul">
+                        <li class="purple-li"><span class="li-text"><span class="strong">Test de intereses:</span> Descubre qué áreas del conocimiento te generan más motivación y curiosidad.</span></li>
+                        <li class="purple-li"><span class="li-text"><span class="strong">Perfil académico:</span> Obtén un informe personalizado con las ramas y perfiles que mejor se ajustan a ti.</span></li>
+                        <li class="purple-li"><span class="li-text"><span class="strong">Carreras recomendadas:</span> Accede directamente a las fichas de los grados que más se alinean con tu perfil.</span></li>
+                        <li class="purple-li"><span class="li-text"><span class="strong">Resultados exportables:</span> Guarda y comparte tu informe vocacional con orientadores o familia.</span></li>
+                    </ul>
+                    <div class="btn-her purple-btn">Probar herramienta</div>
+                </div>
+                <div class="preview">Preview</div>
+            </div>
+        </div>
+
+        <div id="wiki-pro">
+            <div id="container-title-desc">
+                <p id="wiki-pro__title">&#x2726; WikiStudent Pro — Sin límites</p>
+                <p id="wiki-pro__desc">Desbloquea todo el potencial con funciones exclusivas y sin restricciones</p>
+            </div>
+            <div id="container-cards-pro">
+                <div class="card-pro">Flashcards y Quizzes ilimitados</div>
+                <div class="card-pro">Límites más generosos</div>
+                <div class="card-pro">Sin anuncios</div>
+                <div class="card-pro">Temas visuales</div>
+                <div class="card-pro">Modo offline</div>
+            </div>
+            <div id="btnPlanesPro">Ver Planes Pro</div>
+        </div>
+
+        <div id="about-me">
+            <div id="profile" class="ab-photo-col">
+                <div id="avatar">
+                    <img src="avatar.png" alt="Foto del creador de WikiStudent">
+                </div>
+                <p id="ab-name">Carla</p>
+                <p id="ab-role">Creadora de WikiStudent</p>
+                <div id="ab-socials">
+                    <a href="#" class="ab-social-btn" title="GitHub" aria-label="GitHub">
+                        <span class="material-symbols-rounded">code</span>
+                    </a>
+                    <a href="#" class="ab-social-btn" title="Twitter/X" aria-label="Twitter">
+                        <span class="material-symbols-rounded">alternate_email</span>
+                    </a>
+                    <a href="#" class="ab-social-btn" title="Instagram" aria-label="Instagram">
+                        <span class="material-symbols-rounded">photo_camera</span>
+                    </a>
+                </div>
+            </div>
+            <div id="about-info">
+                <div id="about-info__title">DETRÁS DE WIKISTUDENT</div>
+                <div id="about-info__badge"><span id="dot-about-info__badge"></span>ABOUT ME</div>
+                <p id="saludo-1">Hola, soy un <span id="highlight-info">auténtico desastre.</span></p>
+                <p id="saludo-2">Y eso lo cambió todo.</p>
+                <div id="highlight-info-2">Si esperabas a la típica estudiante perfecta con apuntes de colores y agenda impecable... te has equivocado de sitio.</div>
+                <div id="about-info__desc">La realidad es que soy un auténtico desastre. Habito entre procrastinación y caos y mi capacidad de organización natural es, bueno, inexistente.</div>
+                <div id="about-info__desc-2"> <strong>¿Por qué te cuento esto?</strong></div>
+                <div id="about-info__desc-3">
+                    Porque precisamente por ser un desastre tuve que espabilar. Estoy terminando la ESO con una meta clara: el <strong>Doble Grado de Ingeniería Informática y Matemáticas</strong>. Con mi desorganización natural, sabía que no iba a llegar ni a la puerta de la facultad. Así que hice lo único sensato: programé las herramientas que necesitaba. WikiStudent no es una web hecha por un genio, es una plataforma hecha por alguien que sabe lo que es <strong>querer llegar alto siendo un desastre</strong>. Si yo puedo, tú también.
+                </div>
+                <div id="ab-facts">
+                    <div class="ab-fact">
+                        <span class="material-symbols-rounded ab-fact-icon">location_on</span>
+                        <span class="ab-fact-label">Ubicación</span>
+                        <span class="ab-fact-value">Extremadura, España</span>
+                    </div>
+                    <div class="ab-fact">
+                        <span class="material-symbols-rounded ab-fact-icon">school</span>
+                        <span class="ab-fact-label">Etapa</span>
+                        <span class="ab-fact-value">Terminando ESO</span>
+                    </div>
+                    <div class="ab-fact">
+                        <span class="material-symbols-rounded ab-fact-icon">target</span>
+                        <span class="ab-fact-label">Meta</span>
+                        <span class="ab-fact-value">Inf. + Matemáticas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="crear-cuenta-wrapper">
+            <p id="crear-cuenta-title">¿Listo/a para alcanzar tus metas?</p>
+            <p id="crear-cuenta-title-2">Únete gratis hoy. Sé parte de nosotros.</p>
+            <div id="btnCuenta" onclick="openAuth('register')">Crear cuenta</div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <!-- ══════════════ AUTH MODAL ══════════════ -->
+    <div id="auth-overlay" role="dialog" aria-modal="true">
+        <div id="auth-card">
+
+            <button id="auth-close" aria-label="Cerrar" onclick="closeAuth()">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+
+            <!-- Tabs -->
+            <div id="auth-tabs">
+                <button class="auth-tab" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+                <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Crear cuenta</button>
+            </div>
+
+            <!-- Banner error -->
+            <div id="auth-error" role="alert">
+                <span class="material-symbols-rounded auth-banner-icon">error</span>
+                <span id="auth-error-msg"></span>
+            </div>
+
+            <!-- Banner info (verificación de correo) -->
+            <div id="auth-info" role="status">
+                <span class="material-symbols-rounded auth-banner-icon">mark_email_read</span>
+                <span id="auth-info-msg"></span>
+            </div>
+
+            <!-- LOGIN -->
+            <form id="form-login" class="auth-form" action="/auth/login" method="POST">
+                <div class="auth-field">
+                    <label for="login-email">Correo electrónico</label>
+                    <input id="login-email" type="email" name="email" placeholder="tu@correo.com" required autocomplete="email">
+                </div>
+                <div class="auth-field">
+                    <label for="login-password">Contraseña</label>
+                    <input id="login-password" type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="auth-submit">Entrar</button>
+                <div class="auth-divider"><span>o continúa con</span></div>
+                <a href="/auth/google" class="auth-google-btn">
+                    <span class="google-icon"></span>
+                    Continuar con Google
+                </a>
+                <p class="auth-switch">¿Sin cuenta? <a href="#" onclick="switchTab('register'); return false;">Regístrate gratis</a></p>
+            </form>
+
+            <!-- REGISTER -->
+            <form id="form-register" class="auth-form" action="/auth/register" method="POST">
+                <div class="auth-field">
+                    <label for="reg-username">Nombre de usuario</label>
+                    <input id="reg-username" type="text" name="username" placeholder="estudiante123" required minlength="3" pattern="[a-zA-Z0-9_]+" autocomplete="username">
+                </div>
+                <div class="auth-field">
+                    <label for="reg-email">Correo electrónico</label>
+                    <input id="reg-email" type="email" name="email" placeholder="tu@correo.com" required autocomplete="email">
+                </div>
+                <div class="auth-field">
+                    <label for="reg-password">Contraseña <small>(mín. 8 caracteres)</small></label>
+                    <input id="reg-password" type="password" name="password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                </div>
+                <div class="auth-field-row">
+                    <div class="auth-field">
+                        <label for="reg-gender">Género</label>
+                        <select id="reg-gender" name="gender" required>
+                            <option value="" disabled selected>Selecciona</option>
+                            <option value="male">Masculino</option>
+                            <option value="female">Femenino</option>
+                            <option value="non_binary">No binario</option>
+                            <option value="prefer_not">Prefiero no decir</option>
+                        </select>
+                    </div>
+                    <div class="auth-field">
+                        <label for="reg-dob">Fecha de nacimiento</label>
+                        <input id="reg-dob" type="date" name="date_of_birth" required>
+                    </div>
+                </div>
+                <div class="auth-check">
+                    <input type="checkbox" id="reg-notif" name="notifications" value="1" checked>
+                    <label for="reg-notif">Quiero recibir novedades y notificaciones</label>
+                </div>
+                <div class="auth-check">
+                    <input type="checkbox" id="reg-terms" name="accept_terms" value="1" required>
+                    <label for="reg-terms">Acepto los <a href="#">Términos de uso</a> y la <a href="#">Política de cookies</a></label>
+                </div>
+                <button type="submit" class="auth-submit">Crear cuenta</button>
+                <div class="auth-divider"><span>o regístrate con</span></div>
+                <a href="/auth/google" class="auth-google-btn">
+                    <span class="google-icon"></span>
+                    Continuar con Google
+                </a>
+                <p class="auth-switch">¿Ya tienes cuenta? <a href="#" onclick="switchTab('login'); return false;">Inicia sesión</a></p>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="/scripts/landing.js"></script>
+    <script>
+        <%
+            const serverError = typeof error     !== 'undefined' ? error     : null;
+            const serverTab   = typeof activeTab !== 'undefined' ? activeTab : null;
+            const serverInfo  = typeof info      !== 'undefined' ? info      : null;
+        %>
+        (function() {
+            const err     = <%- JSON.stringify(serverError) %>;
+            const tab     = <%- JSON.stringify(serverTab)   %>;
+            const infoMsg = <%- JSON.stringify(serverInfo)  %>;
+            if (err || tab || infoMsg) {
+                openAuth(tab || 'login');
+                if (err) {
+                    document.getElementById('auth-error-msg').textContent = err;
+                    document.getElementById('auth-error').classList.add('visible');
+                }
+                if (infoMsg) {
+                    document.getElementById('auth-info-msg').textContent = infoMsg;
+                    document.getElementById('auth-info').classList.add('visible');
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

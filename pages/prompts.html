@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Prompts | WikiStudent</title>
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/prompts.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    
+    <aside class="sidebar">
+        <form class="sidebar__form">
+            <input type="checkbox" checked id="open-menu">
+            <label class="material-symbols-outlined" for="open-menu">menu</label>
+        </form>
+        <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Home</span>
+                    <a href="../index.html">Inicio</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">explore</span>
+                    <a href="/pages/test.html">Orientación vocacional</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Grid_view</span>
+                    <a href="/pages/directorio.html">Directorio apps/webs</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Article</span>
+                    <a href="#">Artículos</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Auto_awesome_motion</span>
+                    <a href="#">Plantillas de Canva</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Smart_toy</span>
+                    <a href="#">Biblioteca de Prompts</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">Calculate</span>
+                    <a href="/pages/calculadora.html">Calculadora de selectividad</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- Header -->
+        <header class="header__apartados">
+            <span class="title__apartados inicio-title">Generador de</span>
+            <span class="title__apartados final-title"> Prompts</span>
+            <h3>Crea el prompt perfecto en segundos</h3>
+            <p>Rellena el formulario y copia tu prompt listo para usar en ChatGPT o Claude.</p>
+        </header>
+
+        <!-- Generador -->
+        <div id="generador">
+
+            <!-- CAMPO 1: Asignatura -->
+            <div class="campo">
+                <label>¿De qué asignatura es?</label>
+                <input type="text" id="asignatura" placeholder="Ej: Historia de España">
+            </div>
+            
+            <!-- CAMPO 2: Nivel de detalle -->
+            <div class="campo">
+                <label>¿Cuánto detalle quieres?</label>
+                <select id="detalle">
+                    <option value="basico">Básico y directo</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="detallado">Muy detallado</option>
+                </select>
+            </div>
+
+            <!-- CAMPO 3: Enfoque -->
+            <div class="campo">
+                <label>¿Para qué lo necesitas?</label>
+                <select id="enfoque">
+                    <option value="examen">Preparar un examen</option>
+                    <option value="entender" selected>Entender mejor el tema</option>
+                    <option value="repasar">Repasar rápido</option>
+                </select>
+            </div>
+
+            <!-- CAMPO 4: Tarea -->
+            <div class="campo">
+                <label>¿Qué quieres hacer?</label>
+                <select id="tarea">
+                    <option value="">Selecciona una tarea</option>
+                    <option value="resumir">Resumir apuntes o texto</option>
+                    <option value="esquema">Crear esquema o mapa mental</option>
+                    <option value="test">Generar preguntas tipo test</option>
+                    <option value="explicar">Explicar un concepto difícil</option>
+                    <option value="flashcards">Crear flashcards</option>
+                </select>
+            </div>
+
+            <span id="btn-generar" onclick="generarPrompt()">Generar prompt →</span>  <!-- Botón para generar prompt -->
+
+            <!-- Resultado -->
+            <div id="overlay-prompt" class="overlay-prompt">
+                <div class="prompt-caja">
+                    <h4>TU PROMPT</h4>
+                    <p id="prompt-generado"></p>
+                    <div class="prompt-acciones">
+                        <span class="material-symbols-outlined icono-copiar" onclick="copiarPrompt()">content_copy</span>
+                        <button id="btn-cerrar" onclick="cerrarPrompt()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <script src="/scripts/prompts.js"></script>
+</body>
+</html>

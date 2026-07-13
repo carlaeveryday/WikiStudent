@@ -1,0 +1,656 @@
+/* ===== AGENDA + KANBAN SECTION ===== */
+
+/* --- Sección principal del planificador --- */
+.planner-section {
+    width: 100%;
+    max-width: 1100px;
+    margin: 30px auto 0 auto;
+    padding: 0 10px;
+}
+
+/* --- Cabecera de agenda --- */
+.agenda-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.agenda-title {
+    color: var(--texto-principal);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#btn-anadir-bloque {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--naranja-neon);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+    padding: 6px 0;
+    transition: opacity 0.2s;
+}
+
+#btn-anadir-bloque:hover {
+    opacity: 0.75;
+}
+
+#btn-anadir-bloque .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+/* --- Lista de bloques de agenda --- */
+.agenda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(0, 180, 216, 0.04);
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.agenda-row {
+    display: grid;
+    grid-template-columns: 56px 4px 1fr auto;
+    align-items: center;
+    gap: 0 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 180, 216, 0.1);
+    transition: background 0.15s;
+    position: relative;
+}
+
+.agenda-row:last-child {
+    border-bottom: none;
+}
+
+.agenda-row:hover {
+    background: rgba(0, 180, 216, 0.06);
+}
+
+.agenda-row.urgencia-baja {
+    --row-color: #4e8ef7;
+}
+
+.agenda-row.urgencia-media {
+    --row-color: #d6c516;
+}
+
+.agenda-row.urgencia-urgente {
+    --row-color: #ff4d4d;
+}
+
+.agenda-hora {
+    color: rgba(230, 241, 255, 0.45);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: right;
+    padding-right: 4px;
+}
+
+.agenda-indicador {
+    width: 3px;
+    height: 38px;
+    border-radius: 4px;
+    background-color: var(--row-color, var(--naranja-neon));
+    flex-shrink: 0;
+}
+
+.agenda-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.agenda-asignatura {
+    color: var(--texto-principal);
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.agenda-subtitulo {
+    color: rgba(230, 241, 255, 0.4);
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.agenda-badge {
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-urgente {
+    background: rgba(255, 77, 77, 0.18);
+    color: #ff4d4d;
+    border: 1px solid rgba(255, 77, 77, 0.35);
+}
+
+.badge-media {
+    background: rgba(214, 197, 22, 0.15);
+    color: #d6c516;
+    border: 1px solid rgba(214, 197, 22, 0.3);
+}
+
+.badge-baja {
+    background: rgba(78, 142, 247, 0.15);
+    color: #4e8ef7;
+    border: 1px solid rgba(78, 142, 247, 0.3);
+}
+
+.badge-pendiente {
+    background: rgba(109, 109, 110, 0.15);
+    color: rgba(230, 241, 255, 0.45);
+    border: 1px solid rgba(109, 109, 110, 0.25);
+}
+
+/* --- Kanban board --- */
+.kanban-section-title {
+    text-align: center;
+    color: rgba(230, 241, 255, 0.45);
+    font-size: 0.68rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding: 10px 0 0 0;
+}
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.kanban-col {
+    background: rgba(0, 180, 216, 0.04);
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    overflow: hidden;
+}
+
+.kb-col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 12px 16px;
+    border-bottom: 1px solid rgba(0, 180, 216, 0.1);
+}
+
+.col-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.contador {
+    border-radius: 20px;
+    background-color: rgba(255, 107, 43, 0.18);
+    color: var(--naranja-neon);
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 22px;
+}
+
+#contador-terminada {
+    background-color: rgba(78, 203, 113, 0.18);
+    color: #5fca7d;
+}
+
+#terminada .col-title {
+    color: #5fca7d;
+}
+
+#contador-enProceso {
+    background-color: rgba(123, 158, 255, 0.2);
+    color: #a2b9f9;
+}
+
+#en-proceso .col-title {
+    color: #a2b9f9;
+}
+
+.kb-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+    padding: 8px 10px;
+    min-height: 120px;
+}
+
+.kb-card {
+    border-radius: 8px;
+    padding: 11px 13px;
+    margin-bottom: 6px;
+    cursor: grab !important;
+    position: relative;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0, 180, 216, 0.15);
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+}
+
+.kb-card:hover {
+    cursor: grab !important;
+}
+
+.kb-card:active,
+.kb-card.sortable-chosen,
+.kb-card.sortable-drag {
+    cursor: grabbing !important;
+}
+
+.kb-card:hover {
+    border-color: rgba(0, 180, 216, 0.4);
+    background: rgba(0, 180, 216, 0.06);
+}
+
+#terminada .kb-card {
+    opacity: 0.65;
+}
+
+#terminada .kb-card .kb-card-title {
+    text-decoration: line-through;
+    color: rgba(230, 241, 255, 0.55);
+}
+
+/* kb-card-title y kb-card-subject definidos arriba junto a kb-card-header-row */
+
+.kb-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+/* kb-card-subject: ver definición arriba */
+
+.kb-card-date {
+    color: rgba(230, 241, 255, 0.45);
+    font-size: 0.68rem;
+    font-weight: 400;
+}
+
+.kb-card-del {
+    position: absolute;
+    top: 6px;
+    right: 7px;
+    color: rgba(230, 241, 255, 0.5);
+    font-size: 1.05rem;
+    cursor: pointer;
+    opacity: 0;
+    padding: 3px;
+    border-radius: 6px;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+    line-height: 1;
+}
+
+.kb-card-del:hover {
+    background: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+}
+
+.kb-card:hover .kb-card-del {
+    opacity: 1;
+}
+
+/* Ocultar botones "+ Añadir" de columnas (ya no se usan) */
+.kb-add-btn {
+    display: none;
+}
+
+/* ── Staging area — tarjetas pendientes de arrastrar ── */
+#kb-staging {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 56px;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    background: rgba(255, 107, 43, 0.04);
+    border: 1px dashed rgba(255, 107, 43, 0.25);
+    border-radius: 12px;
+    align-items: flex-start;
+    margin-bottom: 50px
+}
+
+#kb-staging .kb-staging-hint {
+    width: 100%;
+    text-align: center;
+    color: rgba(230, 241, 255, 0.3);
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 0;
+}
+
+/* Tarjetas en staging — mismo look que en columnas */
+#kb-staging .kb-card {
+    flex: 0 0 auto;
+    width: 180px;
+    background: rgba(255, 107, 43, 0.07);
+    border: 1px solid rgba(255, 107, 43, 0.3);
+}
+
+#kb-staging .kb-card:hover {
+    border-color: rgba(255, 107, 43, 0.6);
+    background: rgba(255, 107, 43, 0.12);
+}
+
+/* Label encima del staging */
+.staging-label {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 107, 43, 0.7);
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 45px
+}
+
+.kb-drop-hint {
+    border: 1px dashed rgba(109, 109, 110, 0.3);
+    border-radius: 8px;
+    padding: 16px 12px;
+    text-align: center;
+    color: rgba(230, 241, 255, 0.45);
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* --- MODAL para añadir bloque --- */
+#modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: rgba(4, 14, 30, 0.82);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#modal-overlay.active {
+    display: flex;
+}
+
+#modal-bloque {
+    background: var(--azul-claro);
+    border: 1px solid rgba(0, 180, 216, 0.35);
+    border-radius: 14px;
+    padding: 28px 28px 24px 28px;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: 0 8px 50px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    animation: modal-in 0.22s ease;
+}
+
+@keyframes modal-in {
+    from { transform: translateY(16px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-title {
+    color: var(--texto-principal);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal-field label {
+    color: rgba(230, 241, 255, 0.45);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.modal-field input,
+.modal-field select {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0, 180, 216, 0.25);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--texto-principal);
+    font-size: 0.85rem;
+    font-family: Montserrat;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.modal-field input:focus,
+.modal-field select:focus {
+    border-color: rgba(0, 210, 255, 0.55);
+}
+
+.modal-field input::placeholder {
+    color: rgba(230, 241, 255, 0.45);
+}
+
+.modal-field select option {
+    background: var(--azul-claro);
+    color: var(--texto-principal);
+}
+
+.modal-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.btn-modal {
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    font-family: Montserrat;
+    transition: opacity 0.15s;
+}
+
+.btn-modal:hover {
+    opacity: 0.8;
+}
+
+.btn-modal-cancel {
+    background: rgba(255,255,255,0.06);
+    color: rgba(230, 241, 255, 0.45);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-modal-confirm {
+    background: var(--naranja-neon);
+    color: #fff;
+}
+
+/* El selector de fecha nativo del navegador — invertido para que se vea
+   bien sobre fondo oscuro (se usa en los inputs de fecha del modal). */
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* Fila superior de la tarjeta: título + badge */
+.kb-card-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-right: 16px; /* espacio para el × */
+}
+
+/* ── Bloque derecho de la fila de agenda: badge + fecha límite + acciones ── */
+.agenda-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-self: end;
+}
+
+.agenda-deadline {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.agenda-deadline-date {
+    color: rgba(230, 241, 255, 0.55);
+    font-size: 0.66rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.agenda-deadline-remaining {
+    color: var(--azul-neon);
+    font-size: 0.64rem;
+    white-space: nowrap;
+}
+
+.agenda-deadline-remaining.vencido {
+    color: #ff4d4d;
+}
+
+/* Iconos de editar / eliminar en cada bloque fijo de la agenda */
+.agenda-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.agenda-row:hover .agenda-actions,
+.agenda-row:focus-within .agenda-actions {
+    opacity: 1;
+}
+
+.agenda-actions .material-symbols-outlined {
+    font-size: 1.05rem;
+    color: rgba(230, 241, 255, 0.5);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.agenda-actions .agenda-edit:hover {
+    background: rgba(0, 180, 216, 0.15);
+    color: var(--azul-neon);
+}
+
+.agenda-actions .agenda-delete:hover {
+    background: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+}
+
+/* Preview de "quedan X días/horas" dentro del modal de creación/edición */
+.modal-dias-restantes {
+    color: var(--azul-neon);
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: -8px;
+    min-height: 14px;
+}
+
+/* Badge dentro de la tarjeta — más compacto */
+.kb-card-badge {
+    flex-shrink: 0;
+    font-size: 0.6rem;
+    padding: 2px 7px;
+    margin-top: 1px;
+}
+
+/* Título de tarjeta: blanco brillante */
+.kb-card-title {
+    color: var(--texto-principal);
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0;
+}
+
+/* Asignatura: más apagada */
+.kb-card-subject {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    opacity: 0.65;
+    padding: 1px 0;
+}
+
+/* Estado de error en campos del modal */
+.modal-field-error {
+    border-color: rgba(255, 77, 77, 0.7) !important;
+    background: rgba(255, 77, 77, 0.06) !important;
+}
+.subject-mates    { color: #ff6b2b; }
+.subject-fisica   { color: #4e8ef7; }
+.subject-historia { color: #a879f5; }
+.subject-ingles   { color: #5fca7d; }
+.subject-otro     { color: var(--azul-neon); }
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+
+    .agenda-row {
+        grid-template-columns: 46px 3px 1fr auto;
+        gap: 0 10px;
+        padding: 13px 14px;
+    }
+
+    .planner-section {
+        padding: 0 4px;
+    }
+}
