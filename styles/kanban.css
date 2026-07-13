@@ -298,19 +298,19 @@
 
 .kb-card-del {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 4px;
+    right: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 15px;
-    height: 15px;
-    padding: 4px;
+    width: 14px;
+    height: 14px;
+    padding: 3px;
     color: rgba(230, 241, 255, 0.5);
-    font-size: 0.75rem;
+    font-size: 0.68rem;
     cursor: pointer;
     opacity: 0.55;
-    border-radius: 7px;
+    border-radius: 6px;
     transition: opacity 0.15s, background 0.15s, color 0.15s, transform 0.1s;
     line-height: 1;
 }
