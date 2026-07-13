@@ -321,21 +321,26 @@ function renderEditMode(panel, day, month, year, key) {
                 </select>
                 <input class="cpe-input" id="cpe-input" type="text"
                        placeholder="Nombre del evento..." maxlength="60"/>
+                <button class="cpe-reminder-toggle-btn" id="cpe-reminder-toggle-btn" type="button"
+                        title="Añadir recordatorio">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
                 <button class="cpe-add-btn" id="cpe-add-btn">
                     <span class="material-symbols-outlined">add</span>
                 </button>
             </div>
-            <div class="cpe-reminder-row" id="cpe-reminder-row">
-                <span class="material-symbols-outlined cpe-reminder-icon">notifications</span>
-                <label class="cpe-reminder-label" for="cpe-reminder-time">Recordatorio</label>
-                <input class="cpe-reminder-input" id="cpe-reminder-time" type="time"
-                       placeholder="--:--" title="Hora a la que recibirás la notificación"/>
-                <span class="cpe-reminder-hint">Activa notificaciones en Ajustes para recibirlo</span>
+            <div class="cpe-reminder-collapse" id="cpe-reminder-collapse">
+                <div class="cpe-reminder-row" id="cpe-reminder-row">
+                    <span class="material-symbols-outlined cpe-reminder-icon">notifications</span>
+                    <label class="cpe-reminder-label" for="cpe-reminder-time">Recordatorio</label>
+                    <input class="cpe-reminder-input" id="cpe-reminder-time" type="time"
+                           placeholder="--:--" title="Hora a la que recibirás la notificación"/>
+                    <button class="cpe-reminder-accept-btn" id="cpe-reminder-accept-btn" type="button" title="Aceptar">
+                        <span class="material-symbols-outlined">check</span>
+                    </button>
+                    <span class="cpe-reminder-hint">Activa notificaciones en Ajustes para recibirlo</span>
+                </div>
             </div>
-            <p class="cpe-reminder-warning" id="cpe-reminder-warning">
-                <span class="material-symbols-outlined">error</span>
-                Primero debes indicar la hora del recordatorio.
-            </p>
         </div>
 
         <!-- GUARDAR -->
@@ -347,15 +352,39 @@ function renderEditMode(panel, day, month, year, key) {
 
     panel.querySelector('#cp-close-btn').addEventListener('click', closePanel);
 
+    // ── Recordatorio: campana que despliega/repliega el bloque ──
+    const reminderToggleBtn = panel.querySelector('#cpe-reminder-toggle-btn');
+    const reminderCollapse  = panel.querySelector('#cpe-reminder-collapse');
+    const reminderInput     = panel.querySelector('#cpe-reminder-time');
+    const reminderAcceptBtn = panel.querySelector('#cpe-reminder-accept-btn');
+
+    const _syncReminderToggleState = () => {
+        reminderToggleBtn.classList.toggle('cpe-reminder-toggle-btn--set', !!reminderInput.value);
+    };
+
+    reminderToggleBtn.addEventListener('click', () => {
+        const isOpen = reminderCollapse.classList.toggle('cpe-reminder-collapse--open');
+        reminderToggleBtn.classList.toggle('cpe-reminder-toggle-btn--active', isOpen);
+        if (isOpen) reminderInput.focus();
+    });
+
+    // Al aceptar la hora, el bloque se repliega con la misma animación
+    reminderAcceptBtn.addEventListener('click', () => {
+        reminderCollapse.classList.remove('cpe-reminder-collapse--open');
+        reminderToggleBtn.classList.remove('cpe-reminder-toggle-btn--active');
+        _syncReminderToggleState();
+    });
+    reminderInput.addEventListener('keydown', e => { if (e.key === 'Enter') reminderAcceptBtn.click(); });
+    reminderInput.addEventListener('input', _syncReminderToggleState);
+
     // Añadir evento
     const addEvent = () => {
         const type  = panel.querySelector('#cpe-type').value;
         const input = panel.querySelector('#cpe-input');
         const label = input.value.trim();
         if (!label) { input.focus(); return; }
-        const reminderTime = panel.querySelector('#cpe-reminder-time')?.value || '';
-        if (!reminderTime) { _showReminderWarning(panel); return; }
-        _hideReminderWarning(panel);
+        // El recordatorio ya no es obligatorio: puede ir vacío
+        const reminderTime = reminderInput.value || '';
         const cur = getDayData(key);
         if (cur.events.length >= 6) return;
         cur.events.push({type, label, reminder: reminderTime});
@@ -367,45 +396,24 @@ function renderEditMode(panel, day, month, year, key) {
         panel.querySelector('#cpe-events-list').innerHTML = _renderEditEvents(cur.events);
         _attachEditDelListeners(panel, key, day, month, year);
         input.value = '';
-        const reminderInput = panel.querySelector('#cpe-reminder-time');
-        if (reminderInput) reminderInput.value = '';
+        reminderInput.value = '';
+        reminderCollapse.classList.remove('cpe-reminder-collapse--open');
+        reminderToggleBtn.classList.remove('cpe-reminder-toggle-btn--active', 'cpe-reminder-toggle-btn--set');
         input.focus();
         generateCalendar(calState.month, calState.year);
     };
 
     panel.querySelector('#cpe-add-btn').addEventListener('click', addEvent);
     panel.querySelector('#cpe-input').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
-    panel.querySelector('#cpe-reminder-time').addEventListener('input', () => _hideReminderWarning(panel));
     _attachEditDelListeners(panel, key, day, month, year);
 
     // Guardar (solo eventos en modo edición del panel)
     panel.querySelector('#cp-save-btn').addEventListener('click', () => {
-        // Si el usuario dejó algo escrito en el campo de evento pero no
-        // puso la hora del recordatorio, avisamos antes de guardar.
-        const pendingLabel = panel.querySelector('#cpe-input').value.trim();
-        const reminderTime = panel.querySelector('#cpe-reminder-time')?.value || '';
-        if (pendingLabel && !reminderTime) { _showReminderWarning(panel); return; }
         // los eventos ya se guardan en tiempo real al añadirlos
         generateCalendar(calState.month, calState.year);
         renderViewMode(panel, day, month, year, key);
         showToast('¡Guardado correctamente!');
     });
-}
-
-// ── Aviso de recordatorio obligatorio ─────────────────────────
-function _showReminderWarning(panel) {
-    const warning = panel.querySelector('#cpe-reminder-warning');
-    const row     = panel.querySelector('#cpe-reminder-row');
-    const input   = panel.querySelector('#cpe-reminder-time');
-    if (warning) warning.classList.add('visible');
-    if (row) row.classList.add('cpe-reminder-row-error');
-    if (input) input.focus();
-}
-function _hideReminderWarning(panel) {
-    const warning = panel.querySelector('#cpe-reminder-warning');
-    const row     = panel.querySelector('#cpe-reminder-row');
-    if (warning) warning.classList.remove('visible');
-    if (row) row.classList.remove('cpe-reminder-row-error');
 }
 
 function _renderEditEvents(events) {
