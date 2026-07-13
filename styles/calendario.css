@@ -898,3 +898,40 @@
     flex: 1;
     min-width: 100px;
 }
+
+/* Estado de error cuando falta la hora del recordatorio */
+.cpe-reminder-row-error {
+    border-color: rgba(255, 77, 109, 0.55);
+    background: rgba(255, 77, 109, 0.06);
+}
+
+.cpe-reminder-row-error .cpe-reminder-input {
+    border-color: rgba(255, 77, 109, 0.6);
+}
+
+/* Aviso: "Primero debes indicar la hora del recordatorio" */
+.cpe-reminder-warning {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    margin: 6px 2px 0 2px;
+    color: #ff4d6d;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.3;
+    animation: cpe-warning-in 0.18s ease;
+}
+
+.cpe-reminder-warning.visible {
+    display: flex;
+}
+
+.cpe-reminder-warning .material-symbols-outlined {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+@keyframes cpe-warning-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

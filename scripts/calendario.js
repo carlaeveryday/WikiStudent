@@ -325,13 +325,17 @@ function renderEditMode(panel, day, month, year, key) {
                     <span class="material-symbols-outlined">add</span>
                 </button>
             </div>
-            <div class="cpe-reminder-row">
+            <div class="cpe-reminder-row" id="cpe-reminder-row">
                 <span class="material-symbols-outlined cpe-reminder-icon">notifications</span>
                 <label class="cpe-reminder-label" for="cpe-reminder-time">Recordatorio</label>
                 <input class="cpe-reminder-input" id="cpe-reminder-time" type="time"
                        placeholder="--:--" title="Hora a la que recibirás la notificación"/>
                 <span class="cpe-reminder-hint">Activa notificaciones en Ajustes para recibirlo</span>
             </div>
+            <p class="cpe-reminder-warning" id="cpe-reminder-warning">
+                <span class="material-symbols-outlined">error</span>
+                Primero debes indicar la hora del recordatorio.
+            </p>
         </div>
 
         <!-- GUARDAR -->
@@ -349,9 +353,11 @@ function renderEditMode(panel, day, month, year, key) {
         const input = panel.querySelector('#cpe-input');
         const label = input.value.trim();
         if (!label) { input.focus(); return; }
+        const reminderTime = panel.querySelector('#cpe-reminder-time')?.value || '';
+        if (!reminderTime) { _showReminderWarning(panel); return; }
+        _hideReminderWarning(panel);
         const cur = getDayData(key);
         if (cur.events.length >= 6) return;
-        const reminderTime = panel.querySelector('#cpe-reminder-time')?.value || '';
         cur.events.push({type, label, reminder: reminderTime});
         // Schedule browser notification if permission granted and time set
         if (reminderTime && 'Notification' in window && Notification.permission === 'granted') {
@@ -361,21 +367,45 @@ function renderEditMode(panel, day, month, year, key) {
         panel.querySelector('#cpe-events-list').innerHTML = _renderEditEvents(cur.events);
         _attachEditDelListeners(panel, key, day, month, year);
         input.value = '';
+        const reminderInput = panel.querySelector('#cpe-reminder-time');
+        if (reminderInput) reminderInput.value = '';
         input.focus();
         generateCalendar(calState.month, calState.year);
     };
 
     panel.querySelector('#cpe-add-btn').addEventListener('click', addEvent);
     panel.querySelector('#cpe-input').addEventListener('keydown', e => { if(e.key==='Enter') addEvent(); });
+    panel.querySelector('#cpe-reminder-time').addEventListener('input', () => _hideReminderWarning(panel));
     _attachEditDelListeners(panel, key, day, month, year);
 
     // Guardar (solo eventos en modo edición del panel)
     panel.querySelector('#cp-save-btn').addEventListener('click', () => {
+        // Si el usuario dejó algo escrito en el campo de evento pero no
+        // puso la hora del recordatorio, avisamos antes de guardar.
+        const pendingLabel = panel.querySelector('#cpe-input').value.trim();
+        const reminderTime = panel.querySelector('#cpe-reminder-time')?.value || '';
+        if (pendingLabel && !reminderTime) { _showReminderWarning(panel); return; }
         // los eventos ya se guardan en tiempo real al añadirlos
         generateCalendar(calState.month, calState.year);
         renderViewMode(panel, day, month, year, key);
         showToast('¡Guardado correctamente!');
     });
+}
+
+// ── Aviso de recordatorio obligatorio ─────────────────────────
+function _showReminderWarning(panel) {
+    const warning = panel.querySelector('#cpe-reminder-warning');
+    const row     = panel.querySelector('#cpe-reminder-row');
+    const input   = panel.querySelector('#cpe-reminder-time');
+    if (warning) warning.classList.add('visible');
+    if (row) row.classList.add('cpe-reminder-row-error');
+    if (input) input.focus();
+}
+function _hideReminderWarning(panel) {
+    const warning = panel.querySelector('#cpe-reminder-warning');
+    const row     = panel.querySelector('#cpe-reminder-row');
+    if (warning) warning.classList.remove('visible');
+    if (row) row.classList.remove('cpe-reminder-row-error');
 }
 
 function _renderEditEvents(events) {
