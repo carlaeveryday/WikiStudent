@@ -23,10 +23,17 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('[SW] Notificación en segundo plano recibida:', payload);
 
-  const titulo   = payload.notification.title;
+  const titulo = payload.notification.title;
   const opciones = {
     body: payload.notification.body,
-    icon: '/favicon.ico',
+    icon: '/wiki/favicon.png',   // logo de WikiStudent, cuadrado, fondo sólido (no transparente, se ve mal en Android)
+    badge: '/wiki/badge-72.png',  // versión monocromo/silueta del logo, sin color — Android lo tinta él solo
+    vibrate: [150, 80, 150],       // aviso corto y claro, no exagerado
+    requireInteraction: true,      // ESTO es lo importante para ti: si no, en muchos navegadores desaparece a los 5s y el usuario ni la ve
+    actions: [
+      { action: 'ver', title: '📋 Ver tarea' },
+      { action: 'posponer', title: '⏰ +10 min' }
+    ]
   };
 
   self.registration.showNotification(titulo, opciones);
