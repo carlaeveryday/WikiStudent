@@ -657,9 +657,9 @@ app.delete('/api/user/account', ensureAuthenticated, async (req, res) => {
 async function comprobarRecordatorios() {
   try {
     const ahora = new Date();
-    const enQuince = new Date(ahora.getTime() + 15 * 60 * 1000);
-    const hh = String(enQuince.getUTCHours()).padStart(2, '0');
-    const mm = String(enQuince.getUTCMinutes()).padStart(2, '0');
+    const enDiez = new Date(ahora.getTime() + 10 * 60 * 1000);
+    const hh = String(enDiez.getUTCHours()).padStart(2, '0');
+    const mm = String(enDiez.getUTCMinutes()).padStart(2, '0');
     const horaObjetivo = `${hh}:${mm}`;
 
     const hoyISO = new Date(
@@ -668,12 +668,16 @@ async function comprobarRecordatorios() {
 
     if (!supabaseAdmin) return; // sin service role key no podemos hacer el barrido global
 
+    // OJO: nunca metas un operando vacío en el .or() (p.ej. "fecha.eq.,"),
+    // Postgres intenta convertir esa cadena vacía al tipo de la columna
+    // (date) y revienta con el error 22007. "fecha.is.null" ya cubre
+    // el caso de tareas sin fecha límite, no hace falta nada más.
     const { data: tareas, error } = await supabaseAdmin
       .from('kanban_tasks')
       .select('id, user_id, titulo, asignatura, hora, fecha, columna')
       .eq('hora', horaObjetivo)
       .neq('columna', 'terminada')
-      .or(`fecha.is.null,fecha.eq.,fecha.eq.${hoyISO}`);
+      .or(`fecha.is.null,fecha.eq.${hoyISO}`);
     if (error) throw error;
     if (!tareas || tareas.length === 0) return;
 
@@ -694,7 +698,7 @@ async function comprobarRecordatorios() {
 
       const mensaje = {
         notification: {
-          title: `⏰ En 15 minutos — ${tarea.titulo}`,
+          title: `⏰ En 10 minutos — ${tarea.titulo}`,
           body:  `${tarea.asignatura ? tarea.asignatura + ' · ' : ''}Empieza a las ${tarea.hora}. ¡Prepárate!`,
         },
         token: profile.notification_token,
