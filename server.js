@@ -658,15 +658,22 @@ async function comprobarRecordatorios() {
   try {
     const ahora = new Date();
     const enDiez = new Date(ahora.getTime() + 10 * 60 * 1000);
-    const hh = String(enDiez.getUTCHours()).padStart(2, '0');
-    const mm = String(enDiez.getUTCMinutes()).padStart(2, '0');
-    const horaObjetivo = `${hh}:${mm}`;
 
-    const hoyISO = new Date(
-      ahora.toLocaleString('en-CA', { timeZone: 'Europe/Madrid' }).slice(0, 10)
-    ).toISOString().slice(0, 10);
+    // Ambas cosas en hora de España — así coincide con lo que
+    // el usuario escribió en el formulario (que es hora local, no UTC).
+    const horaObjetivo = enDiez.toLocaleTimeString('en-GB', {
+      timeZone: 'Europe/Madrid',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
 
-    if (!supabaseAdmin) return; // sin service role key no podemos hacer el barrido global
+    const hoyISO = ahora.toLocaleDateString('en-CA', { timeZone: 'Europe/Madrid' });
+    // (esto reemplaza también la vuelta rara por new Date(...).toISOString() de antes,
+    // que era innecesaria y podía romperse si el navegador/motor JS no ubica el TZ bien)
+
+    if (!supabaseAdmin) return;
+    // ... el resto del bloque sigue igual desde aquí 
 
     // OJO: nunca metas un operando vacío en el .or() (p.ej. "fecha.eq.,"),
     // Postgres intenta convertir esa cadena vacía al tipo de la columna
