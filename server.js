@@ -561,6 +561,54 @@ app.post('/api/user/notification-token', ensureAuthenticated, async (req, res) =
   res.json({ success: true });
 });
 
+// ── API: RECORDATORIOS DEL CALENDARIO ────────────────────────────────────────
+// El calendario en sí (eventos, notas, emociones) vive en localStorage del
+// navegador — pero un recordatorio con hora necesita que ALGUIEN lo revise
+// aunque el usuario tenga la app cerrada, y eso solo lo puede hacer el
+// servidor. Por eso, solo los eventos que llevan recordatorio se guardan
+// también aquí, en la tabla `calendar_reminders` (ver migración SQL).
+//
+// reminder_mode:
+//   'same_day' → se avisa UNA vez, el día del evento, a reminder_time.
+//   'daily'    → se avisa TODOS los días a reminder_time hasta que llega
+//                el día del evento (incluido).
+app.post('/api/calendar/reminders', ensureAuthenticated, async (req, res) => {
+  const { label, type = 'event', event_date, reminder_time, reminder_mode } = req.body;
+
+  if (!label || !event_date || !reminder_time) {
+    return res.status(400).json({ error: 'Faltan datos del recordatorio (label, event_date, reminder_time).' });
+  }
+  if (!['daily', 'same_day'].includes(reminder_mode)) {
+    return res.status(400).json({ error: 'reminder_mode debe ser "daily" o "same_day".' });
+  }
+
+  const { data, error } = await req.supabase
+    .from('calendar_reminders')
+    .insert({
+      user_id:       req.user.id,
+      label,
+      type,
+      event_date,
+      reminder_time,
+      reminder_mode,
+    })
+    .select('id')
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, id: data.id });
+});
+
+app.delete('/api/calendar/reminders/:id', ensureAuthenticated, async (req, res) => {
+  const { error } = await req.supabase
+    .from('calendar_reminders')
+    .delete()
+    .eq('id', req.params.id)
+    .eq('user_id', req.user.id); // por si acaso, aunque RLS ya lo cubre
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
 app.post('/api/user/send-test-notification', ensureAuthenticated, async (req, res) => {
   try {
     const { data: profile, error } = await req.supabase
@@ -728,8 +776,98 @@ async function comprobarRecordatorios() {
   }
 }
 
+// ⏰ RELOJ DE RECORDATORIOS DEL CALENDARIO
+// ============================================================
+// Igual que comprobarRecordatorios() pero para los eventos del calendario
+// (tabla calendar_reminders). Se ejecuta cada minuto y compara la hora
+// ACTUAL (no +10 min, aquí el usuario elige la hora exacta del aviso)
+// contra reminder_time, en hora de España.
+//
+//   - reminder_mode = 'same_day' → solo dispara si event_date es HOY.
+//   - reminder_mode = 'daily'    → dispara todos los días desde hoy hasta
+//                                   (e incluyendo) event_date.
+//
+// `last_notified_date` evita mandar el mismo aviso más de una vez el
+// mismo día (el cron pasa cada minuto, así que sin esto se duplicaría
+// mientras el reloj marque esa hora).
+async function comprobarRecordatoriosCalendario() {
+  try {
+    if (!supabaseAdmin) return;
+
+    const ahora = new Date();
+    const horaActual = ahora.toLocaleTimeString('en-GB', {
+      timeZone: 'Europe/Madrid',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+    const hoyISO = ahora.toLocaleDateString('en-CA', { timeZone: 'Europe/Madrid' });
+
+    const { data: recordatorios, error } = await supabaseAdmin
+      .from('calendar_reminders')
+      .select('id, user_id, label, type, event_date, reminder_time, reminder_mode, last_notified_date')
+      .eq('reminder_time', horaActual)
+      .or(`last_notified_date.is.null,last_notified_date.neq.${hoyISO}`)
+      .or(`and(reminder_mode.eq.same_day,event_date.eq.${hoyISO}),and(reminder_mode.eq.daily,event_date.gte.${hoyISO})`);
+
+    if (error) throw error;
+    if (!recordatorios || recordatorios.length === 0) return;
+
+    const userIds = [...new Set(recordatorios.map(r => r.user_id))];
+    const { data: profiles, error: profErr } = await supabaseAdmin
+      .from('profiles')
+      .select('id, username, notification_token')
+      .in('id', userIds)
+      .not('notification_token', 'is', null);
+    if (profErr) throw profErr;
+
+    const profileMap = new Map(profiles.map(p => [p.id, p]));
+    console.log(`🔔 [Recordatorios calendario] Objetivo ${horaActual} (España). Revisando ${recordatorios.length} recordatorio(s)...`);
+
+    for (const rec of recordatorios) {
+      const profile = profileMap.get(rec.user_id);
+      if (!profile) continue; // usuario sin token registrado
+
+      const esHoyElEvento = rec.event_date === hoyISO;
+      const mensaje = {
+        notification: {
+          title: esHoyElEvento ? `📅 Hoy — ${rec.label}` : `⏰ Recordatorio — ${rec.label}`,
+          body:  esHoyElEvento
+            ? `${rec.type === 'exam' ? 'Examen' : 'Evento'} hoy. ¡No lo olvides!`
+            : `${rec.type === 'exam' ? 'Examen' : 'Evento'} el ${rec.event_date}.`,
+        },
+        token: profile.notification_token,
+      };
+
+      try {
+        await admin.messaging().send(mensaje);
+        console.log(`  ✅ Aviso a ${profile.username} → "${rec.label}" (${rec.reminder_mode})`);
+      } catch (errEnvio) {
+        if (errEnvio.code === 'messaging/registration-token-not-registered') {
+          await supabaseAdmin.from('profiles').update({ notification_token: null }).eq('id', rec.user_id);
+          console.warn(`  ⚠️ Token inválido para ${profile.username}, eliminado.`);
+        } else {
+          console.error(`  ❌ Error al notificar a ${profile.username}:`, errEnvio.message);
+        }
+      }
+
+      // Marcamos el aviso de hoy como hecho. Si era "same_day" ya no hace
+      // falta la fila (solo se avisa una vez), así que la borramos; si
+      // era "daily" la dejamos para que vuelva a saltar mañana.
+      if (rec.reminder_mode === 'same_day') {
+        await supabaseAdmin.from('calendar_reminders').delete().eq('id', rec.id);
+      } else {
+        await supabaseAdmin.from('calendar_reminders').update({ last_notified_date: hoyISO }).eq('id', rec.id);
+      }
+    }
+  } catch (error) {
+    console.error('Error en el reloj de recordatorios del calendario:', error);
+  }
+}
+
 // Cron interno: sigue funcionando solo mientras el proceso está despierto.
 cron.schedule('* * * * *', comprobarRecordatorios);
+cron.schedule('* * * * *', comprobarRecordatoriosCalendario);
 
 // Ruta para que un pinger externo gratuito (cron-job.org, UptimeRobot...)
 // dispare la comprobación cada minuto desde fuera, y de paso mantenga el
@@ -741,6 +879,7 @@ app.get('/api/cron/recordatorios', async (req, res) => {
     return res.status(401).json({ error: 'No autorizado' });
   }
   await comprobarRecordatorios();
+  await comprobarRecordatoriosCalendario();
   res.json({ success: true, checkedAt: new Date().toISOString() });
 });
 

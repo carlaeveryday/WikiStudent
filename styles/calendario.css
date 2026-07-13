@@ -976,3 +976,59 @@
 }
 
 .cpe-reminder-accept-btn .material-symbols-outlined { font-size: 0.95rem; }
+
+/* ── Modo de recordatorio: "todos los días" vs "el mismo día" ── */
+.cpe-reminder-mode-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 0 12px 10px;
+}
+
+.cpe-mode-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: 999px;
+    color: rgba(230, 241, 255, 0.65);
+    font-family: Montserrat;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    user-select: none;
+}
+
+.cpe-mode-pill .material-symbols-outlined { font-size: 0.95rem; }
+
+.cpe-mode-pill input[type="radio"] {
+    /* Ocultamos el radio nativo: el estilo lo da la propia píldora */
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.cpe-mode-pill:has(input:checked) {
+    background: rgba(0, 210, 255, 0.14);
+    border-color: rgba(0, 210, 255, 0.55);
+    color: var(--texto-principal);
+}
+
+.cpe-mode-pill:has(input:not(:disabled)):hover {
+    border-color: rgba(0, 210, 255, 0.4);
+}
+
+/* Deshabilitada: recordatorio el mismo día del evento, no tiene sentido
+   repetirlo "todos los días hasta el evento" porque solo hay un día */
+.cpe-mode-pill--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: rgba(230, 241, 255, 0.3);
+}
+
+.cpe-mode-pill--disabled:hover { border-color: rgba(0, 210, 255, 0.2); }

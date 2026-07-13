@@ -340,6 +340,18 @@ function renderEditMode(panel, day, month, year, key) {
                     </button>
                     <span class="cpe-reminder-hint">Activa notificaciones en Ajustes para recibirlo</span>
                 </div>
+                <div class="cpe-reminder-mode-row" id="cpe-reminder-mode-row">
+                    <label class="cpe-mode-pill" id="cpe-mode-pill-daily">
+                        <input type="radio" name="cpe-reminder-mode" id="cpe-mode-daily" value="daily">
+                        <span class="material-symbols-outlined">event_repeat</span>
+                        Todos los días hasta el evento
+                    </label>
+                    <label class="cpe-mode-pill" id="cpe-mode-pill-same">
+                        <input type="radio" name="cpe-reminder-mode" id="cpe-mode-same" value="same_day">
+                        <span class="material-symbols-outlined">today</span>
+                        El mismo día
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -357,6 +369,26 @@ function renderEditMode(panel, day, month, year, key) {
     const reminderCollapse  = panel.querySelector('#cpe-reminder-collapse');
     const reminderInput     = panel.querySelector('#cpe-reminder-time');
     const reminderAcceptBtn = panel.querySelector('#cpe-reminder-accept-btn');
+    const modeDailyInput    = panel.querySelector('#cpe-mode-daily');
+    const modeSameInput     = panel.querySelector('#cpe-mode-same');
+    const modePillDaily     = panel.querySelector('#cpe-mode-pill-daily');
+
+    // Si el evento es HOY, no tiene sentido repetir el aviso "todos los
+    // días hasta el evento" (solo queda hoy) → se deshabilita y se deja
+    // fijo en "el mismo día". Si es un día posterior, las dos valen y
+    // dejamos "todos los días" marcada por defecto.
+    const eventIsToday = isToday(day, month, year);
+    if (eventIsToday) {
+        modeDailyInput.disabled = true;
+        modePillDaily.classList.add('cpe-mode-pill--disabled');
+        modePillDaily.title = 'Solo disponible para eventos en días posteriores a hoy';
+        modeSameInput.checked = true;
+    } else {
+        modeDailyInput.disabled = false;
+        modePillDaily.classList.remove('cpe-mode-pill--disabled');
+        modePillDaily.title = '';
+        modeDailyInput.checked = true;
+    }
 
     const _syncReminderToggleState = () => {
         reminderToggleBtn.classList.toggle('cpe-reminder-toggle-btn--set', !!reminderInput.value);
@@ -385,14 +417,23 @@ function renderEditMode(panel, day, month, year, key) {
         if (!label) { input.focus(); return; }
         // El recordatorio ya no es obligatorio: puede ir vacío
         const reminderTime = reminderInput.value || '';
+        const reminderMode = reminderTime
+            ? (panel.querySelector('input[name="cpe-reminder-mode"]:checked')?.value || 'same_day')
+            : null;
         const cur = getDayData(key);
         if (cur.events.length >= 6) return;
-        cur.events.push({type, label, reminder: reminderTime});
-        // Schedule browser notification if permission granted and time set
-        if (reminderTime && 'Notification' in window && Notification.permission === 'granted') {
-            _scheduleEventNotification(label, reminderTime, key);
-        }
+
+        const localId = `${key}-${Date.now()}`;
+        const ev = { localId, type, label, reminder: reminderTime, reminderMode };
+        cur.events.push(ev);
         setDayData(key, cur);
+
+        // El recordatorio "de verdad" (push, funciona con la app cerrada) lo
+        // manda el servidor vía Firebase — lo registramos en el backend.
+        if (reminderTime) {
+            _syncReminderToServer(ev, key);
+        }
+
         panel.querySelector('#cpe-events-list').innerHTML = _renderEditEvents(cur.events);
         _attachEditDelListeners(panel, key, day, month, year);
         input.value = '';
@@ -435,8 +476,10 @@ function _attachEditDelListeners(panel, key, day, month, year) {
         btn.addEventListener('click', () => {
             const idx = parseInt(btn.dataset.idx);
             const cur = getDayData(key);
+            const removed = cur.events[idx];
             cur.events.splice(idx, 1);
             setDayData(key, cur);
+            if (removed?.remoteId) _deleteReminderFromServer(removed.remoteId);
             panel.querySelector('#cpe-events-list').innerHTML = _renderEditEvents(cur.events);
             _attachEditDelListeners(panel, key, day, month, year);
             generateCalendar(calState.month, calState.year);
@@ -564,19 +607,53 @@ document.addEventListener('DOMContentLoaded', () => {
     initNotaWidget();
     initEstadoWidget();
 });
-// ── Notificaciones de recordatorio ───────────────────────────
-function _scheduleEventNotification(label, timeStr, dateKey) {
-    // dateKey formato: "YYYY-MM-DD", timeStr: "HH:MM"
-    const [year, month, day] = dateKey.split('-').map(Number);
-    const [hours, minutes]   = timeStr.split(':').map(Number);
-    const notifTime = new Date(year, month - 1, day, hours, minutes, 0);
-    const now = Date.now();
-    const delay = notifTime.getTime() - now;
-    if (delay <= 0) return; // hora pasada
-    setTimeout(() => {
-        new Notification('⏰ WikiStudent — Recordatorio', {
-            body: label,
-            icon: '/wiki/favicon.png',
+// ── Notificaciones de recordatorio (push reales vía Firebase) ─────────
+// El calendario en sí vive en localStorage, pero los recordatorios con
+// hora necesitan que el SERVIDOR los revise cada minuto y mande el push
+// (así llegan aunque el usuario tenga la pestaña o el navegador cerrado).
+// Por eso, cada vez que se añade/borra un evento CON recordatorio,
+// avisamos al backend para que guarde/borre esa fila en su propia BD.
+//
+// event_date: "YYYY-MM-DD" (la key del día)
+// reminder_time: "HH:MM"
+// reminder_mode: "daily"    → avisa cada día a esa hora hasta el evento
+//                "same_day" → avisa una sola vez, el día del evento
+
+async function _syncReminderToServer(ev, dayKey) {
+    try {
+        const res = await fetch('/api/calendar/reminders', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                label:         ev.label,
+                type:          ev.type,
+                event_date:    dayKey,
+                reminder_time: ev.reminder,
+                reminder_mode: ev.reminderMode,
+            }),
         });
-    }, delay);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        // Guardamos el id que nos da el servidor junto al evento en
+        // localStorage, para poder borrarlo de ahí si el usuario elimina
+        // el evento más tarde.
+        const cur = getDayData(dayKey);
+        const idx = cur.events.findIndex(e => e.localId === ev.localId);
+        if (idx !== -1) {
+            cur.events[idx].remoteId = data.id;
+            setDayData(dayKey, cur);
+        }
+    } catch (err) {
+        console.error('[Recordatorios] No se pudo registrar en el servidor:', err);
+        showToast('El evento se guardó, pero el recordatorio no se pudo activar. Revisa tu conexión.', false);
+    }
+}
+
+async function _deleteReminderFromServer(remoteId) {
+    try {
+        await fetch(`/api/calendar/reminders/${remoteId}`, { method: 'DELETE' });
+    } catch (err) {
+        console.error('[Recordatorios] No se pudo borrar del servidor:', err);
+    }
 }
