@@ -156,8 +156,8 @@ function renderAgendaRow(data) {
             <span class="agenda-subtitulo">${asignatura || ''}</span>
         </div>
         <div class="agenda-right">
-            <span class="agenda-badge ${badge.cls}">${badge.label}</span>
             <div class="agenda-deadline">${deadlineHTML(data)}</div>
+            <span class="agenda-badge ${badge.cls}">${badge.label}</span>
             <div class="agenda-actions">
                 <span class="material-symbols-outlined agenda-edit" title="Editar">edit</span>
                 <span class="material-symbols-outlined agenda-delete" title="Eliminar">close</span>
@@ -244,10 +244,8 @@ function renderKanbanCard(data, agendaRow) {
         if (staging) updateStagingHint();
     });
 
-    // Click en cualquier parte de la tarjeta (staging o columna) → editar
-    card.addEventListener('click', function() {
-        openTaskModal(card._data, card._agendaRow, card);
-    });
+    // Las tarjetas de staging/columnas solo se arrastran; la edición
+    // se hace exclusivamente desde el icono de lápiz en la agenda.
 
     return card;
 }

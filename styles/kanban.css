@@ -299,24 +299,29 @@
 .kb-card-del {
     position: absolute;
     top: 6px;
-    right: 7px;
-    color: rgba(230, 241, 255, 0.5);
-    font-size: 1.05rem;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: rgba(230, 241, 255, 0.35);
+    font-size: 0.95rem;
     cursor: pointer;
-    opacity: 0;
-    padding: 3px;
-    border-radius: 6px;
+    opacity: 0.55;
+    border-radius: 50%;
     transition: opacity 0.15s, background 0.15s, color 0.15s;
     line-height: 1;
 }
 
 .kb-card-del:hover {
+    opacity: 1;
     background: rgba(255, 77, 77, 0.15);
     color: #ff4d4d;
 }
 
 .kb-card:hover .kb-card-del {
-    opacity: 1;
+    opacity: 0.85;
 }
 
 /* Ocultar botones "+ Añadir" de columnas (ya no se usan) */
@@ -524,7 +529,7 @@
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 6px;
-    padding-right: 16px; /* espacio para el × */
+    padding-right: 20px; /* espacio para el × */
 }
 
 /* ── Bloque derecho de la fila de agenda: badge + fecha límite + acciones ── */
@@ -559,13 +564,16 @@
     color: #ff4d4d;
 }
 
-/* Iconos de editar / eliminar en cada bloque fijo de la agenda */
+/* Iconos de editar / eliminar en cada bloque fijo de la agenda.
+   Siempre visibles a baja opacidad (para no dejar un hueco en blanco
+   cuando el ratón no está encima) y se iluminan al pasar el cursor. */
 .agenda-actions {
     display: flex;
     align-items: center;
     gap: 2px;
-    opacity: 0;
+    opacity: 0.4;
     transition: opacity 0.15s;
+    flex-shrink: 0;
 }
 
 .agenda-row:hover .agenda-actions,
@@ -574,12 +582,16 @@
 }
 
 .agenda-actions .material-symbols-outlined {
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: rgba(230, 241, 255, 0.5);
     cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    transition: background 0.15s, color 0.15s;
+    padding: 5px;
+    border-radius: 7px;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.agenda-actions .material-symbols-outlined:hover {
+    transform: scale(1.08);
 }
 
 .agenda-actions .agenda-edit:hover {
