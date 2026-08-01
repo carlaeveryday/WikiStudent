@@ -221,10 +221,12 @@ function renderKanbanCard(data, agendaRow) {
     card._data = data;
 
     card.innerHTML = `
-        <span class="material-symbols-outlined kb-card-del" title="Eliminar">close</span>
         <div class="kb-card-header-row">
             <div class="kb-card-title">${titulo}</div>
-            <span class="agenda-badge ${badge.cls} kb-card-badge">${badge.label}</span>
+            <div class="kb-card-header-actions">
+                <span class="agenda-badge ${badge.cls} kb-card-badge">${badge.label}</span>
+                <span class="material-symbols-outlined kb-card-del" title="Eliminar">close</span>
+            </div>
         </div>
         <div class="kb-card-footer">
             <span class="kb-card-subject ${style.cls}">${asignatura || ''}</span>

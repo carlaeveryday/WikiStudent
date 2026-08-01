@@ -296,21 +296,23 @@
     font-weight: 400;
 }
 
+.kb-card-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
 .kb-card-del {
-    position: absolute;
-    top: 4px;
-    right: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 14px;
-    height: 14px;
-    padding: 3px;
     color: rgba(230, 241, 255, 0.5);
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     cursor: pointer;
     opacity: 0.55;
-    border-radius: 6px;
+    padding: 4px;
+    border-radius: 7px;
     transition: opacity 0.15s, background 0.15s, color 0.15s, transform 0.1s;
     line-height: 1;
 }
@@ -529,11 +531,10 @@
 /* Fila superior de la tarjeta: título + badge */
 .kb-card-header-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 6px;
-    padding-right: 16px; /* espacio para el × */
 }
 
 /* ── Bloque derecho de la fila de agenda: badge + fecha límite + acciones ── */
@@ -632,6 +633,10 @@
     font-weight: 700;
     line-height: 1.3;
     margin-bottom: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Asignatura: más apagada */

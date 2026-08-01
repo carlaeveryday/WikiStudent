@@ -453,6 +453,12 @@
     justify-content: center;
 }
 
+.cpv-mood-chip-img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
 .cpv-empty {
     font-family: Montserrat, sans-serif;
     font-size: 0.72rem;
@@ -752,14 +758,77 @@
     font-style: italic;
 }
 
+.mood-list-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    max-width: 100%;
+}
+
+.mood-list-clip {
+    overflow: hidden;
+    min-width: 0;
+    flex: 0 1 320px;
+    padding: 6px 4px;
+    margin: -6px -4px;
+}
+
+.mood-list-clip.has-overflow {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+            mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+}
+
 .mood-list {
     display: flex;
     flex-direction: row;
     gap: 8px;
     align-items: center;
     justify-content: flex-start;
-    flex-wrap: wrap;
-    margin-top: 4px;
+    flex-wrap: nowrap;
+    width: max-content;
+    transition: transform 0.35s ease;
+}
+
+/* Flecha circular neón para desplegar las emociones que no caben —
+   vive fuera de la caja recortada, nunca se superpone a los emojis */
+.mood-scroll-arrow {
+    display: none;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 107, 43, 0.12);
+    border: 1.5px solid var(--naranja-neon);
+    color: var(--naranja-neon);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 107, 43, 0.35);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.mood-scroll-arrow.visible { display: flex; }
+
+.mood-scroll-arrow:hover {
+    background: rgba(255, 107, 43, 0.24);
+    box-shadow: 0 0 14px rgba(255, 107, 43, 0.55);
+    transform: scale(1.08);
+}
+
+.mood-scroll-arrow--back {
+    background: rgba(255, 107, 43, 0.2);
+}
+
+.mood-scroll-arrow .material-symbols-outlined {
+    font-size: 1.05rem;
+}
+
+.mood-emoji-img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 .mood-emoji {
@@ -774,6 +843,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     transition: background 0.2s, border-color 0.2s, transform 0.15s;
 }
 
@@ -862,6 +932,19 @@
 }
 
 #cal-toast .material-symbols-outlined { font-size: 1rem; }
+
+.cpe-type-select {
+    background: rgba(0, 180, 216, 0.07);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: 8px;
+    color: var(--texto-principal);
+    /* lo que quieras */
+}
+
+.cpe-type-select option {
+    background: #081525;
+    color: var(--texto-principal);
+}
 
 
 /* ════════════════════════════════════════════════════════════
@@ -976,59 +1059,3 @@
 }
 
 .cpe-reminder-accept-btn .material-symbols-outlined { font-size: 0.95rem; }
-
-/* ── Modo de recordatorio: "todos los días" vs "el mismo día" ── */
-.cpe-reminder-mode-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 0 12px 10px;
-}
-
-.cpe-mode-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(0, 210, 255, 0.2);
-    border-radius: 999px;
-    color: rgba(230, 241, 255, 0.65);
-    font-family: Montserrat;
-    font-size: 0.72rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, color 0.18s;
-    user-select: none;
-}
-
-.cpe-mode-pill .material-symbols-outlined { font-size: 0.95rem; }
-
-.cpe-mode-pill input[type="radio"] {
-    /* Ocultamos el radio nativo: el estilo lo da la propia píldora */
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-}
-
-.cpe-mode-pill:has(input:checked) {
-    background: rgba(0, 210, 255, 0.14);
-    border-color: rgba(0, 210, 255, 0.55);
-    color: var(--texto-principal);
-}
-
-.cpe-mode-pill:has(input:not(:disabled)):hover {
-    border-color: rgba(0, 210, 255, 0.4);
-}
-
-/* Deshabilitada: recordatorio el mismo día del evento, no tiene sentido
-   repetirlo "todos los días hasta el evento" porque solo hay un día */
-.cpe-mode-pill--disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    color: rgba(230, 241, 255, 0.3);
-}
-
-.cpe-mode-pill--disabled:hover { border-color: rgba(0, 210, 255, 0.2); }

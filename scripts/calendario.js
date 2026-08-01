@@ -10,12 +10,16 @@ const WEEKDAYS  = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MOODS = [
-    { emoji: '🤩', label: 'Genial'    },
-    { emoji: '😊', label: 'Bien'      },
-    { emoji: '😐', label: 'Regular'   },
-    { emoji: '😔', label: 'Mal'       },
-    { emoji: '😤', label: 'Frustrado' },
-    { emoji: '😴', label: 'Agotado'   },
+    { id: 'genial',     emoji: '🤩', label: 'Genial'     },
+    { id: 'bien',       emoji: '😊', label: 'Bien'       },
+    { id: 'regular',    emoji: '😐', label: 'Regular'    },
+    { id: 'mal',        emoji: '😔', label: 'Mal'        },
+    { id: 'frustrado',  emoji: '😤', label: 'Frustrado'  },
+    { id: 'agotado',    emoji: '😴', label: 'Agotado'    },
+    { id: 'triste',     img: '/wiki/emojis/crying-face-3d.png',    label: 'Triste'     },
+    { id: 'alucinado',  img: '/wiki/emojis/exploding-head-3d.png', label: 'Alucinado'  },
+    { id: 'enfadado',   img: '/wiki/emojis/pouting-face-3d.png',   label: 'Enfadado'   },
+    { id: 'preocupado', img: '/wiki/emojis/worried-face-3d.png',   label: 'Preocupado' },
 ];
 
 // ── Estado del calendario ────────────────────────────────────
@@ -236,8 +240,11 @@ function renderViewMode(panel, day, month, year, key) {
     const moodsHTML = dayObj.moods && dayObj.moods.length > 0
         ? `<div class="cpv-moods-row">
             ${dayObj.moods.map(m => {
-                const found = MOODS.find(x => x.emoji === m);
-                return `<span class="cpv-mood-chip" title="${found ? found.label : ''}">${m}</span>`;
+                const found = MOODS.find(x => x.id === m);
+                const content = found
+                    ? (found.img ? `<img src="${found.img}" alt="${_esc(found.label)}" class="cpv-mood-chip-img">` : found.emoji)
+                    : '';
+                return `<span class="cpv-mood-chip" title="${found ? found.label : ''}">${content}</span>`;
             }).join('')}
            </div>`
         : `<p class="cpv-empty">Sin estado de ánimo</p>`;
@@ -340,18 +347,6 @@ function renderEditMode(panel, day, month, year, key) {
                     </button>
                     <span class="cpe-reminder-hint">Activa notificaciones en Ajustes para recibirlo</span>
                 </div>
-                <div class="cpe-reminder-mode-row" id="cpe-reminder-mode-row">
-                    <label class="cpe-mode-pill" id="cpe-mode-pill-daily">
-                        <input type="radio" name="cpe-reminder-mode" id="cpe-mode-daily" value="daily">
-                        <span class="material-symbols-outlined">event_repeat</span>
-                        Todos los días hasta el evento
-                    </label>
-                    <label class="cpe-mode-pill" id="cpe-mode-pill-same">
-                        <input type="radio" name="cpe-reminder-mode" id="cpe-mode-same" value="same_day">
-                        <span class="material-symbols-outlined">today</span>
-                        El mismo día
-                    </label>
-                </div>
             </div>
         </div>
 
@@ -369,26 +364,6 @@ function renderEditMode(panel, day, month, year, key) {
     const reminderCollapse  = panel.querySelector('#cpe-reminder-collapse');
     const reminderInput     = panel.querySelector('#cpe-reminder-time');
     const reminderAcceptBtn = panel.querySelector('#cpe-reminder-accept-btn');
-    const modeDailyInput    = panel.querySelector('#cpe-mode-daily');
-    const modeSameInput     = panel.querySelector('#cpe-mode-same');
-    const modePillDaily     = panel.querySelector('#cpe-mode-pill-daily');
-
-    // Si el evento es HOY, no tiene sentido repetir el aviso "todos los
-    // días hasta el evento" (solo queda hoy) → se deshabilita y se deja
-    // fijo en "el mismo día". Si es un día posterior, las dos valen y
-    // dejamos "todos los días" marcada por defecto.
-    const eventIsToday = isToday(day, month, year);
-    if (eventIsToday) {
-        modeDailyInput.disabled = true;
-        modePillDaily.classList.add('cpe-mode-pill--disabled');
-        modePillDaily.title = 'Solo disponible para eventos en días posteriores a hoy';
-        modeSameInput.checked = true;
-    } else {
-        modeDailyInput.disabled = false;
-        modePillDaily.classList.remove('cpe-mode-pill--disabled');
-        modePillDaily.title = '';
-        modeDailyInput.checked = true;
-    }
 
     const _syncReminderToggleState = () => {
         reminderToggleBtn.classList.toggle('cpe-reminder-toggle-btn--set', !!reminderInput.value);
@@ -417,23 +392,14 @@ function renderEditMode(panel, day, month, year, key) {
         if (!label) { input.focus(); return; }
         // El recordatorio ya no es obligatorio: puede ir vacío
         const reminderTime = reminderInput.value || '';
-        const reminderMode = reminderTime
-            ? (panel.querySelector('input[name="cpe-reminder-mode"]:checked')?.value || 'same_day')
-            : null;
         const cur = getDayData(key);
         if (cur.events.length >= 6) return;
-
-        const localId = `${key}-${Date.now()}`;
-        const ev = { localId, type, label, reminder: reminderTime, reminderMode };
-        cur.events.push(ev);
-        setDayData(key, cur);
-
-        // El recordatorio "de verdad" (push, funciona con la app cerrada) lo
-        // manda el servidor vía Firebase — lo registramos en el backend.
-        if (reminderTime) {
-            _syncReminderToServer(ev, key);
+        cur.events.push({type, label, reminder: reminderTime});
+        // Schedule browser notification if permission granted and time set
+        if (reminderTime && 'Notification' in window && Notification.permission === 'granted') {
+            _scheduleEventNotification(label, reminderTime, key);
         }
-
+        setDayData(key, cur);
         panel.querySelector('#cpe-events-list').innerHTML = _renderEditEvents(cur.events);
         _attachEditDelListeners(panel, key, day, month, year);
         input.value = '';
@@ -476,10 +442,8 @@ function _attachEditDelListeners(panel, key, day, month, year) {
         btn.addEventListener('click', () => {
             const idx = parseInt(btn.dataset.idx);
             const cur = getDayData(key);
-            const removed = cur.events[idx];
             cur.events.splice(idx, 1);
             setDayData(key, cur);
-            if (removed?.remoteId) _deleteReminderFromServer(removed.remoteId);
             panel.querySelector('#cpe-events-list').innerHTML = _renderEditEvents(cur.events);
             _attachEditDelListeners(panel, key, day, month, year);
             generateCalendar(calState.month, calState.year);
@@ -548,12 +512,19 @@ function initEstadoWidget() {
             <span id="estado-date-badge">${_todayLabel()}</span>
         </div>
         <p class="info-emojis">Selecciona hasta 3 emociones</p>
-        <div class="mood-list" id="mood-list">
-            ${MOODS.map(m => `
-                <button class="mood-emoji ${selected.includes(m.emoji)?'mood-active':''}"
-                        data-emoji="${m.emoji}" title="${m.label}">
-                    ${m.emoji}
-                </button>`).join('')}
+        <div class="mood-list-wrapper" id="mood-list-wrapper">
+            <div class="mood-list-clip" id="mood-list-clip">
+                <div class="mood-list" id="mood-list">
+                    ${MOODS.map(m => `
+                        <button class="mood-emoji ${selected.includes(m.id)?'mood-active':''}"
+                                data-id="${m.id}" title="${m.label}">
+                            ${m.img ? `<img src="${m.img}" alt="${_esc(m.label)}" class="mood-emoji-img">` : m.emoji}
+                        </button>`).join('')}
+                </div>
+            </div>
+            <button class="mood-scroll-arrow" id="mood-scroll-arrow" type="button" title="Ver más emociones">
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
         </div>
         <button class="widget-save-btn" id="estado-save-btn">
             <span class="material-symbols-outlined">save</span>
@@ -563,7 +534,6 @@ function initEstadoWidget() {
 
     el.querySelectorAll('.mood-emoji').forEach(btn => {
         btn.addEventListener('click', () => {
-            const emoji = btn.dataset.emoji;
             const active = [...el.querySelectorAll('.mood-emoji.mood-active')];
             if (btn.classList.contains('mood-active')) {
                 btn.classList.remove('mood-active');
@@ -574,8 +544,10 @@ function initEstadoWidget() {
         });
     });
 
+    _setupMoodScroll(el);
+
     el.querySelector('#estado-save-btn').addEventListener('click', () => {
-        const moods = [...el.querySelectorAll('.mood-emoji.mood-active')].map(b => b.dataset.emoji);
+        const moods = [...el.querySelectorAll('.mood-emoji.mood-active')].map(b => b.dataset.id);
         const cur   = getDayData(key);
         cur.moods   = moods;
         setDayData(key, cur);
@@ -583,6 +555,58 @@ function initEstadoWidget() {
         showToast('¡Estado de ánimo guardado en el día de hoy!');
         _refreshPanelIfToday(key);
     });
+}
+
+// ── Carrusel del selector de emociones (flecha para ver más) ──
+function _setupMoodScroll(el) {
+    const clip  = el.querySelector('#mood-list-clip');
+    const list  = el.querySelector('#mood-list');
+    const arrow = el.querySelector('#mood-scroll-arrow');
+    if (!clip || !list || !arrow) return;
+
+    const arrowIcon = arrow.querySelector('.material-symbols-outlined');
+    let scrolled = false;
+
+    const overflowAmount = () => Math.max(0, Math.ceil(list.scrollWidth - clip.clientWidth));
+
+    const applyState = () => {
+        const overflow = overflowAmount();
+        const hasOverflow = overflow > 2;
+        clip.classList.toggle('has-overflow', hasOverflow);
+        arrow.classList.toggle('visible', hasOverflow);
+        if (!hasOverflow && scrolled) scrolled = false;
+        list.style.transform = scrolled ? `translateX(-${overflow}px)` : 'translateX(0px)';
+        arrow.classList.toggle('mood-scroll-arrow--back', scrolled);
+        if (arrowIcon) arrowIcon.textContent = scrolled ? 'arrow_back' : 'arrow_forward';
+    };
+
+    arrow.addEventListener('click', () => {
+        scrolled = !scrolled;
+        applyState();
+    });
+
+    // ── Recalcular ante cualquier cambio de tamaño real (fuentes, imágenes,
+    //    resize de ventana o del sidebar). Esto es lo más fiable: no depende
+    //    de adivinar cuándo termina de cargar cada cosa. ──
+    if (window.ResizeObserver) {
+        const ro = new ResizeObserver(() => applyState());
+        ro.observe(clip);
+        ro.observe(list);
+    } else {
+        window.addEventListener('resize', applyState);
+    }
+
+    // Red de seguridad extra por si algún navegador no dispara el ResizeObserver
+    // a tiempo (imágenes rotas, fuentes tardías, primer pintado, etc.)
+    list.querySelectorAll('img').forEach(img => {
+        if (!img.complete) {
+            img.addEventListener('load', applyState, { once: true });
+            img.addEventListener('error', applyState, { once: true });
+        }
+    });
+    window.addEventListener('load', applyState, { once: true });
+    [0, 50, 150, 400, 900].forEach(t => setTimeout(applyState, t));
+    applyState();
 }
 
 function _todayLabel() {
@@ -607,53 +631,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initNotaWidget();
     initEstadoWidget();
 });
-// ── Notificaciones de recordatorio (push reales vía Firebase) ─────────
-// El calendario en sí vive en localStorage, pero los recordatorios con
-// hora necesitan que el SERVIDOR los revise cada minuto y mande el push
-// (así llegan aunque el usuario tenga la pestaña o el navegador cerrado).
-// Por eso, cada vez que se añade/borra un evento CON recordatorio,
-// avisamos al backend para que guarde/borre esa fila en su propia BD.
-//
-// event_date: "YYYY-MM-DD" (la key del día)
-// reminder_time: "HH:MM"
-// reminder_mode: "daily"    → avisa cada día a esa hora hasta el evento
-//                "same_day" → avisa una sola vez, el día del evento
-
-async function _syncReminderToServer(ev, dayKey) {
-    try {
-        const res = await fetch('/api/calendar/reminders', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                label:         ev.label,
-                type:          ev.type,
-                event_date:    dayKey,
-                reminder_time: ev.reminder,
-                reminder_mode: ev.reminderMode,
-            }),
+// ── Notificaciones de recordatorio ───────────────────────────
+function _scheduleEventNotification(label, timeStr, dateKey) {
+    // dateKey formato: "YYYY-MM-DD", timeStr: "HH:MM"
+    const [year, month, day] = dateKey.split('-').map(Number);
+    const [hours, minutes]   = timeStr.split(':').map(Number);
+    const notifTime = new Date(year, month - 1, day, hours, minutes, 0);
+    const now = Date.now();
+    const delay = notifTime.getTime() - now;
+    if (delay <= 0) return; // hora pasada
+    setTimeout(() => {
+        new Notification('⏰ WikiStudent — Recordatorio', {
+            body: label,
+            icon: '/wiki/favicon.png',
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-
-        // Guardamos el id que nos da el servidor junto al evento en
-        // localStorage, para poder borrarlo de ahí si el usuario elimina
-        // el evento más tarde.
-        const cur = getDayData(dayKey);
-        const idx = cur.events.findIndex(e => e.localId === ev.localId);
-        if (idx !== -1) {
-            cur.events[idx].remoteId = data.id;
-            setDayData(dayKey, cur);
-        }
-    } catch (err) {
-        console.error('[Recordatorios] No se pudo registrar en el servidor:', err);
-        showToast('El evento se guardó, pero el recordatorio no se pudo activar. Revisa tu conexión.', false);
-    }
-}
-
-async function _deleteReminderFromServer(remoteId) {
-    try {
-        await fetch(`/api/calendar/reminders/${remoteId}`, { method: 'DELETE' });
-    } catch (err) {
-        console.error('[Recordatorios] No se pudo borrar del servidor:', err);
-    }
+    }, delay);
 }
