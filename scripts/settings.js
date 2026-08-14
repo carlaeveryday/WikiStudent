@@ -215,6 +215,66 @@
     bindSlider('slider-notif-vol', 'val-notif-vol');
 
     /* ══════════════════════════════════════════════════════
+       SONIDO — persistencia de preferencias + botones "Probar"
+       (leídas por sonidos.js vía window.WSAudio.getPrefs())
+       ══════════════════════════════════════════════════════ */
+
+    const selPomodoroSound = document.getElementById('select-pomodoro-sound');
+    const selNotifSound    = document.getElementById('select-notif-sound');
+    const sliderPomodoroVol = document.getElementById('slider-pomodoro-vol');
+    const sliderNotifVol    = document.getElementById('slider-notif-vol');
+    const toggleAlarmRepeat = document.getElementById('toggle-alarm-repeat');
+
+    // Cargar preferencias guardadas al abrir Ajustes
+    (function cargarPrefsSonido() {
+        const savedPomodoroSound = localStorage.getItem('ws_pomodoro_sound');
+        const savedNotifSound    = localStorage.getItem('ws_notif_sound');
+        const savedPomodoroVol   = localStorage.getItem('ws_pomodoro_vol');
+        const savedNotifVol      = localStorage.getItem('ws_notif_vol');
+        const savedAlarmRepeat   = localStorage.getItem('ws_alarm_repeat');
+
+        if (savedPomodoroSound && selPomodoroSound) selPomodoroSound.value = savedPomodoroSound;
+        if (savedNotifSound && selNotifSound) selNotifSound.value = savedNotifSound;
+        if (savedPomodoroVol && sliderPomodoroVol) {
+            sliderPomodoroVol.value = savedPomodoroVol;
+            document.getElementById('val-pomodoro-vol').textContent = savedPomodoroVol + '%';
+        }
+        if (savedNotifVol && sliderNotifVol) {
+            sliderNotifVol.value = savedNotifVol;
+            document.getElementById('val-notif-vol').textContent = savedNotifVol + '%';
+        }
+        if (savedAlarmRepeat !== null && toggleAlarmRepeat) {
+            toggleAlarmRepeat.checked = savedAlarmRepeat === 'true';
+        }
+    })();
+
+    selPomodoroSound?.addEventListener('change', () => {
+        localStorage.setItem('ws_pomodoro_sound', selPomodoroSound.value);
+    });
+    selNotifSound?.addEventListener('change', () => {
+        localStorage.setItem('ws_notif_sound', selNotifSound.value);
+    });
+    sliderPomodoroVol?.addEventListener('change', () => {
+        localStorage.setItem('ws_pomodoro_vol', sliderPomodoroVol.value);
+    });
+    sliderNotifVol?.addEventListener('change', () => {
+        localStorage.setItem('ws_notif_vol', sliderNotifVol.value);
+    });
+    toggleAlarmRepeat?.addEventListener('change', () => {
+        localStorage.setItem('ws_alarm_repeat', toggleAlarmRepeat.checked);
+    });
+
+    // Botones "Probar" — reproducen el sonido seleccionado con el volumen actual
+    document.getElementById('btn-test-pomodoro-sound')?.addEventListener('click', () => {
+        window.WSAudio?.playAlarma(selPomodoroSound?.value, Number(sliderPomodoroVol?.value ?? 70));
+    });
+    document.getElementById('btn-test-notif-sound')?.addEventListener('click', () => {
+        const sonido = selNotifSound?.value;
+        if (!sonido || sonido === 'none') { mostrarToast('Selecciona un sonido primero', 'error'); return; }
+        window.WSAudio?.playNotif(sonido, Number(sliderNotifVol?.value ?? 40));
+    });
+
+    /* ══════════════════════════════════════════════════════
        NOTIFICACIONES — activar Y desactivar
        ══════════════════════════════════════════════════════ */
 

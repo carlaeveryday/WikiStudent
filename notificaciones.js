@@ -94,3 +94,68 @@ if (document.readyState === "loading") {
 } else {
   inicializarNotificaciones();
 }
+
+// ============================================================
+// NOTIFICACIONES INTERNAS
+// ------------------------------------------------------------
+// Estas son distintas de las notificaciones Push de arriba:
+// no dependen del permiso del navegador ni de que el Service
+// Worker esté registrado. Son avisos visuales (una tarjeta
+// "toast" flotante) + un sonido generado con Web Audio API
+// (ver sonidos.js), pensados para eventos que ocurren MIENTRAS
+// el usuario tiene la pestaña abierta (fin de Pomodoro,
+// recordatorio de agenda, logro desbloqueado, etc.).
+//
+// Se usan así desde cualquier otro script:
+//   window.WSNotify.mostrarInterna("Título", "Cuerpo del mensaje");
+// ============================================================
+(function () {
+  function crearContenedor() {
+    let cont = document.getElementById("ws-notif-container");
+    if (!cont) {
+      cont = document.createElement("div");
+      cont.id = "ws-notif-container";
+      document.body.appendChild(cont);
+    }
+    return cont;
+  }
+
+  /**
+   * Muestra una "Notificación Interna": tarjeta visual dentro de la
+   * propia web + sonido (según lo configurado en Ajustes > Sonido).
+   * @param {string} titulo
+   * @param {string} cuerpo
+   * @param {string} icono  nombre de un icono Material Symbols (opcional)
+   */
+  function mostrarInterna(titulo, cuerpo = "", icono = "notifications") {
+    const cont = crearContenedor();
+
+    const card = document.createElement("div");
+    card.className = "ws-notif-card";
+    card.innerHTML = `
+      <span class="material-symbols-outlined ws-notif-card__icon">${icono}</span>
+      <div class="ws-notif-card__texto">
+        <div class="ws-notif-card__titulo">${titulo}</div>
+        ${cuerpo ? `<div class="ws-notif-card__cuerpo">${cuerpo}</div>` : ""}
+      </div>
+      <button type="button" class="ws-notif-card__cerrar" aria-label="Cerrar">✕</button>
+    `;
+    cont.appendChild(card);
+
+    // Sonido de la notificación interna, usando la preferencia guardada
+    // en Ajustes > Sonido > Notificaciones sonoras.
+    window.WSAudio?.playNotifGuardada?.();
+
+    requestAnimationFrame(() => card.classList.add("ws-notif-card--visible"));
+
+    function cerrar() {
+      card.classList.remove("ws-notif-card--visible");
+      setTimeout(() => card.remove(), 300);
+    }
+    card.querySelector(".ws-notif-card__cerrar").addEventListener("click", cerrar);
+    const auto = setTimeout(cerrar, 6000);
+    card.addEventListener("mouseenter", () => clearTimeout(auto));
+  }
+
+  window.WSNotify = { mostrarInterna };
+})();

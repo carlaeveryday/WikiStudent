@@ -156,6 +156,7 @@ function resetTimer() {
     pauseTimer();
     timeLeft = totalTime;
     timerLabel.textContent = getLabel(totalTime);
+    finalizarEstadoAntiTrampas();
     refreshAll();
 }
 
@@ -164,6 +165,7 @@ function setTiempo(nuevoTotal) {
     timeLeft  = nuevoTotal;
     pauseTimer();
     timerLabel.textContent = getLabel(nuevoTotal);
+    finalizarEstadoAntiTrampas();
     refreshAll();
 }
 
@@ -225,6 +227,13 @@ function bindLongPress(btn, delta) {
 function onSesionCompletada() {
     const pts = calcularPuntos(totalTime);
     puntosAcum += pts;
+
+    // Sesión terminada con normalidad -> limpiamos el estado anti-trampas
+    // (comodines, banner, marca de ausencia) para la próxima sesión.
+    finalizarEstadoAntiTrampas();
+
+    // Alarma sonora (Web Audio API, ver sonidos.js) + repetición opcional
+    reproducirAlarmaConRepeticion();
 
     // 1. Actualiza ranking en BD y re-renderiza el podio
     actualizarPuntosUsuario(pts).then(nuevaPosicion => {
@@ -325,9 +334,243 @@ function cerrarModal() {
 }
 
 // ─────────────────────────────────────────────
+//  ANTI-TRAMPAS: ausencia de pestaña + comodines
+// ─────────────────────────────────────────────
+const ANTICHEAT_CONFIG = {
+    limiteAusenciaMs:   5 * 60 * 1000, // 5 minutos fuera de la pestaña -> se cancela
+    penalizacionPuntos: 15,            // puntos que se pierden al cancelar por ausencia
+    precioComodinExtra: '0.99',        // € — solo texto; el cobro real requiere pasarela de pago
+};
+
+const anticheat = {
+    hiddenAt:         null,   // Date.now() de cuándo se ocultó la pestaña
+    emergencyActive:  false,  // hay un comodín "congelando" la sesión ahora mismo
+    freeWildcardUsed: false,  // ya se gastó el comodín gratis de esta sesión
+    extraWildcards:   0,      // comodines extra comprados en esta sesión
+};
+
+/** ¿Hay una sesión en curso (corriendo o pausada a mitad de cuenta atrás)? */
+function estaEnSesion() {
+    return isRunning || (timeLeft > 0 && timeLeft < totalTime);
+}
+
+/** Limpia todo el estado anti-trampas. Se llama al resetear, cambiar el
+ *  tiempo o completar una sesión con normalidad. */
+function finalizarEstadoAntiTrampas() {
+    anticheat.hiddenAt = null;
+    anticheat.emergencyActive = false;
+    anticheat.freeWildcardUsed = false;
+    anticheat.extraWildcards = 0;
+    ocultarBannerPomodoro();
+    renderAntiCheatUI();
+}
+
+/* ── UI: banner de estado + botón de comodín (inyectados en #pomodoro) ── */
+const elPomodoroCard = document.getElementById('pomodoro');
+
+const elBannerPomodoro = document.createElement('div');
+elBannerPomodoro.id = 'pomodoro-banner';
+elBannerPomodoro.style.display = 'none';
+elPomodoroCard?.appendChild(elBannerPomodoro);
+
+const elComodinRow = document.createElement('div');
+elComodinRow.id = 'pomodoro-comodin-row';
+elComodinRow.innerHTML = `
+    <button type="button" id="btn-comodin" class="pomodoro-comodin-btn" title="Congela la sesión sin perder puntos">
+        🆘 Comodín de emergencia <span id="comodin-count">(1 gratis)</span>
+    </button>
+`;
+elComodinRow.style.display = 'none';
+document.getElementById('btn-pomodoro-container')?.insertAdjacentElement('afterend', elComodinRow);
+const btnComodin = elComodinRow.querySelector('#btn-comodin');
+const elComodinCount = elComodinRow.querySelector('#comodin-count');
+
+function mostrarBannerPomodoro(msg, tipo = 'info') {
+    elBannerPomodoro.textContent = msg;
+    elBannerPomodoro.className = `pomodoro-banner pomodoro-banner--${tipo}`;
+    elBannerPomodoro.style.display = 'block';
+}
+function ocultarBannerPomodoro() {
+    elBannerPomodoro.style.display = 'none';
+}
+
+function renderAntiCheatUI() {
+    const enSesion = estaEnSesion();
+    elComodinRow.style.display = enSesion ? 'flex' : 'none';
+    elComodinCount.textContent = !anticheat.freeWildcardUsed
+        ? '(1 gratis)'
+        : `(extra: ${ANTICHEAT_CONFIG.precioComodinExtra} €)`;
+    btnComodin.disabled = anticheat.emergencyActive;
+}
+
+/* ── Alarma sonora al completar (usa sonidos.js -> window.WSAudio) ── */
+function reproducirAlarmaConRepeticion() {
+    if (!window.WSAudio) return; // sonidos.js no está cargado en esta página
+    const prefs = window.WSAudio.getPrefs?.() || {};
+    window.WSAudio.playAlarmaGuardada?.();
+    if (prefs.alarmRepeat) {
+        // Repite hasta 3 veces (cada 1.4s) mientras el modal de fin siga abierto
+        let veces = 1;
+        const repetir = setInterval(() => {
+            const modalAbierto = document.getElementById('pomodoro-modal')?.classList.contains('pm-visible');
+            if (!modalAbierto || veces >= 3) { clearInterval(repetir); return; }
+            window.WSAudio.playAlarmaGuardada?.();
+            veces++;
+        }, 1400);
+    }
+}
+
+/* ── Detección de ausencia: document.hidden / visibilitychange ── */
+document.addEventListener('visibilitychange', () => {
+    if (!estaEnSesion()) return; // no hay nada que proteger
+
+    if (document.hidden) {
+        // El usuario se va: guardamos el instante exacto y pausamos ya mismo.
+        anticheat.hiddenAt = Date.now();
+        if (isRunning) pauseTimer();
+        return;
+    }
+
+    // Vuelve a la pestaña
+    if (anticheat.hiddenAt === null) return; // no estaba fuera (ya estaba pausado a mano)
+    const ausenteMs = Date.now() - anticheat.hiddenAt;
+    anticheat.hiddenAt = null;
+
+    if (anticheat.emergencyActive) {
+        // Comodín activo: sin penalización. La sesión sigue congelada
+        // hasta que el usuario pulse PLAY manualmente.
+        mostrarBannerPomodoro('🧊 Sesión congelada por comodín. Pulsa PLAY para continuar cuando quieras.', 'info');
+        return;
+    }
+
+    if (ausenteMs > ANTICHEAT_CONFIG.limiteAusenciaMs) {
+        cancelarPorAusencia();
+    } else {
+        mostrarBannerPomodoro('⏸ Pausado por cambio de pestaña. Pulsa PLAY para continuar.', 'warn');
+    }
+});
+
+/** Cancela la sesión en curso por ausencia prolongada (> 5 min fuera de
+ *  la pestaña sin comodín activo). Resetea el timer y penaliza puntos. */
+async function cancelarPorAusencia() {
+    resetTimer(); // ya limpia el estado anti-trampas y refresca el display
+
+    mostrarBannerPomodoro(
+        `⚠️ Sesión cancelada: estuviste más de 5 min fuera de la pestaña. Has perdido ${ANTICHEAT_CONFIG.penalizacionPuntos} puntos.`,
+        'error'
+    );
+
+    if (window.WSNotify) {
+        window.WSNotify.mostrarInterna('Sesión de Pomodoro cancelada', 'Estuviste ausente más de 5 minutos.');
+    }
+
+    try {
+        const res = await fetch('/api/ranking/add-points', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ puntos: -ANTICHEAT_CONFIG.penalizacionPuntos }),
+        });
+        const data = await res.json().catch(() => null);
+        if (data) actualizarStatsDashboard({ todayPoints: data.todayPoints, totalPoints: data.totalPoints, position: data.position });
+    } catch (err) {
+        console.warn('[Pomodoro] No se pudo aplicar la penalización en el servidor:', err);
+    }
+}
+
+/* ── Comodín de emergencia ── */
+function activarComodin() {
+    anticheat.emergencyActive = true;
+    if (isRunning) pauseTimer();
+    mostrarBannerPomodoro('🆘 Comodín activado: la sesión está congelada sin penalización. Vuelve cuando puedas.', 'info');
+    renderAntiCheatUI();
+}
+
+btnComodin.addEventListener('click', async () => {
+    if (!estaEnSesion() || anticheat.emergencyActive) return;
+
+    if (!anticheat.freeWildcardUsed) {
+        anticheat.freeWildcardUsed = true;
+        activarComodin();
+        return;
+    }
+
+    // Ya se usó el comodín gratis: hay que "comprar" uno adicional.
+    const comprado = await mostrarModalCompraComodin();
+    if (comprado) {
+        anticheat.extraWildcards++;
+        activarComodin();
+    }
+});
+
+/**
+ * Modal de compra de comodín adicional (0,99 €).
+ * ⚠️ IMPORTANTE: esto es SOLO la interfaz. Para cobrar de verdad hay que
+ * integrar una pasarela real (p. ej. Stripe Checkout) en el backend antes
+ * de dar el comodín por "pagado". Aquí se simula la confirmación para
+ * que puedas conectar tu propio endpoint de pago más adelante.
+ */
+function mostrarModalCompraComodin() {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'ws-modal-overlay';
+        overlay.innerHTML = `
+            <div class="ws-modal">
+                <div class="ws-modal__icon" style="background:rgba(255,107,43,0.1);color:var(--naranja-neon)">
+                    <span class="material-symbols-outlined">emergency</span>
+                </div>
+                <div class="ws-modal__title">Comodín adicional</div>
+                <div class="ws-modal__desc">
+                    Ya has usado tu comodín gratuito de esta sesión.
+                    Puedes comprar uno adicional por <strong>${ANTICHEAT_CONFIG.precioComodinExtra} €</strong>
+                    para congelar la sesión sin perder puntos.
+                </div>
+                <div class="ws-modal__actions">
+                    <button class="cfg-btn cfg-btn--neon" id="comodin-cancelar">Cancelar</button>
+                    <button class="cfg-btn cfg-btn--naranja" id="comodin-comprar">Comprar por ${ANTICHEAT_CONFIG.precioComodinExtra} €</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.querySelector('#comodin-cancelar').addEventListener('click', () => {
+            overlay.remove();
+            resolve(false);
+        });
+        overlay.querySelector('#comodin-comprar').addEventListener('click', async () => {
+            const btn = overlay.querySelector('#comodin-comprar');
+            btn.disabled = true;
+            btn.textContent = 'Procesando…';
+            try {
+                // TODO: sustituir por una llamada real a tu backend de pagos, p.ej.:
+                // const res = await fetch('/api/pomodoro/buy-wildcard', { method: 'POST' });
+                // y comprobar res.ok antes de resolver(true).
+                await new Promise((r) => setTimeout(r, 600)); // simula latencia de pago
+                overlay.remove();
+                resolve(true);
+            } catch {
+                btn.disabled = false;
+                btn.textContent = `Comprar por ${ANTICHEAT_CONFIG.precioComodinExtra} €`;
+            }
+        });
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) { overlay.remove(); resolve(false); }
+        });
+    });
+}
+
+// ─────────────────────────────────────────────
 //  EVENTOS
 // ─────────────────────────────────────────────
-playBtn.addEventListener('click', () => { isRunning ? pauseTimer() : startTimer(); });
+playBtn.addEventListener('click', () => {
+    // Si veníamos de un comodín activo, al pulsar PLAY se "consume": se
+    // reanuda la sesión con normalidad y queda sujeta de nuevo a las 5 min.
+    if (anticheat.emergencyActive) {
+        anticheat.emergencyActive = false;
+        ocultarBannerPomodoro();
+    }
+    isRunning ? pauseTimer() : startTimer();
+    renderAntiCheatUI();
+});
 resetBtn.addEventListener('click', resetTimer);
 
 // Long press en +1 y -1 min

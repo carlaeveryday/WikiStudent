@@ -70,11 +70,6 @@
                     <a href="/pages/quizzes.html">Quizzes</a>
                 </li>
                 <li class="sidebar__item">
-                    <span class="material-symbols-outlined">menu_book</span>
-                    <a href="/pages/archivos.html">Espacio de Lectura</a>
-                    <span class="sidebar__badge">Nuevo</span>
-                </li>
-                <li class="sidebar__item">
                     <span class="material-symbols-outlined">auto_stories</span>
                     <a href="/pages/recursos.html">Recursos Comunidad</a>
                 </li>
@@ -722,6 +717,9 @@
               <option value="ola">🌊 Ola de playa</option>
               <option value="espacio">🚀 Despegue espacial</option>
             </select>
+            <button type="button" class="cfg-btn cfg-btn--neon cfg-btn--test-sound" id="btn-test-pomodoro-sound">
+              <span class="material-symbols-outlined" style="font-size:16px">play_circle</span> Probar
+            </button>
           </div>
           <div class="cfg-row">
             <div class="cfg-row-info">
@@ -756,7 +754,8 @@
         </div>
 
         <div class="cfg-section">
-          <div class="cfg-section-label">Notificaciones sonoras</div>
+          <div class="cfg-section-label">Notificaciones Internas — Sonido</div>
+          <div class="cfg-row-desc" style="margin:-6px 0 4px 0">Sonido que se reproduce dentro de la propia web (no depende del permiso del navegador)</div>
           <div class="cfg-row cfg-row--col">
             <div class="cfg-row-info">
               <div class="cfg-row-icon" style="background:rgba(0,210,255,0.08);color:var(--azul-neon)">
@@ -772,6 +771,9 @@
               <option value="soft">🎵 Suave</option>
               <option value="alert">📣 Alerta</option>
             </select>
+            <button type="button" class="cfg-btn cfg-btn--neon cfg-btn--test-sound" id="btn-test-notif-sound">
+              <span class="material-symbols-outlined" style="font-size:16px">play_circle</span> Probar
+            </button>
           </div>
           <div class="cfg-row">
             <div class="cfg-row-info">
@@ -811,7 +813,13 @@
         </div>
 
         <div class="cfg-section">
-          <div class="cfg-section-label">Qué quieres recibir</div>
+          <div class="cfg-section-label">🔔 Notificaciones Internas</div>
+          <div class="cfg-row-desc" style="margin:-6px 0 4px 0">
+            Son los avisos visuales y sonoros propios de WikiStudent (aparecen
+            dentro de la web mientras la tienes abierta). Son distintas de las
+            <strong>notificaciones del navegador</strong> de arriba, que llegan
+            aunque tengas la pestaña cerrada.
+          </div>
 
           <div class="cfg-row">
             <div class="cfg-row-info">
@@ -1007,6 +1015,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
 
+<script src="/sonidos.js"></script>
 <script src="/notificaciones.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="/scripts/kanban.js"></script>
