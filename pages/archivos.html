@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Lectura y Archivos | WikiStudent</title>
+    <link rel="stylesheet" href="/styles/archivos.css">
+    <link rel="stylesheet" href="/styles/estilos_generales.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+    <!--- SIDEBAR SECTION --->
+    <aside class="sidebar" id="sidebar">
+        <div class="top-menu">
+            <div id="img-container">
+                <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+            </div>
+            <div class="sidebar__brand"><span class="orange-word">Wiki</span><span class="white-word">Student</span></div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <a href="/">Dashboard</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">tag</span>
+                    <a href="/pages/discord.html">Discord</a>
+                    <span class="sidebar__badge">Nuevo</span>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">emoji_events</span>
+                    <a href="/pages/ranking.html">Ranking</a>
+                </li>
+
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Herramientas</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">timer</span>
+                    <a href="/pages/pomodoro.html">Pomodoro</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">style</span>
+                    <a href="/pages/flashcards.html">Flashcards</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">quiz</span>
+                    <a href="/pages/quizzes.html">Quizzes</a>
+                </li>
+                <li class="sidebar__item sidebar__item--active">
+                    <span class="material-symbols-outlined">menu_book</span>
+                    <a href="/pages/archivos.html">Espacio de Lectura</a>
+                    <span class="sidebar__badge">Nuevo</span>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">smart_toy</span>
+                    <a href="/pages/directorio.html">Directorio IA</a>
+                </li>
+
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Universidad</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">account_tree</span>
+                    <a href="/pages/mapa.html">Mapa de grados</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">psychology</span>
+                    <a href="/pages/vocacional.html">Tests vocacionales</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">calculate</span>
+                    <a href="/pages/calculadora.html">Calc. Selectividad</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <a href="/pages/recursos.html">Recursos Universidad</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar__footer">
+            <div class="sidebar__user">
+                <div class="sidebar__avatar">CG</div>
+                <div class="sidebar__user-info">
+                    <span class="sidebar__user-name">Carla G.</span>
+                    <span class="sidebar__user-plan">
+                        <span class="material-symbols-outlined">lock</span>
+                        Plan gratuito
+                    </span>
+                </div>
+            </div>
+            <button class="sidebar__pro-btn">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                <span class="sidebar__pro-text">Hazte Pro</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN SECTION -->
+    <main>
+        <header class="test__header header__apartados">
+            <span class="title__apartados inicio-title">ESPACIO DE</span><span class="title__apartados final-title"> LECTURA Y ARCHIVOS</span>
+            <h3>TODO TU MATERIAL, EN UN SOLO LUGAR</h3>
+        </header>
+
+        <div class="lectura-container">
+
+            <!-- AVISO DE HONESTIDAD -->
+            <div class="honestidad-banner" id="honestidad-banner">
+                <span class="material-symbols-outlined icono-honestidad">verified_user</span>
+                <div class="honestidad-banner__texto">
+                    <span class="honestidad-banner__titulo">Compromiso con tu concentración</span>
+                    <p>Nos tomamos muy en serio la honestidad y el enfoque durante el estudio. Ponemos a tu disposición este visor de documentos para que tengas todo tu material en un solo lugar y no necesites salir de la web, evitando la tentación de caer en distracciones como Reels o redes sociales. <strong>¡Tu concentración es lo primero!</strong></p>
+                </div>
+                <span class="material-symbols-outlined honestidad-banner__cerrar" id="cerrar-honestidad">close</span>
+            </div>
+
+            <!-- ZONA DE CARGA -->
+            <div class="lectura-upload" id="lectura-upload">
+                <span class="material-symbols-outlined icono-upload">cloud_upload</span>
+                <h4>Arrastra tus archivos aquí</h4>
+                <p>PDF, imágenes (JPG, PNG, WEBP) o archivos de texto (TXT, MD) — se guardan en este navegador</p>
+                <span class="lectura-upload__btn" id="lectura-upload-btn">Seleccionar archivo</span>
+                <input type="file" id="input-archivo" accept=".pdf,.txt,.md,image/*" multiple hidden>
+            </div>
+
+            <!-- CUERPO: LISTA + VISOR -->
+            <div class="lectura-body">
+
+                <!-- LISTA DE ARCHIVOS -->
+                <div class="archivos-panel">
+                    <p class="archivos-panel__titulo">Tus documentos</p>
+                    <ul class="archivos-lista" id="archivos-lista">
+                        <!-- Se rellena por JS -->
+                    </ul>
+                    <p class="archivos-vacio" id="archivos-vacio">Aún no has subido ningún documento. Súbelo arriba para empezar a leer y anotar.</p>
+                </div>
+
+                <!-- VISOR -->
+                <div class="visor-panel">
+                    <div class="visor-toolbar">
+                        <div class="visor-tool activo" data-tool="select" title="Seleccionar / mover">
+                            <span class="material-symbols-outlined">arrow_selector_tool</span> Seleccionar
+                        </div>
+                        <div class="visor-tool" data-tool="highlight" title="Resaltar texto o zonas">
+                            <span class="material-symbols-outlined">border_color</span> Resaltar
+                        </div>
+                        <div class="visor-tool" data-tool="note" title="Añadir nota adhesiva">
+                            <span class="material-symbols-outlined">note_add</span> Nota
+                        </div>
+
+                        <div class="visor-colors" id="visor-colors">
+                            <div class="color-swatch activo" data-color="yellow"></div>
+                            <div class="color-swatch" data-color="green"></div>
+                            <div class="color-swatch" data-color="pink"></div>
+                            <div class="color-swatch" data-color="blue"></div>
+                        </div>
+
+                        <div class="visor-toolbar-spacer"></div>
+
+                        <div class="visor-tool" id="btn-limpiar-anotaciones" title="Borrar todas las anotaciones de este archivo">
+                            <span class="material-symbols-outlined">layers_clear</span> Limpiar anotaciones
+                        </div>
+                        <div class="visor-tool visor-tool--danger" id="btn-borrar-archivo" title="Eliminar este archivo">
+                            <span class="material-symbols-outlined">delete</span> Eliminar archivo
+                        </div>
+                    </div>
+
+                    <div class="visor-area" id="visor-area">
+                        <div class="visor-vacio" id="visor-vacio">
+                            <span class="material-symbols-outlined">description</span>
+                            <p>Selecciona o sube un documento para empezar a leer, subrayar y tomar notas.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!--- FOOTER --->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="/scripts/archivos.js"></script>
+</body>
+</html>
