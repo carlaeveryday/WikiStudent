@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="/styles/pomodoro.css">
     <link rel="stylesheet" href="/styles/ranking.css">
     <link rel="stylesheet" href="/styles/settings.css">
+    <link rel="stylesheet" href="/styles/niveles.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 <body data-username="<%= user.username %>">
@@ -114,28 +115,38 @@
     <header class="main__header">
         <div class="main__header-content">
             <div id="daily-overview">
-                <div class="welcome">
-                    <span class="orange-word">¡Bienvenido/a, </span><span class="white-word"><%= user.username %></span><span class="orange-word">!</span>
-                </div>
-                <p class="main__header-info">
-                    Cargando fecha...
-                </p>
-            </div>
-            <div id="header-center">
-                <div class="header-stat-pill" id="header-streak-pill">
-                    <span class="material-symbols-outlined">local_fire_department</span>
-                    <span id="header-streak-val">—</span>
-                    <span class="header-stat-label">días de racha</span>
-                </div>
-                <div class="header-stat-pill" id="header-pts-pill">
-                    <span class="material-symbols-outlined">star</span>
-                    <span id="header-pts-val">—</span>
-                    <span class="header-stat-label">pts hoy</span>
-                </div>
-                <div class="header-stat-pill" id="header-time-pill">
-                    <span class="material-symbols-outlined">timer</span>
-                    <span id="header-time-val">—</span>
-                    <span class="header-stat-label">estudiado</span>
+                <div class="header-user-block">
+                    <!-- Avatar del usuario con anillo de progreso de nivel -->
+                    <div class="level-ring" id="header-level-ring" tabindex="0">
+                        <svg class="level-ring__svg" viewBox="0 0 64 64">
+                            <circle class="level-ring__bg" cx="32" cy="32" r="28"></circle>
+                            <circle class="level-ring__bar" id="level-ring-bar" cx="32" cy="32" r="28"></circle>
+                        </svg>
+                        <% if (user.avatar_url) { %>
+                            <img class="level-ring__avatar-img" id="header-avatar-img" src="<%= user.avatar_url %>" alt="Avatar de <%= user.username %>">
+                        <% } else { %>
+                            <div class="level-ring__avatar" id="header-avatar-initials"><%= user.username.slice(0, 2).toUpperCase() %></div>
+                        <% } %>
+                        <div class="level-ring__badge" id="header-level-num">1</div>
+
+                        <!-- Tooltip con el detalle del progreso -->
+                        <div class="level-ring__tooltip" id="header-level-tooltip">
+                            <span id="header-level-tooltip-title">Novato</span> · <span id="header-level-tooltip-progress">0 / 50 pts</span>
+                        </div>
+                    </div>
+
+                    <div class="header-user-text">
+                        <div class="welcome">
+                            <span class="orange-word">¡Bienvenido/a, </span><span class="white-word"><%= user.username %></span><span class="orange-word">!</span>
+                        </div>
+                        <p class="main__header-info">
+                            Cargando fecha...
+                        </p>
+                        <div class="user-title-chip" id="header-title-chip">
+                            <span class="material-symbols-outlined">military_tech</span>
+                            <span id="header-title-chip-text">Novato</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="header-buttons">
@@ -511,6 +522,32 @@
               </div>
             </div>
             <button class="cfg-btn cfg-btn--neon" id="cfg-edit-foto-btn-alt" type="button">Cambiar foto</button>
+          </div>
+        </div>
+
+        <!-- ─── NIVEL Y TÍTULO ─── -->
+        <div class="cfg-section">
+          <div class="cfg-section-label">Tu nivel</div>
+          <div class="lvl-summary" id="cfg-level-summary">
+            <div class="lvl-summary__ring">
+              <svg class="level-ring__svg" viewBox="0 0 64 64">
+                <circle class="level-ring__bg" cx="32" cy="32" r="28"></circle>
+                <circle class="level-ring__bar" id="cfg-level-ring-bar" cx="32" cy="32" r="28"></circle>
+              </svg>
+              <div class="lvl-summary__num" id="cfg-level-num">1</div>
+            </div>
+            <div class="lvl-summary__text">
+              <div class="lvl-summary__title" id="cfg-level-title">Novato</div>
+              <div class="lvl-summary__pts" id="cfg-level-pts">0 / 50 pts para el siguiente nivel</div>
+              <div class="lvl-summary__bar">
+                <div class="lvl-summary__bar-fill" id="cfg-level-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lvl-section-sub">Títulos</div>
+          <div class="lvl-titles-grid" id="cfg-titles-grid">
+            <!-- niveles.js rellena aquí una tarjeta por título (bloqueado/conseguido) -->
           </div>
         </div>
 
@@ -973,45 +1010,18 @@
     <script src="/scripts/pomodoro.js"></script>
     <script src="/scripts/dashboard_username_sync.js"></script>
     <script src="/scripts/settings.js"></script>
+    <script src="/scripts/niveles.js"></script>
 
     <script>
         document.getElementById('sidebar-overlay').addEventListener('click', function() {
             document.getElementById('open-menu-mobile').checked = false;
         });
 
-        // ── Sincronizar pills del header con los stats ──
-        function syncHeaderPills(data) {
-            const sv = document.getElementById('header-streak-val');
-            const pv = document.getElementById('header-pts-val');
-            const tv = document.getElementById('header-time-val');
-            if (sv && data.streak !== undefined) sv.textContent = data.streak;
-            if (pv && data.todayPoints !== undefined) pv.textContent = data.todayPoints;
-            if (tv && data.todaySeconds !== undefined) {
-                const h = Math.floor(data.todaySeconds / 3600);
-                const m = Math.floor((data.todaySeconds % 3600) / 60);
-                tv.textContent = h > 0 ? h + 'h ' + m + 'm' : (m > 0 ? m + 'm' : '0m');
-            }
-        }
-        // Observar cambios en los stat cards (ranking-db.js los actualiza)
-        const _origActualizar = window.actualizarStatsDashboard;
-        window.actualizarStatsDashboard = function(data) {
-            if (_origActualizar) _origActualizar(data);
-            syncHeaderPills(data);
-        };
-        document.addEventListener('DOMContentLoaded', () => {
-            // Leer desde los stat cards una vez cargados
-            setTimeout(() => {
-                const racha = document.getElementById('racha-days')?.textContent;
-                const pts   = document.getElementById('points')?.textContent;
-                const time  = document.getElementById('time-studied')?.textContent;
-                const sv = document.getElementById('header-streak-val');
-                const pv = document.getElementById('header-pts-val');
-                const tv = document.getElementById('header-time-val');
-                if (sv && racha) sv.textContent = racha;
-                if (pv && pts)   pv.textContent = pts;
-                if (tv && time)  tv.textContent = time;
-            }, 800);
-        });
+        // La sincronización de racha / puntos / tiempo estudiado ahora la hace
+        // directamente niveles.js (engancha a window.actualizarStatsDashboard,
+        // igual que hacía este script antes) y alimenta el sistema de niveles.
+        // Las tarjetas de #stats-container siguen actualizándose desde
+        // ranking-db.js como hasta ahora — ya no hay una copia duplicada arriba.
     </script>
 </body>
 </html>

@@ -1,0 +1,385 @@
+/* ══════════════════════════════════════════════════════════════
+   SISTEMA DE NIVELES — anillo de progreso, chip de título,
+   resumen en Perfil, grid de títulos y aviso de "subida de nivel".
+   Usa las mismas variables de color que el resto de la web
+   (estilos_generales.css) para no desentonar.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Circunferencia de un círculo r=28 → 2 * π * 28 ≈ 175.93.
+   Se usa tanto en el anillo del header como en el de Perfil,
+   que comparten el mismo viewBox. */
+:root {
+    --lvl-ring-circumference: 175.93;
+}
+
+/* ── Bloque avatar + texto en el header ─────────────────────── */
+.header-user-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-user-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ── Anillo de nivel (versión header, pequeña) ──────────────── */
+.level-ring {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    cursor: default;
+}
+
+.level-ring__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.level-ring__bg {
+    stroke: rgba(6, 213, 240, 0.12);
+    stroke-width: 4;
+    fill: transparent;
+}
+
+.level-ring__bar {
+    stroke: var(--naranja-neon);
+    stroke-width: 4;
+    fill: transparent;
+    stroke-linecap: round;
+    stroke-dasharray: var(--lvl-ring-circumference);
+    stroke-dashoffset: var(--lvl-ring-circumference);
+    filter: drop-shadow(0 0 4px rgba(255, 107, 43, 0.6));
+    transition: stroke-dashoffset 0.6s ease;
+}
+
+.level-ring__avatar,
+.level-ring__avatar-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.level-ring__avatar {
+    background: var(--naranja-neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.level-ring__avatar-img {
+    object-fit: cover;
+    border: 1px solid rgba(0, 210, 255, 0.25);
+}
+
+.level-ring__badge {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 50%;
+    background: var(--azul-fondo, #0a192f);
+    border: 1.5px solid var(--azul-neon);
+    color: var(--azul-neon);
+    font-size: 0.62rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 6px rgba(0, 210, 255, 0.5);
+}
+
+/* Tooltip con el detalle de puntos, aparece al pasar el ratón/foco */
+.level-ring__tooltip {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    background: var(--azul-claro);
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 20;
+    pointer-events: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.level-ring:hover .level-ring__tooltip,
+.level-ring:focus .level-ring__tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* ── Chip de título bajo el "Bienvenido/a" ──────────────────── */
+.user-title-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    background: rgba(255, 107, 43, 0.1);
+    border: 1px solid rgba(255, 107, 43, 0.3);
+    color: var(--naranja-neon);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 10px 3px 8px;
+    border-radius: 50px;
+}
+
+.user-title-chip .material-symbols-outlined {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .header-user-block {
+        gap: 10px;
+    }
+    .level-ring {
+        width: 48px;
+        height: 48px;
+    }
+    .level-ring__avatar,
+    .level-ring__avatar-img {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESUMEN DE NIVEL — pestaña Perfil (ajustes)
+   ══════════════════════════════════════════════════════════════ */
+
+.lvl-summary {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 4px 20px 4px;
+}
+
+.lvl-summary__ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+}
+
+.lvl-summary__ring .level-ring__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.lvl-summary__num {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--texto-principal);
+    text-shadow: 0 0 12px rgba(255, 107, 43, 0.5);
+}
+
+.lvl-summary__text {
+    flex: 1;
+    min-width: 0;
+}
+
+.lvl-summary__title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    margin-bottom: 3px;
+}
+
+.lvl-summary__pts {
+    font-size: 0.74rem;
+    color: rgba(230, 241, 255, 0.45);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.lvl-summary__bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(0, 210, 255, 0.12);
+    overflow: hidden;
+}
+
+.lvl-summary__bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--naranja-neon), #ffb27a);
+    box-shadow: 0 0 8px rgba(255, 107, 43, 0.5);
+    transition: width 0.6s ease;
+}
+
+.lvl-section-sub {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(230, 241, 255, 0.4);
+    margin: 4px 0 10px 4px;
+}
+
+/* ── Grid de títulos desbloqueables ─────────────────────────── */
+.lvl-titles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.lvl-title-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 14px 10px;
+    border-radius: 12px;
+    background: rgba(0, 180, 216, 0.04);
+    border: 1px solid rgba(0, 180, 216, 0.18);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.lvl-title-card .material-symbols-outlined {
+    font-size: 1.4rem;
+    color: rgba(230, 241, 255, 0.3);
+}
+
+.lvl-title-card__name {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: rgba(230, 241, 255, 0.45);
+}
+
+.lvl-title-card__req {
+    font-size: 0.62rem;
+    color: rgba(230, 241, 255, 0.3);
+    font-weight: 600;
+}
+
+/* Título ya conseguido */
+.lvl-title-card--unlocked {
+    background: rgba(255, 107, 43, 0.08);
+    border-color: rgba(255, 107, 43, 0.35);
+}
+
+.lvl-title-card--unlocked .material-symbols-outlined {
+    color: var(--naranja-neon);
+}
+
+.lvl-title-card--unlocked .lvl-title-card__name {
+    color: var(--texto-principal);
+}
+
+/* Título correspondiente al nivel actual, resaltado */
+.lvl-title-card--current {
+    border-color: var(--azul-neon);
+    box-shadow: 0 0 14px rgba(0, 210, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.lvl-title-card--current .material-symbols-outlined {
+    color: var(--azul-neon);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   AVISO DE SUBIDA DE NIVEL — toast flotante
+   ══════════════════════════════════════════════════════════════ */
+
+#lvl-up-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: var(--z-modal, 100000);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(145deg, #050e1a 0%, #081525 100%);
+    border: 2px solid var(--naranja-neon);
+    border-radius: 14px;
+    padding: 16px 22px 16px 16px;
+    box-shadow: 0 0 24px rgba(255, 107, 43, 0.35), 0 8px 40px rgba(0, 0, 0, 0.5);
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+    max-width: min(92vw, 340px);
+}
+
+#lvl-up-toast.lvl-up-toast--show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+#lvl-up-toast .lvl-up-toast__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 107, 43, 0.15);
+    border: 2px solid var(--naranja-neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 43, 0.6));
+}
+
+#lvl-up-toast .lvl-up-toast__icon .material-symbols-outlined {
+    color: var(--naranja-neon);
+    font-size: 1.5rem;
+}
+
+#lvl-up-toast .lvl-up-toast__label {
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(230, 241, 255, 0.45);
+    font-weight: 700;
+}
+
+#lvl-up-toast .lvl-up-toast__title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+    #lvl-up-toast {
+        left: 16px;
+        right: 16px;
+        top: 16px;
+        max-width: none;
+    }
+}

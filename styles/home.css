@@ -450,50 +450,16 @@ footer {
     }
 }
 /* ══════════════════════════════════════════════════════════════
-   HEADER — Pills de stats rápidas
+   HEADER
+   (el avatar + anillo de nivel + título viven en niveles.css;
+   las antiguas pills de racha/pts/tiempo se quitaron de aquí porque
+   duplicaban exactamente las tarjetas de #stats-container de abajo)
    ══════════════════════════════════════════════════════════════ */
 
 .main__header-content {
     flex-wrap: wrap;
     gap: 14px;
 }
-
-#header-center {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.header-stat-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(0, 210, 255, 0.15);
-    border-radius: 50px;
-    padding: 6px 14px 6px 10px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--texto-principal);
-    white-space: nowrap;
-    transition: border-color 0.2s, background 0.2s;
-}
-
-.header-stat-pill .material-symbols-outlined {
-    font-size: 1rem;
-    line-height: 1;
-}
-
-.header-stat-pill .header-stat-label {
-    color: rgba(230, 241, 255, 0.45);
-    font-weight: 600;
-    font-size: 0.72rem;
-}
-
-#header-streak-pill .material-symbols-outlined { color: #7f25f5; }
-#header-pts-pill    .material-symbols-outlined { color: #16d644; }
-#header-time-pill   .material-symbols-outlined { color: #e716d6; }
 
 /* ══════════════════════════════════════════════════════════════
    MODAL POMODORO — rediseño acorde al resto de popups
@@ -637,7 +603,3 @@ footer {
     transition: opacity 0.15s;
 }
 #pomodoro-modal .pm-ranking-btn:hover { opacity: 0.82; }
-
-@media (max-width: 600px) {
-    #header-center { display: none; }
-}
