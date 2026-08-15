@@ -3,23 +3,21 @@
 /**
  * SISTEMA DE NIVELES — WikiStudent
  * ─────────────────────────────────────────────────────────────
- * Cada punto que el usuario gana estudiando con el Pomodoro (o con
- * cualquier otra acción que sume a "puntos hoy") se acumula en un
- * total histórico. Ese total determina el nivel y el título del
- * usuario, que se muestran en el anillo del header y en la pestaña
- * "Perfil" de ajustes.
+ * El total de puntos NO se calcula ni se inventa aquí: ya existe en tu
+ * base de datos (columna `points` de `profiles`, la misma que usa el
+ * ranking) y tu servidor ya la expone en:
+ *   GET  /api/stats           → { ..., totalPoints }
+ *   POST /api/stats/session   → { ..., totalPoints }  (al terminar un Pomodoro)
  *
- * ⚠️ IMPORTANTE — sobre la persistencia:
- * De momento este total se guarda en localStorage (por usuario,
- * usando el username del atributo data-username del <body>) porque
- * no había ningún campo de "puntos totales" en la base de datos.
- * Esto significa que el nivel NO viaja entre dispositivos todavía.
- * En cuanto tengas una columna tipo `xp_total` / `points_total` en
- * la tabla de usuarios de Supabase, sustituye `cargarEstado` /
- * `guardarEstado` de aquí abajo por un fetch a tu API, y llama a
- * `window.WikiNiveles.setTotalPoints(valorDeLaBD)` al cargar la
- * página. El resto (cálculo de nivel, anillo, chip, grid de
- * títulos, aviso de subida de nivel) funciona igual.
+ * Este script solo LEE `totalPoints` de esas dos respuestas y calcula,
+ * en el navegador, a qué nivel/título corresponde. No hay ningún
+ * endpoint nuevo que montar ni ninguna tabla que crear — si en algún
+ * momento viste hablar de `puntos_totales` / `routes/niveles.js` /
+ * `supabase_niveles.sql`, ignóralo: era de antes de saber que ya
+ * tenías `profiles.points`, ha quedado obsoleto y no hace falta.
+ *
+ * localStorage solo se usa como caché de lectura, para pintar algo al
+ * instante mientras llega la respuesta del servidor.
  */
 
 (function () {
@@ -42,30 +40,30 @@
 
     const RING_CIRCUMFERENCE = 2 * Math.PI * 28; // r=28 en el viewBox del SVG
 
-    // ── 2. Identidad + almacenamiento ─────────────────────────────
+    // ── 2. Identidad + caché de lectura (NO es la fuente de verdad) ──
     function getUsername() {
         return document.body?.dataset?.username || 'invitado';
     }
 
-    function storageKey() {
-        return 'wikistudent_niveles_' + getUsername();
+    function cacheKey() {
+        return 'wikistudent_niveles_cache_' + getUsername();
     }
 
-    function cargarEstado() {
+    function cargarCache() {
         try {
-            const raw = localStorage.getItem(storageKey());
+            const raw = localStorage.getItem(cacheKey());
             if (raw) return JSON.parse(raw);
         } catch (e) { /* localStorage no disponible o dato corrupto: seguimos con default */ }
-        return { totalPoints: 0, lastToday: 0, lastSeenDate: null };
+        return { totalPoints: 0 };
     }
 
-    function guardarEstado(estado) {
+    function guardarCache(estado) {
         try {
-            localStorage.setItem(storageKey(), JSON.stringify(estado));
+            localStorage.setItem(cacheKey(), JSON.stringify(estado));
         } catch (e) { /* modo privado / cuota llena: no rompemos la app por esto */ }
     }
 
-    let estado = cargarEstado();
+    let estado = cargarCache();
 
     // ── 3. Cálculo de nivel a partir del total de puntos ──────────
     function getLevelInfo(totalPoints) {
@@ -84,74 +82,45 @@
         return { actual, siguiente, progreso, puntosQueFaltan, totalPoints };
     }
 
-    // ── 4. Sumar puntos y detectar subida de nivel ─────────────────
-    function addPoints(delta) {
-        if (!delta || delta <= 0) return;
+    // ── 4. Fijar el total real y detectar subida de nivel ─────────
+    function setTotalPoints(valor) {
+        if (typeof valor !== 'number' || Number.isNaN(valor)) return;
         const nivelAntes = getLevelInfo(estado.totalPoints).actual.level;
-        estado.totalPoints += delta;
-        guardarEstado(estado);
-        const nivelDespues = getLevelInfo(estado.totalPoints).actual.level;
+        estado.totalPoints = Math.max(0, valor);
+        guardarCache(estado);
         render();
+        const nivelDespues = getLevelInfo(estado.totalPoints).actual.level;
         if (nivelDespues > nivelAntes) {
             mostrarSubidaDeNivel(getLevelInfo(estado.totalPoints).actual);
         }
-    }
-
-    // Para cuando conectes esto a una BD y quieras fijar el total real
-    // (en vez de ir sumando deltas locales).
-    function setTotalPoints(valor) {
-        if (typeof valor !== 'number' || Number.isNaN(valor)) return;
-        estado.totalPoints = Math.max(0, valor);
-        guardarEstado(estado);
-        render();
     }
 
     function getState() {
         return { ...estado, ...getLevelInfo(estado.totalPoints) };
     }
 
-    // ── 5. Enganche a los "puntos de hoy" que ya existen en el dashboard ──
-    // ranking-db.js llama a window.actualizarStatsDashboard(data) cada vez
-    // que refresca los stats (data.todayPoints trae los puntos de hoy).
-    // Reusamos ese mismo gancho para ir acumulando el total histórico.
-    function engancharPuntosDeHoy() {
+    // ── 5. Traer el total real del servidor ───────────────────────
+    async function sincronizarConServidor() {
+        try {
+            const res = await fetch('/api/stats', { credentials: 'include' });
+            if (!res.ok) throw new Error('GET /api/stats → ' + res.status);
+            const data = await res.json();
+            if (typeof data.totalPoints === 'number') setTotalPoints(data.totalPoints);
+        } catch (e) {
+            console.warn('[niveles] No se pudo leer /api/stats, uso la última caché local mientras tanto →', e.message);
+        }
+    }
+
+    // Además de la carga inicial, nos enganchamos al mismo sitio donde el
+    // resto del dashboard ya recibe /api/stats o /api/stats/session (p.ej.
+    // justo al terminar un Pomodoro), así el nivel se actualiza al momento
+    // sin tener que esperar a recargar la página.
+    function engancharActualizacionesDelDashboard() {
         const original = window.actualizarStatsDashboard;
         window.actualizarStatsDashboard = function (data) {
             if (original) original(data);
-            if (data && typeof data.todayPoints === 'number') {
-                procesarPuntosDeHoy(data.todayPoints);
-            }
+            if (data && typeof data.totalPoints === 'number') setTotalPoints(data.totalPoints);
         };
-    }
-
-    function procesarPuntosDeHoy(todayPoints) {
-        const hoy = new Date().toDateString();
-        if (estado.lastSeenDate !== hoy) {
-            // Primer vistazo de hoy (o primera carga de la página):
-            // no restamos nada, simplemente movemos la base a 0 para
-            // que la siguiente comparación sume la diferencia real.
-            estado.lastSeenDate = hoy;
-            estado.lastToday = 0;
-        }
-        if (todayPoints > estado.lastToday) {
-            const delta = todayPoints - estado.lastToday;
-            estado.lastToday = todayPoints;
-            addPoints(delta);
-        } else if (todayPoints < estado.lastToday) {
-            // Puntos de hoy bajaron (p.ej. se corrigió algo): resincroniza
-            // sin restar del histórico.
-            estado.lastToday = todayPoints;
-            guardarEstado(estado);
-        }
-    }
-
-    // Lectura de respaldo al cargar la página, por si ranking-db.js ya
-    // pintó los puntos de hoy en el DOM antes de que este script arrancara.
-    function leerPuntosDeHoyDelDOM() {
-        const el = document.getElementById('points');
-        if (!el) return;
-        const val = parseInt(el.textContent, 10);
-        if (!Number.isNaN(val)) procesarPuntosDeHoy(val);
     }
 
     // ── 6. Pintado del anillo + chip en el header ──────────────────
@@ -261,13 +230,12 @@
 
     // ── 8. Arranque ────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-        render(); // pinta con lo que ya haya en localStorage, sin esperar
-        engancharPuntosDeHoy();
-        // Pequeño margen para que ranking-db.js haya pintado #points primero.
-        setTimeout(leerPuntosDeHoyDelDOM, 900);
+        render(); // pinta de inmediato con la última caché conocida, sin esperar
+        sincronizarConServidor(); // y en cuanto responda /api/stats, repinta con el valor real
+        engancharActualizacionesDelDashboard();
     });
 
     // ── 9. API pública ────────────────────────────────────────────
-    window.WikiNiveles = { addPoints, setTotalPoints, getState, LEVELS, render };
+    window.WikiNiveles = { setTotalPoints, getState, LEVELS, render };
 
 })();

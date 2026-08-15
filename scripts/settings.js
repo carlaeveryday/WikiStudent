@@ -164,12 +164,20 @@
             imgEl.classList.add('loaded');
         }
         // Avatar en el sidebar
-        const sidebarAvatar = document.querySelector('.sidebar__avatar');
+        const sidebarAvatar = document.getElementById('sidebar-avatar') || document.querySelector('.sidebar__avatar');
         if (sidebarAvatar) {
             sidebarAvatar.style.backgroundImage = `url(${dataUrl})`;
             sidebarAvatar.style.backgroundSize = 'cover';
             sidebarAvatar.style.backgroundPosition = 'center';
             sidebarAvatar.textContent = '';
+        }
+        // Avatar en el anillo de nivel del header
+        const headerAvatar = document.getElementById('header-avatar');
+        if (headerAvatar) {
+            headerAvatar.style.backgroundImage = `url(${dataUrl})`;
+            headerAvatar.style.backgroundSize = 'cover';
+            headerAvatar.style.backgroundPosition = 'center';
+            headerAvatar.textContent = '';
         }
     }
 
@@ -358,13 +366,17 @@
                 // Actualizar sidebar
                 const sidebarName = document.querySelector('.sidebar__user-name');
                 if (sidebarName) sidebarName.textContent = newName;
-                const sidebarAvatar = document.querySelector('.sidebar__avatar');
+                const sidebarAvatar = document.getElementById('sidebar-avatar') || document.querySelector('.sidebar__avatar');
                 if (sidebarAvatar && !sidebarAvatar.style.backgroundImage) {
-                    sidebarAvatar.textContent = newName[0].toUpperCase();
+                    sidebarAvatar.textContent = newName.slice(0, 2).toUpperCase();
                 }
-                const headerName = document.querySelector('.orange-word');
-                if (headerName && headerName.textContent !== '¡Bienvenido/a, ' && headerName.textContent !== '!') {
-                    headerName.textContent = newName;
+                // Actualizar nombre en el header ("¡Bienvenido/a, NOMBRE!" — el nombre
+                // vive en el span .white-word, no en los .orange-word de alrededor)
+                const headerName = document.querySelector('.white-word');
+                if (headerName) headerName.textContent = newName;
+                const headerAvatar = document.getElementById('header-avatar');
+                if (headerAvatar && !headerAvatar.style.backgroundImage) {
+                    headerAvatar.textContent = newName.slice(0, 2).toUpperCase();
                 }
             } else {
                 const data = await res.json().catch(() => ({}));

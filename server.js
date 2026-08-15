@@ -298,6 +298,98 @@ app.put('/api/cards/deck/:deckId', ensureAuthenticated, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// ── 9b. API: GENERADOR DE FLASHCARDS CON IA (Gemini) ───────────────────────────
+// Antes flashcards.js llamaba a Gemini DIRECTAMENTE desde el navegador con la
+// API key escrita en el propio archivo JS. Cualquiera que abriera "Ver código
+// fuente" podía copiarla y gastarla a tu costa — y Google también escanea el
+// código público en busca de claves expuestas y las revoca automáticamente en
+// cuanto las detecta. Eso es lo más probable que esté causando el 403 que
+// viste en consola: la key quedó inutilizada por haber estado a la vista.
+//
+// Ahora el navegador solo habla con TU servidor (esta ruta) y es el servidor
+// el que llama a Gemini con la key leída de tu .env — nunca viaja al cliente.
+//
+// ⚠️ Pasos que te faltan a ti:
+//   1) Revoca la key vieja (AIza...) en https://aistudio.google.com/apikey
+//      (o Google Cloud Console → Credenciales) y genera una nueva.
+//   2) Añade GEMINI_API_KEY=tu_key_nueva a tu archivo .env (nunca al código).
+//   3) Reinicia el servidor para que cargue la variable.
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const geminiUrl = (model) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+
+app.post('/api/flashcards/generate', ensureAuthenticated, async (req, res) => {
+  if (!GEMINI_API_KEY) {
+    return res.status(500).json({ error: 'Falta GEMINI_API_KEY en el .env del servidor.' });
+  }
+
+  const { topic, qty, images } = req.body;
+  // "images" (opcional): [{ mime_type, data }] en base64 — el navegador ya
+  // hace esa conversión con FileReader antes de mandarlas, igual que antes.
+  const tieneImagenes = Array.isArray(images) && images.length > 0;
+
+  if ((!topic || !topic.trim()) && !tieneImagenes) {
+    return res.status(400).json({ error: 'Escribe algo o adjunta una imagen.' });
+  }
+  const cantidad = Number(qty) > 0 && Number(qty) <= 30 ? Number(qty) : 10;
+
+  try {
+    const parts = [];
+    if (tieneImagenes) {
+      for (const img of images) {
+        if (!img?.mime_type || !img?.data) continue;
+        parts.push({ inline_data: { mime_type: img.mime_type, data: img.data } });
+      }
+    }
+    const temaFinal = (topic && topic.trim()) || 'el contenido de las imágenes adjuntas';
+    parts.push({
+      text: `Genera exactamente ${cantidad} flashcards de estudio sobre: "${temaFinal}".
+Devuelve ÚNICAMENTE un array JSON válido, sin texto extra, sin markdown, sin bloques de código:
+[{"q":"pregunta","a":"respuesta"}]`,
+    });
+
+    // Node 18+ trae fetch nativo (coherente con el resto del proyecto). Si tu
+    // Node es más antiguo, instala node-fetch y haz
+    // "const fetch = require('node-fetch');" arriba del todo del archivo.
+    const geminiRes = await fetch(geminiUrl('gemini-2.5-flash'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts }], generationConfig: { temperature: 0.7 } }),
+    });
+
+    if (!geminiRes.ok) {
+      const detalle = await geminiRes.text().catch(() => '');
+      console.error('[Gemini] error', geminiRes.status, detalle);
+      const mensaje = geminiRes.status === 403
+        ? 'Gemini rechazó la clave (403). Revisa que GEMINI_API_KEY sea una key nueva y válida en el .env.'
+        : geminiRes.status === 429
+          ? 'Se ha alcanzado el límite de peticiones a Gemini por ahora, prueba en un rato.'
+          : `Error de Gemini (${geminiRes.status})`;
+      return res.status(geminiRes.status === 429 ? 429 : 502).json({ error: mensaje });
+    }
+
+    const data  = await geminiRes.json();
+    const raw   = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+
+    let generated;
+    try {
+      generated = JSON.parse(clean);
+    } catch (e) {
+      console.error('[Gemini] respuesta no era JSON válido:', raw.slice(0, 300));
+      return res.status(502).json({ error: 'Gemini devolvió una respuesta que no se pudo interpretar como JSON.' });
+    }
+    if (!Array.isArray(generated) || !generated.length) {
+      return res.status(502).json({ error: 'Gemini no devolvió ninguna tarjeta válida.' });
+    }
+
+    res.json({ cards: generated.map(({ q, a }) => ({ q, a })) });
+  } catch (err) {
+    console.error('[Gemini] excepción:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── 10. API: KANBAN ───────────────────────────────────────────────────────────
 app.get('/api/kanban', ensureAuthenticated, async (req, res) => {
   try {

@@ -94,7 +94,7 @@
         <!-- Perfil + Plan al final -->
         <div class="sidebar__footer">
             <div class="sidebar__user">
-                <div class="sidebar__avatar"><%= user.username.slice(0, 2).toUpperCase() %></div>
+                <div class="sidebar__avatar" id="sidebar-avatar"<% if (user.avatar_url) { %> style="background-image:url('<%= user.avatar_url %>');background-size:cover;background-position:center;"<% } %>><% if (!user.avatar_url) { %><%= user.username.slice(0, 2).toUpperCase() %><% } %></div>
                 <div class="sidebar__user-info">
                     <span class="sidebar__user-name"><%= user.username %></span>
                     <span class="sidebar__user-plan">
@@ -122,11 +122,7 @@
                             <circle class="level-ring__bg" cx="32" cy="32" r="28"></circle>
                             <circle class="level-ring__bar" id="level-ring-bar" cx="32" cy="32" r="28"></circle>
                         </svg>
-                        <% if (user.avatar_url) { %>
-                            <img class="level-ring__avatar-img" id="header-avatar-img" src="<%= user.avatar_url %>" alt="Avatar de <%= user.username %>">
-                        <% } else { %>
-                            <div class="level-ring__avatar" id="header-avatar-initials"><%= user.username.slice(0, 2).toUpperCase() %></div>
-                        <% } %>
+                        <div class="level-ring__avatar" id="header-avatar"<% if (user.avatar_url) { %> style="background-image:url('<%= user.avatar_url %>');background-size:cover;background-position:center;"<% } %>><% if (!user.avatar_url) { %><%= user.username.slice(0, 2).toUpperCase() %><% } %></div>
                         <div class="level-ring__badge" id="header-level-num">1</div>
 
                         <!-- Tooltip con el detalle del progreso -->

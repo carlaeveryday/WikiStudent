@@ -4,9 +4,10 @@
 
 'use strict';
 
-/* ── API config (Gemini) ── */
-const API_KEY = "AIzaSyBI_N3W3LtfGSLGQHb7hCLYSzLizO1wlNA";
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+/* La generación con IA ya NO se hace desde aquí con una key visible en el
+   navegador — ahora se pide a nuestro propio backend (ver más abajo,
+   btnGenerar), que es quien habla con Gemini usando GEMINI_API_KEY desde
+   el .env del servidor. Así la clave nunca viaja al cliente. */
 
 /* ================================================================
    CACHÉ LOCAL
@@ -40,7 +41,16 @@ async function apiFetch(path, options = {}) {
         headers: { 'Content-Type': 'application/json' },
         ...options
     });
-    if (!res.ok) throw new Error(`[API] ${options.method || 'GET'} ${path} → ${res.status}`);
+    if (!res.ok) {
+        // Si el servidor mandó { error: "..." } lo usamos tal cual (mensaje
+        // legible), y si no, nos quedamos con el genérico de antes.
+        let msg = `[API] ${options.method || 'GET'} ${path} → ${res.status}`;
+        try {
+            const body = await res.json();
+            if (body?.error) msg = body.error;
+        } catch (_) { /* la respuesta no era JSON, nos quedamos con el mensaje genérico */ }
+        throw new Error(msg);
+    }
     return res.json();
 }
 
@@ -765,30 +775,18 @@ btnGenerar.addEventListener('click', async () => {
     setGenerarLoading(true);
 
     try {
-        const parts = [];
+        const images = [];
         for (const file of files) {
-            parts.push({ inline_data: { mime_type: file.type, data: await fileToBase64(file) } });
+            images.push({ mime_type: file.type, data: await fileToBase64(file) });
         }
 
-        const topic = text || 'el contenido de las imágenes adjuntas';
-        parts.push({ text:
-            `Genera exactamente ${selectedQty} flashcards de estudio sobre: "${topic}".
-Devuelve ÚNICAMENTE un array JSON válido, sin texto extra, sin markdown, sin bloques de código:
-[{"q":"pregunta","a":"respuesta"}]`
+        // Ya no llamamos a Gemini directamente: se lo pedimos a nuestro
+        // propio servidor (POST /api/flashcards/generate), que es quien
+        // tiene la API key guardada en el .env.
+        const { cards: generated } = await apiFetch('/api/flashcards/generate', {
+            method: 'POST',
+            body: JSON.stringify({ topic: text, qty: selectedQty, images }),
         });
-
-        const res = await fetch(API_URL, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts }], generationConfig: { temperature: 0.7 } })
-        });
-
-        if (!res.ok) throw new Error(`Error de API (${res.status})`);
-
-        const data      = await res.json();
-        const raw       = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-        const clean     = raw.replace(/```json|```/g, '').trim();
-        const generated = JSON.parse(clean);
 
         if (!Array.isArray(generated) || !generated.length) throw new Error('Respuesta no válida');
 
