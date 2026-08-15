@@ -28,8 +28,15 @@ app.set('trust proxy', 1);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Por defecto express.json() solo acepta 100kb de body. Las imágenes que
+// manda flashcards.js van en base64 dentro del JSON (con ~33% de overhead
+// sobre el tamaño real del archivo), así que con solo 1-2 fotos se supera
+// ese límite de sobra — eso revienta ANTES de llegar a ninguna ruta, con un
+// error que ni siquiera pasa por nuestro try/catch de /api/flashcards/generate
+// (por eso no salía nada raro en los logs). Lo subimos a 20mb para dar
+// margen a las 5 imágenes de 5MB que ya permite validate() en flashcards.js.
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(express.static(__dirname));
 
 // ── 2. SESIONES ───────────────────────────────────────────────────────────────
@@ -312,15 +319,43 @@ app.put('/api/cards/deck/:deckId', ensureAuthenticated, async (req, res) => {
 // ⚠️ Pasos que te faltan a ti:
 //   1) Revoca la key vieja (AIza...) en https://aistudio.google.com/apikey
 //      (o Google Cloud Console → Credenciales) y genera una nueva.
-//   2) Añade GEMINI_API_KEY=tu_key_nueva a tu archivo .env (nunca al código).
-//   3) Reinicia el servidor para que cargue la variable.
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+//   2) En Render (NO en tu .env local, eso solo vale en tu ordenador):
+//      Dashboard → tu servicio → Environment → Add Environment Variable
+//      Key: GEMINI_API_KEY   Value: tu_key_nueva (sin comillas alrededor)
+//   3) Guarda: Render redespliega solo. Espera a que el deploy termine.
+//
+// .replace(/^["']|["']$/g, '') quita comillas por si al pegar la key en el
+// panel de Render (o en el .env) se colaron sin querer, p.ej. si pegaste
+// GEMINI_API_KEY="AIzaSy..." tal cual — eso dejaría la key con comillas
+// literales dentro de process.env.GEMINI_API_KEY y rompería la petición a
+// Gemini con un error que ni siquiera es un 403/429 normal (por eso salía
+// un 500 "a secas": el fetch de abajo fallaba al construir la URL, antes de
+// llegar a hablar con Gemini).
+const GEMINI_API_KEY = (process.env.GEMINI_API_KEY || '').trim().replace(/^["']|["']$/g, '');
 const geminiUrl = (model) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
 
+// Aviso en el arranque — esto SÍ debería aparecer en los logs de Render en
+// cuanto el servicio arranca (no hace falta ni generar una flashcard para
+// verlo). Si no ves ni esta línea, el problema no es la key: es que no
+// estás mirando los logs del servicio/deploy correctos, o el deploy con
+// este código todavía no ha terminado.
+if (!GEMINI_API_KEY) {
+  console.warn('⚠️  [Gemini] GEMINI_API_KEY no está definida — /api/flashcards/generate devolverá 500 hasta que la añadas en Render → Environment.');
+} else {
+  console.log(`✅ [Gemini] GEMINI_API_KEY detectada (empieza por "${GEMINI_API_KEY.slice(0, 6)}…", ${GEMINI_API_KEY.length} caracteres).`);
+}
+
 app.post('/api/flashcards/generate', ensureAuthenticated, async (req, res) => {
+  // Log de diagnóstico: esto confirma que la petición SÍ llega al servidor.
+  // Si generas una flashcard y esta línea no aparece en los logs de Render,
+  // el problema no es la key ni Gemini — es que la petición no está
+  // llegando a este servidor (caché del navegador, deploy antiguo todavía
+  // sirviendo, dominio equivocado, etc.).
+  console.log(`[flashcards] petición recibida — user=${req.user?.id}, tema="${(req.body?.topic || '').slice(0, 40)}", imágenes=${(req.body?.images || []).length}`);
+
   if (!GEMINI_API_KEY) {
-    return res.status(500).json({ error: 'Falta GEMINI_API_KEY en el .env del servidor.' });
+    return res.status(500).json({ error: 'Falta GEMINI_API_KEY en el servidor (revisa Render → Environment, no el .env local).' });
   }
 
   const { topic, qty, images } = req.body;
