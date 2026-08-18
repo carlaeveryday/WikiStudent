@@ -925,6 +925,14 @@ app.delete('/api/user/account', ensureAuthenticated, async (req, res) => {
 //      gratuito (cron-job.org, UptimeRobot...) la llame cada minuto y
 //      así los recordatorios sigan funcionando aunque Render (plan free)
 //      haya dormido el servicio por falta de tráfico.
+// Cuánto tiempo intenta FCM entregar el aviso antes de descartarlo si el
+// dispositivo está offline (en segundos). Sin esto, el valor por defecto
+// de Firebase es ~4 semanas: te llegarían avisos viejísimos de golpe al
+// encender el ordenador. Ajusta estos números si los quieres más o menos
+// permisivos.
+const REMINDER_TTL_SECONDS          = 600;   // avisos "quedan 10 min" → caduca en 10 min
+const CALENDAR_REMINDER_TTL_SECONDS = 10800; // avisos "hoy toca X" → caduca en 3h
+
 async function comprobarRecordatorios() {
   try {
     const ahora = new Date();
@@ -980,6 +988,14 @@ async function comprobarRecordatorios() {
           body:  `${tarea.asignatura ? tarea.asignatura + ' · ' : ''}Empieza a las ${tarea.hora}. ¡Prepárate!`,
         },
         token: profile.notification_token,
+        // TTL (Time-To-Live) del Web Push: si el dispositivo está offline
+        // y no se puede entregar en este margen, FCM DESCARTA el mensaje
+        // en vez de guardarlo en cola para cuando el usuario vuelva a
+        // conectarse. Sin esto, un aviso de "quedan 10 min" te podía
+        // llegar horas (o días) después, ya sin sentido, nada más
+        // encender el ordenador. 600s = 10 min: pasado ese margen la
+        // tarea ya ha empezado, así que no tiene sentido seguir esperando.
+        webpush: { headers: { TTL: String(REMINDER_TTL_SECONDS) } },
       };
 
       try {
@@ -1060,6 +1076,12 @@ async function comprobarRecordatoriosCalendario() {
             : `${rec.type === 'exam' ? 'Examen' : 'Evento'} el ${rec.event_date}.`,
         },
         token: profile.notification_token,
+        // Estos son avisos de "hoy toca X", así que tiene sentido darles
+        // más margen que a los de 10 min (ver REMINDER_TTL_SECONDS más
+        // arriba): si vuelves a conectarte unas horas después sigue
+        // siendo el mismo día y sigue siendo útil. Pero no queremos que
+        // aparezca al día siguiente, así que igualmente caduca.
+        webpush: { headers: { TTL: String(CALENDAR_REMINDER_TTL_SECONDS) } },
       };
 
       try {
