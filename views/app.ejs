@@ -309,8 +309,18 @@
                 </div>
             </div>
 
-            <!-- COLUMNA RANKING -->
+            <!-- COLUMNA RANKING ──────────────────────────────────────────
+                 Vista REDUCIDA / preview del ranking (top 6): ahora
+                 actúa como escaparate rápido que invita a abrir la
+                 página completa en /pages/ranking.html, donde vive el
+                 ranking real con más puestos, stats propias y tiempo
+                 real vía SSE (ver ranking-db.js). -->
             <div id="ranking-section">
+                <div class="ranking-widget__head">
+                    <span class="live-dot is-connecting" id="ranking-live-dot"></span>
+                    <span id="ranking-live-label" class="ranking-widget__live-label">Conectando…</span>
+                </div>
+
                 <div id="podio">
                     <div id="top-2__wrapper">
                         <div class="avatar"></div>
@@ -395,6 +405,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- CTA de la refactorización: el widget ya no pretende
+                     mostrar el ranking entero, solo es un adelanto. -->
+                <a href="/pages/ranking.html" id="ranking-ver-completo">
+                    Ver ranking completo
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
             </div>
 
         </div><!-- fin grid-main-2 -->
@@ -1016,6 +1033,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="/scripts/kanban.js"></script>
     <script src="/scripts/calendario.js"></script>
+    <script>
+        // Widget del Dashboard = preview: solo top 6 (podio + 3), no la
+        // lista larga que sí tiene la página dedicada de ranking.
+        window.RANKING_CONFIG = { limit: 6, showList: true };
+    </script>
     <script src="/scripts/ranking-db.js"></script>
     <script src="/scripts/pomodoro.js"></script>
     <script src="/scripts/dashboard_username_sync.js"></script>

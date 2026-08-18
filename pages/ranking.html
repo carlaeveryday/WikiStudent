@@ -3,50 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcards | WikiStudent</title>
+    <title>Ranking de estudio | WikiStudent</title>
+    <link rel="icon" href="/wiki/favicon.png" type="image/png">
+
+    <!-- Mismos estilos base que el resto de la app (sidebar, variables,
+         tarjetas de stats) + ranking.css con los añadidos de esta página -->
     <link rel="stylesheet" href="/styles/estilos_generales.css">
-    <link rel="stylesheet" href="/styles/ranking.css">
     <link rel="stylesheet" href="/styles/home.css">
+    <link rel="stylesheet" href="/styles/ranking.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 </head>
 <body>
 
-    <!--- SIDEBAR --->
-    <form class="sidebar__form">
-        <input type="checkbox" id="open-menu-mobile">
-        <label class="material-symbols-outlined label-mobile" for="open-menu-mobile">menu</label>
-    </form>
-    <aside class="sidebar">
-        <form class="sidebar__form">
-            <input type="checkbox" id="open-menu">
-            <label class="material-symbols-outlined label-desktop" for="open-menu">menu</label>
-        </form>
-        <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+    <!--- HAMBURGUESA MÓVIL + OVERLAY (mismo patrón que app.ejs) --->
+    <input type="checkbox" id="open-menu-mobile">
+    <label class="hamburger-btn label-mobile" for="open-menu-mobile">
+        <span class="material-symbols-outlined">menu</span>
+    </label>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!--- SIDEBAR (idéntico al del Dashboard, "Ranking" marcado como activo) --->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="top-menu">
+            <div id="img-container">
+                <img src="/wiki/menu-logo.webp" alt="WikiStudent Logo" class="sidebar__menu-logo">
+            </div>
+            <div class="sidebar__brand"><span class="orange-word">Wiki</span><span class="white-word">Student</span></div>
+        </div>
+
         <nav class="sidebar__nav">
             <ul>
-                <li class="sidebar__item"><span class="material-symbols-outlined">Home</span><a href="index.html">Inicio</a></li>
-                <li class="sidebar__item"><span class="material-symbols-outlined">explore</span><a href="/pages/test.html">Orientación vocacional</a></li>
-                <li class="sidebar__item"><span class="material-symbols-outlined">Grid_view</span><a href="/pages/directorio.html">Directorio apps/webs</a></li>
-                <li class="sidebar__item"><span class="material-symbols-outlined">Article</span><a href="/pages/mapa.html">Artículos</a></li>
-                <li class="sidebar__item"><span class="material-symbols-outlined">Auto_awesome_motion</span><a href="#">Plantillas de Canva</a></li>
-                <li class="sidebar__item"><span class="material-symbols-outlined">Smart_toy</span><a href="#">Biblioteca de Prompts</a></li>
-                <li class="sidebar__item"><span class="material-symbols-outlined">mail</span><a href="/pages/calculadora.html">Calculadora de selectividad</a></li>
+                <!-- Principal -->
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <a href="/web">Dashboard</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">tag</span>
+                    <a href="/pages/discord.html">Discord</a>
+                    <span class="sidebar__badge">Nuevo</span>
+                </li>
+                <li class="sidebar__item sidebar__item--active">
+                    <span class="material-symbols-outlined">emoji_events</span>
+                    <a href="/pages/ranking.html">Ranking</a>
+                </li>
+
+                <!-- Herramientas -->
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Herramientas</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">timer</span>
+                    <a href="/pages/pomodoro.html">Pomodoro</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">style</span>
+                    <a href="/pages/flashcards.html">Flashcards</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">quiz</span>
+                    <a href="/pages/quizzes.html">Quizzes</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <a href="/pages/archivos.html">Visor de archivos</a>
+                </li>
+                <!-- Universidad -->
+                <li class="sidebar__section-label"><span class="sidebar__section-text">Orientación</span></li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">account_tree</span>
+                    <a href="/pages/mapa.html">Mapa de grados</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">psychology</span>
+                    <a href="/pages/test.html">Tests vocacionales</a>
+                </li>
+                <li class="sidebar__item">
+                    <span class="material-symbols-outlined">calculate</span>
+                    <a href="/pages/calculadora.html">Calc. Selectividad</a>
+                </li>
             </ul>
         </nav>
+
+        <!-- Perfil (sin EJS aquí: lo rellena ranking-db.js con los datos
+             que ya trae /api/ranking, marcado con data-autofill) -->
+        <div class="sidebar__footer">
+            <div class="sidebar__user">
+                <div class="sidebar__avatar" id="sidebar-avatar" data-autofill="true">··</div>
+                <div class="sidebar__user-info">
+                    <span class="sidebar__user-name" id="sidebar-username" data-autofill="true">Cargando…</span>
+                    <span class="sidebar__user-plan">
+                        <span class="material-symbols-outlined">lock</span>
+                        Plan gratuito
+                    </span>
+                </div>
+            </div>
+            <button class="sidebar__pro-btn">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                <span class="sidebar__pro-text">Hazte Pro</span>
+            </button>
+        </div>
     </aside>
 
     <main>
-        <header class="test__header header__apartados">
-            <span class="title__apartados inicio-title">COMPITE CON OTROS</span><span class="title__apartados final-title"> ESTUDIANTES</span>
-            <h3>RANKING DE ESTUDIO</h3>
-            <p>La élite del estudio. ¿Estás entre los mejores?</p>
+        <header class="main__header ranking-header">
+            <div class="main__header-content ranking-header__content">
+                <div>
+                    <span class="title__apartados inicio-title">COMPITE CON OTROS</span><span class="title__apartados final-title"> ESTUDIANTES</span>
+                    <h1 class="ranking-header__title">Ranking de estudio</h1>
+                    <p class="ranking-header__subtitle">La élite del estudio. ¿Estás entre los mejores?</p>
+                </div>
+
+                <!-- Indicador de conexión en tiempo real: lo actualiza
+                     marcarEstadoConexion() en ranking-db.js -->
+                <div class="live-indicator">
+                    <span class="live-dot is-connecting" id="ranking-live-dot"></span>
+                    <span id="ranking-live-label">Conectando…</span>
+                </div>
+            </div>
         </header>
 
-        
+        <!-- Tus estadísticas — mismos ids que el Dashboard, así que
+             cargarStatsIniciales() de ranking-db.js los rellena sin
+             cambios: time-studied, racha-days, position-rk, points -->
+        <div id="stats-container" class="ranking-stats-hero">
+            <div class="stats" id="pomodoro-timer">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">timer</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="time-studied">—</div>
+                    <div class="desc-stats">Estudiado hoy</div>
+                </div>
+            </div>
+            <div class="stats" id="racha">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">local_fire_department</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="racha-days">—</div>
+                    <div class="desc-stats">Días de racha</div>
+                </div>
+            </div>
+            <div class="stats" id="ranking-t">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">military_tech</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="position-rk">—</div>
+                    <div class="desc-stats">Tu posición</div>
+                </div>
+            </div>
+            <div class="stats" id="puntos">
+                <div class="symbol-container"><span class="material-symbols-outlined symbol">star</span></div>
+                <div class="wrapper-grid">
+                    <div class="number" id="points">—</div>
+                    <div class="desc-stats">Puntos hoy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ranking completo: mismos ids que espera ranking-db.js -->
+        <div id="ranking-section" class="ranking-section--full">
+            <div id="podio">
+                <div id="top-2__wrapper">
+                    <div class="avatar"></div>
+                    <div class="user">—</div>
+                    <div class="puntos">0 pts</div>
+                    <div id="top-2">2</div>
+                </div>
+                <div id="top-1__wrapper">
+                    <div class="avatar"></div>
+                    <div class="user">—</div>
+                    <div class="puntos">0 pts</div>
+                    <div id="top-1">1</div>
+                </div>
+                <div id="top-3__wrapper">
+                    <div class="avatar"></div>
+                    <div class="user">—</div>
+                    <div class="puntos">0 pts</div>
+                    <div id="top-3">3</div>
+                </div>
+            </div>
+
+            <div id="ranking-list"></div>
+        </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/scripts/flashcards.js"></script>
+    <!--- FOOTER --->
+    <footer>
+        <div class="footer-container">
+            <p class="copyright">© 2026 Carla.studio_ | Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Política de Privacidad</a>
+            <span>|</span>
+            <a href="#">Política de cookies</a>
+            <span>|</span>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+    <script>
+        // Página completa: pedimos más usuarios que en el widget del
+        // Dashboard (30 en vez de 6) y sí mostramos la lista.
+        // ¡Importante!: esto tiene que declararse ANTES de cargar
+        // ranking-db.js, que lee window.RANKING_CONFIG al arrancar.
+        window.RANKING_CONFIG = { limit: 30, showList: true };
+    </script>
+    <script src="/scripts/ranking-db.js"></script>
+    <script>
+        document.getElementById('sidebar-overlay').addEventListener('click', function () {
+            document.getElementById('open-menu-mobile').checked = false;
+        });
+    </script>
 </body>
 </html>

@@ -502,11 +502,87 @@ app.put('/api/kanban/bulk-order', ensureAuthenticated, async (req, res) => {
 });
 
 // ── 11. API: RANKING ─────────────────────────────────────────────────────────
+//
+// NUEVO — tiempo real vía Server-Sent Events (SSE):
+// No añadimos socket.io ni ninguna dependencia nueva: SSE funciona sobre
+// HTTP normal (una petición GET que el navegador mantiene abierta con
+// EventSource) y Express ya lo soporta de fábrica. Cada vez que cambian
+// puntos/racha de alguien, `broadcastRanking()` empuja el ranking fresco
+// a todos los clientes conectados (dashboard Y página /pages/ranking.html
+// a la vez, en cualquier pestaña de cualquier usuario).
+//
+// rankingClients: Set de objetos `res` de Express con la conexión SSE abierta.
+const rankingClients = new Set();
+
+// Columnas que necesitamos tanto para el widget del dashboard como para la
+// página completa de ranking (incluye avatar_url para pintar el sidebar/
+// podio sin tener que pedir un endpoint de perfil aparte).
+const RANKING_SELECT = 'id, username, points, streak, avatar_url';
+
+// Límite por defecto si no se especifica ?limit=. El dashboard pide 6
+// (podio + 3), la página dedicada pide más (p.ej. 30).
+const RANKING_DEFAULT_LIMIT = 6;
+const RANKING_MAX_LIMIT     = 100; // cota de seguridad ante ?limit= arbitrario
+
+async function fetchRankingUsers(limit = RANKING_DEFAULT_LIMIT) {
+  const safeLimit = Math.min(Math.max(Number(limit) || RANKING_DEFAULT_LIMIT, 1), RANKING_MAX_LIMIT);
+  const { data, error } = await supabaseAdmin
+    .from('profiles').select(RANKING_SELECT).order('points', { ascending: false }).limit(safeLimit);
+  if (error) throw error;
+  return data;
+}
+
+// Emite el ranking actualizado a todas las conexiones SSE abiertas. Se usa
+// supabaseAdmin (no req.supabase) porque esto no ocurre dentro de una
+// petición de un usuario concreto, sino como efecto secundario para todos.
+async function broadcastRanking(limit = RANKING_MAX_LIMIT) {
+  if (rankingClients.size === 0) return; // nadie escuchando, no gastes una query
+  try {
+    const users = await fetchRankingUsers(limit);
+    const payload = `event: ranking-update\ndata: ${JSON.stringify({ users })}\n\n`;
+    for (const client of rankingClients) client.write(payload);
+  } catch (err) {
+    console.error('[Ranking][SSE] Error al difundir:', err.message);
+  }
+}
+
 app.get('/api/ranking', ensureAuthenticated, async (req, res) => {
-  const { data, error } = await req.supabase
-    .from('profiles').select('id, username, points, streak').order('points', { ascending: false }).limit(6);
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ users: data, currentUserId: req.user.id });
+  try {
+    const users = await fetchRankingUsers(req.query.limit);
+    res.json({ users, currentUserId: req.user.id });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Stream SSE — abrir con `new EventSource('/api/ranking/stream')` en el
+// front. Requiere sesión (misma cookie que el resto de /api), así que
+// EventSource funciona sin tocar nada porque manda cookies automáticamente.
+app.get('/api/ranking/stream', ensureAuthenticated, (req, res) => {
+  res.writeHead(200, {
+    'Content-Type':      'text/event-stream',
+    'Cache-Control':     'no-cache, no-transform',
+    Connection:           'keep-alive',
+    // Evita que nginx/proxies con buffering (Render incluido) retengan
+    // los chunks en vez de enviarlos según llegan.
+    'X-Accel-Buffering': 'no',
+  });
+  res.write('retry: 5000\n\n');
+
+  rankingClients.add(res);
+
+  // Snapshot inicial nada más conectar, así la UI no espera al primer
+  // cambio de otra persona para pintar el ranking.
+  fetchRankingUsers(RANKING_MAX_LIMIT)
+    .then(users => res.write(`event: ranking-update\ndata: ${JSON.stringify({ users })}\n\n`))
+    .catch(() => {});
+
+  // Ping de comentario cada 20s para mantener viva la conexión a través de
+  // proxies/balanceadores que cierran sockets inactivos.
+  const keepAlive = setInterval(() => res.write(':ping\n\n'), 20000);
+
+  req.on('close', () => {
+    clearInterval(keepAlive);
+    rankingClients.delete(res);
+  });
 });
 
 app.post('/api/ranking/add-points', ensureAuthenticated, async (req, res) => {
@@ -524,9 +600,11 @@ app.post('/api/ranking/add-points', ensureAuthenticated, async (req, res) => {
       .from('profiles').update({ points: current.points + Number(puntos) }).eq('id', req.user.id);
     if (updErr) throw updErr;
 
-    const { data: users, error: rankErr } = await req.supabase
-      .from('profiles').select('id, username, points, streak').order('points', { ascending: false }).limit(6);
-    if (rankErr) throw rankErr;
+    const users = await fetchRankingUsers(req.query.limit);
+
+    // Difunde el cambio en tiempo real a todo el mundo conectado (incluido
+    // el propio usuario en otras pestañas/dispositivos).
+    broadcastRanking();
 
     res.json({ users, currentUserId: req.user.id });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -600,6 +678,11 @@ app.post('/api/stats/session', ensureAuthenticated, async (req, res) => {
     const { count, error: countErr } = await req.supabase
       .from('profiles').select('*', { count: 'exact', head: true }).gt('points', fresh.points);
     if (countErr) throw countErr;
+
+    // La racha (streak) se muestra en la lista de ranking de otros
+    // usuarios, así que aunque `points` no cambie aquí, hay que avisar a
+    // quien esté mirando /pages/ranking.html en tiempo real.
+    broadcastRanking();
 
     res.json({
       todaySeconds: fresh.today_seconds,

@@ -239,3 +239,153 @@
 .row-move {
     animation: rowSlide 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+/* ═══════════════════════════════════════════════════════════════
+   AÑADIDOS — página dedicada /pages/ranking.html
+   (widget del Dashboard en app.ejs no usa estas clases, así que no
+   afecta a la vista reducida)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Cabecera con indicador "en vivo" ──────────────────────────── */
+.ranking-header__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ranking-header__title {
+    margin: 8px 0 4px 0;
+    font-size: 2rem;
+    color: var(--texto-principal);
+}
+
+.ranking-header__subtitle {
+    color: var(--texto-muted);
+    margin: 0;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    color: var(--texto-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.live-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.live-dot.is-live {
+    background: #2ecc71;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.8);
+    animation: livePulse 1.6s ease-in-out infinite;
+}
+
+.live-dot.is-connecting {
+    background: var(--azul-neon);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.7);
+    animation: livePulse 1s ease-in-out infinite;
+}
+
+.live-dot.is-offline {
+    background: var(--color-error);
+    box-shadow: 0 0 8px rgba(255, 80, 80, 0.7);
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* ── Tus estadísticas, encima del podio ────────────────────────── */
+.ranking-stats-hero {
+    margin-top: 30px;
+}
+
+/* ── Sección completa: algo más de aire que el widget del Dashboard */
+.ranking-section--full {
+    margin-top: 10px;
+}
+
+.ranking-section--full #podio {
+    margin-top: 30px;
+}
+
+.ranking-section--full #ranking-list {
+    margin-top: 30px;
+}
+
+/* ── Animación de entrada para filas nuevas que antes no eran visibles
+   (por ejemplo, alguien entra en el top 30 por primera vez) ──────── */
+.row-enter {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.row-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 600px) {
+    .ranking-header__content { flex-direction: column; }
+    .live-indicator { align-self: flex-start; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AÑADIDOS — widget reducido del Dashboard (app.ejs)
+   ═══════════════════════════════════════════════════════════════ */
+
+.ranking-widget__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--texto-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.ranking-widget__live-label { line-height: 1; }
+
+#ranking-ver-completo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    color: var(--azul-neon);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#ranking-ver-completo:hover {
+    background-color: rgba(0, 210, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+#ranking-ver-completo .material-symbols-outlined {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+#ranking-ver-completo:hover .material-symbols-outlined {
+    transform: translateX(3px);
+}
