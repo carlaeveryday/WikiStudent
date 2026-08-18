@@ -524,21 +524,26 @@ const RANKING_SELECT = 'id, username, points, streak, avatar_url';
 const RANKING_DEFAULT_LIMIT = 6;
 const RANKING_MAX_LIMIT     = 100; // cota de seguridad ante ?limit= arbitrario
 
-async function fetchRankingUsers(limit = RANKING_DEFAULT_LIMIT) {
+// `client` es el cliente de Supabase a usar: dentro de una petición de un
+// usuario SIEMPRE pasamos req.supabase (respeta RLS, igual que el resto de
+// tu app). Solo cuando no hay petición de por medio (el broadcast del SSE)
+// no queda otra que usar supabaseAdmin.
+async function fetchRankingUsers(client, limit = RANKING_DEFAULT_LIMIT) {
   const safeLimit = Math.min(Math.max(Number(limit) || RANKING_DEFAULT_LIMIT, 1), RANKING_MAX_LIMIT);
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await client
     .from('profiles').select(RANKING_SELECT).order('points', { ascending: false }).limit(safeLimit);
   if (error) throw error;
   return data;
 }
 
-// Emite el ranking actualizado a todas las conexiones SSE abiertas. Se usa
-// supabaseAdmin (no req.supabase) porque esto no ocurre dentro de una
-// petición de un usuario concreto, sino como efecto secundario para todos.
+// Emite el ranking actualizado a todas las conexiones SSE abiertas. Usa
+// supabaseAdmin porque esto NO ocurre dentro de la petición de un usuario
+// concreto (no hay req.supabase al que agarrarse): es un efecto secundario
+// que se dispara para todo el mundo a la vez.
 async function broadcastRanking(limit = RANKING_MAX_LIMIT) {
   if (rankingClients.size === 0) return; // nadie escuchando, no gastes una query
   try {
-    const users = await fetchRankingUsers(limit);
+    const users = await fetchRankingUsers(supabaseAdmin, limit);
     const payload = `event: ranking-update\ndata: ${JSON.stringify({ users })}\n\n`;
     for (const client of rankingClients) client.write(payload);
   } catch (err) {
@@ -548,7 +553,7 @@ async function broadcastRanking(limit = RANKING_MAX_LIMIT) {
 
 app.get('/api/ranking', ensureAuthenticated, async (req, res) => {
   try {
-    const users = await fetchRankingUsers(req.query.limit);
+    const users = await fetchRankingUsers(req.supabase, req.query.limit);
     res.json({ users, currentUserId: req.user.id });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -570,10 +575,12 @@ app.get('/api/ranking/stream', ensureAuthenticated, (req, res) => {
   rankingClients.add(res);
 
   // Snapshot inicial nada más conectar, así la UI no espera al primer
-  // cambio de otra persona para pintar el ranking.
-  fetchRankingUsers(RANKING_MAX_LIMIT)
+  // cambio de otra persona para pintar el ranking. Aquí sí usamos
+  // req.supabase (la conexión SSE nace dentro de una petición autenticada
+  // real), coherente con el resto de la app.
+  fetchRankingUsers(req.supabase, RANKING_MAX_LIMIT)
     .then(users => res.write(`event: ranking-update\ndata: ${JSON.stringify({ users })}\n\n`))
-    .catch(() => {});
+    .catch(err => console.error('[Ranking][SSE] Error en snapshot inicial:', err.message));
 
   // Ping de comentario cada 20s para mantener viva la conexión a través de
   // proxies/balanceadores que cierran sockets inactivos.
@@ -600,7 +607,7 @@ app.post('/api/ranking/add-points', ensureAuthenticated, async (req, res) => {
       .from('profiles').update({ points: current.points + Number(puntos) }).eq('id', req.user.id);
     if (updErr) throw updErr;
 
-    const users = await fetchRankingUsers(req.query.limit);
+    const users = await fetchRankingUsers(req.supabase, req.query.limit);
 
     // Difunde el cambio en tiempo real a todo el mundo conectado (incluido
     // el propio usuario en otras pestañas/dispositivos).
