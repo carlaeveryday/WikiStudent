@@ -514,10 +514,16 @@ app.put('/api/kanban/bulk-order', ensureAuthenticated, async (req, res) => {
 // rankingClients: Set de objetos `res` de Express con la conexión SSE abierta.
 const rankingClients = new Set();
 
-// Columnas que necesitamos tanto para el widget del dashboard como para la
-// página completa de ranking (incluye avatar_url para pintar el sidebar/
-// podio sin tener que pedir un endpoint de perfil aparte).
-const RANKING_SELECT = 'id, username, points, streak, avatar_url';
+// Columnas que necesitamos para el ranking. NOTA: intenté en la primera
+// versión pedir también "avatar_url", pensando que existía en `profiles`
+// igual que en el objeto `req.user` (que en realidad se arma mezclando
+// `data.session.user` con `profiles.select('*')` — el avatar puede venir
+// de ahí, no de una columna real de `profiles`). Pedir una columna que no
+// existe hace que Postgres devuelva error y el endpoint entero caiga con
+// 500. Si tu tabla `profiles` SÍ tiene columna `avatar_url`, puedes
+// añadirla de nuevo aquí sin tocar nada más (el frontend ya está
+// preparado para usarla si llega, y para mostrar iniciales si no).
+const RANKING_SELECT = 'id, username, points, streak';
 
 // Límite por defecto si no se especifica ?limit=. El dashboard pide 6
 // (podio + 3), la página dedicada pide más (p.ej. 30).
