@@ -52,22 +52,22 @@
         #btnAnadir,
         #btnAnterior,
         #btnSiguiente,
-        #btnAcierto,
-        #btnFallo,
+        #btnComprobarEstudio,
         #btnRepetir,
         #btnSalirEstudio,
         #btnVolver,
         #btnVolverDesdeEstudio,
         #btnGuardarCambios,
+        #btnEliminarPregunta,
+        #btnSalirSinGuardar,
+        #btnGuardarYSalir,
         .modal-confirm,
         .modal-cancel,
         .btn-premium-upgrade,
         .btn-premium-cancel,
         #modalMoverGuardar,
         #modalMoverCancelar,
-        .move-option,
-        #tarjeta,
-        #tarjeta-estudio {
+        .move-option {
             cursor: pointer;
         }
     </style>
@@ -239,12 +239,15 @@
                 </div>
                 
 
-                <!-- Tarjeta quiz (editor) -->
+                <!-- Tarjeta quiz (editor) — solo lectura, con botón de eliminar -->
                 <div id="tarjeta">
+                    <button type="button" id="btnEliminarPregunta" title="Eliminar esta pregunta">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
                     <div id="badge-tipo"><span id="dot"></span><span id="badge-label">VERDADERO / FALSO</span></div>
                     <p id="pregunta">El fotosíntesis es el proceso por el cual las plantas producen energía a partir de la luz solar.</p>
                     <div id="opciones-container">
-                        <div class="opcion seleccionada">Verdadero</div>
+                        <div class="opcion correcta">Verdadero</div>
                         <div class="opcion">Falso</div>
                     </div>
                 </div>
@@ -288,17 +291,17 @@
                     <p class="editor-deck-title" id="estudio-deck-name">Estudiando: —</p>
                 </div>
 
-                <!-- Tarjeta flip estudio -->
+                <!-- Tarjeta quiz — modo estudio (interactivo, no flashcard) -->
                 <div id="tarjeta-estudio">
-                    <div id="frente-estudio"><p id="pregunta-estudio">Cargando preguntas...</p></div>
-                    <div id="dorso-estudio"><p id="respuesta-estudio">Respuesta</p></div>
+                    <div id="badge-tipo-estudio"><span id="dot-estudio"></span><span id="badge-label-estudio">VERDADERO / FALSO</span></div>
+                    <p id="pregunta-estudio">Cargando preguntas...</p>
+                    <div id="opciones-container-estudio"></div>
                 </div>
 
                 <div id="dots-estudio"></div>
                 <div class="generador-nav estudio-nav">
-                    <div id="btnAcierto"><span class="material-symbols-outlined">thumb_up</span> Sí lo sé</div>
                     <span id="contador-estudio">— / —</span>
-                    <div id="btnFallo"><span class="material-symbols-outlined">thumb_down</span> No lo sé</div>
+                    <div id="btnComprobarEstudio" class="btn-comprobar-estudio">Comprobar respuesta</div>
                 </div>
 
             </div><!-- /#screen-estudio -->
@@ -380,6 +383,24 @@
             <div class="modal-actions">
                 <button class="modal-cancel" id="modalMoverCancelar">Cancelar</button>
                 <button class="modal-confirm" id="modalMoverGuardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Cambios sin guardar al salir del editor -->
+    <div class="modal-overlay" id="modalCambiosSinGuardar">
+        <div class="modal-box modal-box--delete" style="max-width:380px; text-align:center;">
+            <div class="modal-delete-icon" style="background:rgba(255,107,43,0.12); color:var(--naranja-neon);">
+                <span class="material-symbols-outlined">warning</span>
+            </div>
+            <h3 style="margin:0 0 10px 0;">Tienes cambios sin guardar</h3>
+            <p class="modal-delete-desc">Si sales ahora, las preguntas que has añadido o modificado en este quiz se perderán.</p>
+            <div class="modal-actions" style="justify-content:center; gap:12px; margin-top:24px; flex-wrap:wrap;">
+                <button class="modal-cancel" id="btnSalirSinGuardar">Salir sin guardar</button>
+                <button class="modal-confirm" id="btnGuardarYSalir">
+                    <span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:4px;">save</span>
+                    Guardar cambios
+                </button>
             </div>
         </div>
     </div>

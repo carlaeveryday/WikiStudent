@@ -402,6 +402,22 @@ let studyAciertos = 0;
 let studyFallos   = 0;
 
 /* ================================================================
+   CAMBIOS SIN GUARDAR — flag + aviso al salir del editor
+   ================================================================ */
+
+let hasUnsavedChanges = false;
+
+function markDirty()  { hasUnsavedChanges = true; }
+function markClean()  { hasUnsavedChanges = false; }
+
+window.addEventListener('beforeunload', (e) => {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+/* ================================================================
    DOM refs
    ================================================================ */
 
@@ -419,7 +435,6 @@ const dotsEl       = document.getElementById('dots');
 
 const tarjetaEstudio    = document.getElementById('tarjeta-estudio');
 const preguntaEstudio   = document.getElementById('pregunta-estudio');
-const respuestaEstudio  = document.getElementById('respuesta-estudio');
 const contadorEstudio   = document.getElementById('contador-estudio');
 const dotsEstudio       = document.getElementById('dots-estudio');
 
@@ -471,6 +486,7 @@ function showEditor(deckName, deckId = null) {
     currentDeckId = deckId;
     cards         = [];
     currentIndex  = 0;
+    markClean();
     editorTitle.textContent = `Editando: ${deckName}`;
 
     const btnGuardar = document.getElementById('btnGuardarCambios');
@@ -512,8 +528,35 @@ function showEstudio(deckName, deckCards) {
     });
 }
 
-btnVolver.addEventListener('click', showRepository);
+btnVolver.addEventListener('click', () => {
+    if (hasUnsavedChanges) {
+        document.getElementById('modalCambiosSinGuardar').classList.add('open');
+        return;
+    }
+    showRepository();
+});
 document.getElementById('btnVolverDesdeEstudio').addEventListener('click', showRepository);
+
+/* ── Modal: cambios sin guardar ── */
+const modalSinGuardar = document.getElementById('modalCambiosSinGuardar');
+
+document.getElementById('btnSalirSinGuardar').addEventListener('click', () => {
+    modalSinGuardar.classList.remove('open');
+    markClean();
+    showRepository();
+});
+
+document.getElementById('btnGuardarYSalir').addEventListener('click', async () => {
+    modalSinGuardar.classList.remove('open');
+    const ok = await guardarCambiosDeck();
+    if (ok) showRepository();
+    // Si falla el guardado, dejamos al usuario en el editor con el error visible
+    // en el botón "Guardar Cambios" en lugar de perder su trabajo.
+});
+
+modalSinGuardar.addEventListener('click', (e) => {
+    if (e.target === modalSinGuardar) modalSinGuardar.classList.remove('open');
+});
 
 /* ================================================================
    NAVEGACIÓN — UN SOLO CLICK EN CARPETA
@@ -561,13 +604,17 @@ function renderCard() {
 
     const opcionesContainer = document.getElementById('opciones-container');
     const badgeLabel        = document.getElementById('badge-label');
+    const btnEliminar       = document.getElementById('btnEliminarPregunta');
 
     if (!cards.length) {
         pregunta.textContent = 'Genera o añade preguntas para empezar';
         if (opcionesContainer) opcionesContainer.innerHTML = '';
         contador.textContent = '— / —';
+        if (btnEliminar) btnEliminar.disabled = true;
         return;
     }
+
+    if (btnEliminar) btnEliminar.disabled = false;
 
     const card     = cards[currentIndex];
     const opciones = card.opciones || ['Verdadero', 'Falso'];
@@ -581,65 +628,29 @@ function renderCard() {
         badgeLabel.textContent = tipo === 'verdadero-falso' ? 'VERDADERO / FALSO' : 'MÚLTIPLE OPCIÓN';
     }
 
+    /* Panel de previsualización: SOLO LECTURA.
+       No hay "Comprobar respuesta", no hay efectos al clicar y las opciones
+       correctas se muestran resaltadas desde el inicio (sin poder desmarcarlas). */
     if (opcionesContainer) {
         opcionesContainer.innerHTML = '';
-        let respondido = false; /* bloquea después de responder */
 
         opciones.forEach((opcion) => {
             const div = document.createElement('div');
-            div.className = 'opcion';
+            div.className = 'opcion solo-lectura';
             div.textContent = opcion;
 
             const esCorrecta = Array.isArray(correcta)
                 ? correcta.includes(opcion)
                 : opcion === correcta;
 
-            if (esCorrecta) div.dataset.correcta = 'true';
+            if (esCorrecta) {
+                div.dataset.correcta = 'true';
+                div.classList.add('correcta');
+            }
 
-            div.addEventListener('click', () => {
-                if (tipo === 'verdadero-falso') {
-                    /* Radio: una sola respuesta, revela resultado inmediatamente */
-                    if (respondido) return;
-                    respondido = true;
-                    opcionesContainer.querySelectorAll('.opcion').forEach(o => {
-                        o.classList.remove('seleccionada');
-                        o.classList.add(o.dataset.correcta === 'true' ? 'correcta' : 'incorrecta');
-                    });
-                    div.classList.remove('incorrecta');
-                    div.classList.add(esCorrecta ? 'correcta' : 'incorrecta');
-
-                } else {
-                    /* Múltiple: toggle selección, no revela hasta confirmar */
-                    div.classList.toggle('seleccionada');
-                }
-            });
-
+            /* Sin listeners de click: el panel es de solo lectura */
             opcionesContainer.appendChild(div);
         });
-
-        /* Botón "Comprobar" solo para múltiple opción */
-        if (tipo === 'multiple') {
-            const btnComprobar = document.createElement('button');
-            btnComprobar.className = 'btn-comprobar';
-            btnComprobar.textContent = 'Comprobar respuesta';
-            btnComprobar.addEventListener('click', () => {
-                if (respondido) return;
-                respondido = true;
-                opcionesContainer.querySelectorAll('.opcion').forEach(o => {
-                    const correctaEsta = o.dataset.correcta === 'true';
-                    const seleccionada = o.classList.contains('seleccionada');
-                    o.classList.remove('seleccionada');
-                    if (correctaEsta) {
-                        o.classList.add('correcta');
-                    } else if (seleccionada) {
-                        o.classList.add('incorrecta');
-                    }
-                });
-                btnComprobar.disabled = true;
-                btnComprobar.style.opacity = '0.4';
-            });
-            opcionesContainer.appendChild(btnComprobar);
-        }
     }
 
     const total = Math.min(cards.length, 10);
@@ -650,6 +661,15 @@ function renderCard() {
     }
 }
 
+/* ── Eliminar la pregunta que se está previsualizando ── */
+document.getElementById('btnEliminarPregunta').addEventListener('click', () => {
+    if (!cards.length) return;
+    cards.splice(currentIndex, 1);
+    if (currentIndex >= cards.length) currentIndex = Math.max(0, cards.length - 1);
+    markDirty();
+    renderCard();
+});
+
 /* Tarjeta NO se voltea — es un quiz, no una flashcard */
 btnAnterior.addEventListener('click',  () => { if (currentIndex > 0)                   { currentIndex--; renderCard(); } });
 btnSiguiente.addEventListener('click', () => { if (currentIndex < cards.length - 1)    { currentIndex++; renderCard(); } });
@@ -658,21 +678,69 @@ btnSiguiente.addEventListener('click', () => { if (currentIndex < cards.length -
    FLASHCARD RENDER — ESTUDIO
    ================================================================ */
 
+/* ================================================================
+   MODO ESTUDIO — quiz interactivo (ya NO es flashcard)
+   ================================================================ */
+
+const opcionesContainerEstudio = document.getElementById('opciones-container-estudio');
+const btnComprobarEstudio      = document.getElementById('btnComprobarEstudio');
+const badgeLabelEstudio        = document.getElementById('badge-label-estudio');
+
+/* Selección actual del usuario para la pregunta en curso */
+let studySeleccion = [];
+/* Fase de la pregunta actual: 'respondiendo' | 'corregido' */
+let studyFase = 'respondiendo';
+
 function renderStudyCard() {
-    tarjetaEstudio.classList.remove('volteada');
     dotsEstudio.innerHTML = '';
+    studySeleccion = [];
+    studyFase = 'respondiendo';
 
     if (!studyCards.length) {
-        preguntaEstudio.textContent  = 'No hay preguntas.';
-        respuestaEstudio.textContent = '';
-        contadorEstudio.textContent  = '— / —';
+        preguntaEstudio.textContent = 'No hay preguntas.';
+        opcionesContainerEstudio.innerHTML = '';
+        contadorEstudio.textContent = '— / —';
         return;
     }
 
-    const card = studyCards[studyIndex];
-    preguntaEstudio.textContent  = card.q;
-    respuestaEstudio.textContent = card.a;
-    contadorEstudio.textContent  = `${studyIndex + 1} / ${studyCards.length}`;
+    const card     = studyCards[studyIndex];
+    const opciones = card.opciones || ['Verdadero', 'Falso'];
+    const tipo     = card.tipo || (opciones.length === 2 && opciones[0] === 'Verdadero' ? 'verdadero-falso' : 'multiple');
+
+    preguntaEstudio.textContent = card.q;
+    contadorEstudio.textContent = `${studyIndex + 1} / ${studyCards.length}`;
+
+    if (badgeLabelEstudio) {
+        badgeLabelEstudio.textContent = tipo === 'verdadero-falso' ? 'VERDADERO / FALSO' : 'MÚLTIPLE OPCIÓN';
+    }
+
+    opcionesContainerEstudio.innerHTML = '';
+    opciones.forEach((opcion) => {
+        const div = document.createElement('div');
+        div.className = 'opcion';
+        div.textContent = opcion;
+        div.addEventListener('click', () => {
+            if (studyFase !== 'respondiendo') return; /* bloqueado tras corregir */
+
+            if (tipo === 'verdadero-falso') {
+                /* Selección única: deselecciona el resto */
+                opcionesContainerEstudio.querySelectorAll('.opcion').forEach(o => o.classList.remove('seleccionada'));
+                div.classList.add('seleccionada');
+                studySeleccion = [opcion];
+            } else {
+                /* Selección múltiple: toggle */
+                div.classList.toggle('seleccionada');
+                if (studySeleccion.includes(opcion)) {
+                    studySeleccion = studySeleccion.filter(o => o !== opcion);
+                } else {
+                    studySeleccion.push(opcion);
+                }
+            }
+        });
+        opcionesContainerEstudio.appendChild(div);
+    });
+
+    resetBtnComprobarEstudio();
 
     const total = Math.min(studyCards.length, 10);
     for (let i = 0; i < total; i++) {
@@ -687,20 +755,64 @@ function renderStudyCard() {
     }
 }
 
-tarjetaEstudio.addEventListener('click', () => { if (studyCards.length) tarjetaEstudio.classList.toggle('volteada'); });
+function resetBtnComprobarEstudio() {
+    btnComprobarEstudio.textContent = 'Comprobar respuesta';
+    btnComprobarEstudio.classList.remove('siguiente', 'disabled');
+}
 
-document.getElementById('btnAcierto').addEventListener('click', () => {
-    if (!studyCards.length) return;
-    studyCards[studyIndex]._estado = 'acierto';
-    studyAciertos++;
-    avanzarEstudio();
-});
+/* Compara la selección del usuario con la(s) respuesta(s) correcta(s) */
+function esRespuestaCorrecta(card) {
+    const correcta = card.correcta !== undefined ? card.correcta : card.a;
+    const correctas = Array.isArray(correcta) ? correcta : [correcta];
+    if (studySeleccion.length !== correctas.length) return false;
+    const setCorrectas  = new Set(correctas);
+    const setSeleccion  = new Set(studySeleccion);
+    if (setCorrectas.size !== setSeleccion.size) return false;
+    for (const c of setCorrectas) if (!setSeleccion.has(c)) return false;
+    return true;
+}
 
-document.getElementById('btnFallo').addEventListener('click', () => {
+btnComprobarEstudio.addEventListener('click', () => {
     if (!studyCards.length) return;
-    studyCards[studyIndex]._estado = 'fallo';
-    studyFallos++;
-    avanzarEstudio();
+
+    if (studyFase === 'respondiendo') {
+        if (!studySeleccion.length) { alert('Selecciona al menos una opción.'); return; }
+
+        const card       = studyCards[studyIndex];
+        const opciones   = card.opciones || ['Verdadero', 'Falso'];
+        const correcta   = card.correcta !== undefined ? card.correcta : card.a;
+        const correctas  = Array.isArray(correcta) ? correcta : [correcta];
+        const acierto    = esRespuestaCorrecta(card);
+
+        opcionesContainerEstudio.querySelectorAll('.opcion').forEach(div => {
+            const texto = div.textContent;
+            const esCorrecta = correctas.includes(texto);
+            const fueSeleccionada = studySeleccion.includes(texto);
+            div.classList.remove('seleccionada');
+            if (esCorrecta) {
+                div.classList.add('correcta');
+            } else if (fueSeleccionada) {
+                div.classList.add('incorrecta');
+            }
+        });
+
+        card._estado = acierto ? 'acierto' : 'fallo';
+        if (acierto) studyAciertos++; else studyFallos++;
+
+        studyFase = 'corregido';
+        const esUltima = studyIndex === studyCards.length - 1;
+        btnComprobarEstudio.textContent = esUltima ? 'Ver resultados' : 'Siguiente pregunta';
+        btnComprobarEstudio.classList.add('siguiente');
+
+        // Refresca los puntitos con el nuevo estado de la pregunta actual
+        const dots = dotsEstudio.children;
+        if (dots[studyIndex % 10]) {
+            dots[studyIndex % 10].className = 'dot activo ' + (acierto ? 'correcto' : 'incorrecto');
+        }
+
+    } else {
+        avanzarEstudio();
+    }
 });
 
 function avanzarEstudio() {
@@ -744,9 +856,9 @@ document.getElementById('btnSalirEstudio').addEventListener('click', () => {
    BOTÓN GUARDAR CAMBIOS (editor)
    ================================================================ */
 
-document.getElementById('btnGuardarCambios').addEventListener('click', async () => {
+async function guardarCambiosDeck() {
     const btn = document.getElementById('btnGuardarCambios');
-    if (!currentDeckId && !currentDeck) return;
+    if (!currentDeckId && !currentDeck) return false;
 
     btn.disabled = true;
     btn.innerHTML = '<span class="material-symbols-outlined rotating">sync</span> Guardando…';
@@ -764,6 +876,7 @@ document.getElementById('btnGuardarCambios').addEventListener('click', async () 
             }
         }
 
+        markClean();
         btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Guardado';
         btn.classList.add('saved');
         setTimeout(() => {
@@ -771,12 +884,16 @@ document.getElementById('btnGuardarCambios').addEventListener('click', async () 
             btn.classList.remove('saved');
             btn.disabled  = false;
         }, 2500);
+        return true;
     } catch (err) {
         btn.innerHTML = '<span class="material-symbols-outlined">error</span> Error al guardar';
         btn.disabled  = false;
         console.error('[Guardar]', err);
+        return false;
     }
-});
+}
+
+document.getElementById('btnGuardarCambios').addEventListener('click', guardarCambiosDeck);
 
 /* ================================================================
    QUANTITY SELECTOR
@@ -862,6 +979,7 @@ Cada objeto debe tener una pregunta clara y una respuesta concisa:
 
         cards        = generated.map(c => ({ q: c.q, opciones: c.opciones, correcta: c.correcta, tipo: c.tipo, a: c.correcta }));
         currentIndex = 0;
+        markDirty();
         renderCard();
 
     } catch (err) {
@@ -946,6 +1064,7 @@ function addManualCard() {
     }
 
     cards.push({ q, opciones, correcta, tipo, a: Array.isArray(correcta) ? correcta[0] : correcta });
+    markDirty();
 
     /* Reset */
     inputPregunta.value = '';
