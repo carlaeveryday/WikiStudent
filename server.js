@@ -37,7 +37,25 @@ app.set('views', path.join(__dirname, 'views'));
 // margen a las 5 imágenes de 5MB que ya permite validate() en flashcards.js.
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
-app.use(express.static(__dirname));
+// ANTES: app.use(express.static(__dirname));
+// Esto servía la RAÍZ ENTERA del proyecto como archivos descargables:
+// server.js, routes/auth.js, views/app.ejs, .env, firebase-admin.json...
+// cualquiera que adivinara la ruta podía bajarse las credenciales del
+// servicio de Firebase o el código fuente del servidor. Muy probablemente
+// también era la causa de que "Dashboard" descargara app.ejs en crudo:
+// en cuanto algo apuntaba a /views/app.ejs, Express lo servía tal cual.
+//
+// AHORA: solo se sirven, explícitamente, las carpetas/archivos que
+// app.ejs referencia como públicos. Si en el futuro añades una carpeta
+// pública nueva, añade su línea aquí — nunca vuelvas a poner __dirname
+// entero.
+app.use('/styles',            express.static(path.join(__dirname, 'styles')));
+app.use('/scripts',           express.static(path.join(__dirname, 'scripts')));
+app.use('/pages',             express.static(path.join(__dirname, 'pages')));
+app.use('/wiki',              express.static(path.join(__dirname, 'wiki')));
+app.use('/directorio images', express.static(path.join(__dirname, 'directorio images')));
+app.get('/notificaciones.js', (req, res) => res.sendFile(path.join(__dirname, 'notificaciones.js')));
+app.get('/sonidos.js',        (req, res) => res.sendFile(path.join(__dirname, 'sonidos.js')));
 
 // ── 2. SESIONES ───────────────────────────────────────────────────────────────
 // Ya no guardamos aquí usuario/contraseña: solo los tokens que nos da

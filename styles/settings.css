@@ -380,6 +380,14 @@
     background: rgba(95, 202, 125, 0.18);
 }
 
+/* Trasladado desde home.css — vive aquí con el resto de .cfg-btn--* */
+.cfg-btn--test-sound {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
 .cfg-btn--full {
     width: 100%;
     justify-content: center;

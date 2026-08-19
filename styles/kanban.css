@@ -112,6 +112,7 @@
     display: flex;
     flex-direction: column;
     gap: 3px;
+    min-width: 0;
 }
 
 .agenda-asignatura {
@@ -162,15 +163,6 @@
 }
 
 /* --- Kanban board --- */
-.kanban-section-title {
-    text-align: center;
-    color: rgba(230, 241, 255, 0.45);
-    font-size: 0.68rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    padding: 10px 0 0 0;
-}
 
 .kanban-board {
     display: grid;
@@ -328,10 +320,9 @@
     opacity: 0.85;
 }
 
-/* Ocultar botones "+ Añadir" de columnas (ya no se usan) */
-.kb-add-btn {
-    display: none;
-}
+/* .kb-add-btn eliminado: ya estaba en display:none con el comentario
+   "ya no se usan", y confirmado por grep que ni app.ejs ni kanban.js
+   lo referencian. Código muerto real, no solo oculto. */
 
 /* ── Staging area — tarjetas pendientes de arrastrar ── */
 #kb-staging {
@@ -673,5 +664,22 @@
 
     .planner-section {
         padding: 0 4px;
+    }
+}
+
+/* Teléfonos pequeños: badge + fecha límite + acciones ya no caben
+   cómodamente en una sola línea junto al resto de la fila — se
+   permite que salten de línea en vez de forzar scroll horizontal. */
+@media (max-width: 480px) {
+    .agenda-row {
+        grid-template-columns: 40px 3px 1fr;
+        row-gap: 8px;
+    }
+
+    .agenda-right {
+        grid-column: 1 / -1;
+        justify-self: stretch;
+        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 }
