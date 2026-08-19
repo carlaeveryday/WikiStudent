@@ -54,6 +54,7 @@ app.use('/scripts',           express.static(path.join(__dirname, 'scripts')));
 app.use('/pages',             express.static(path.join(__dirname, 'pages')));
 app.use('/wiki',              express.static(path.join(__dirname, 'wiki')));
 app.use('/directorio images', express.static(path.join(__dirname, 'directorio images')));
+app.use('/static',            express.static(path.join(__dirname, 'static'))); // fuentes @font-face (Montserrat)
 app.get('/notificaciones.js', (req, res) => res.sendFile(path.join(__dirname, 'notificaciones.js')));
 app.get('/sonidos.js',        (req, res) => res.sendFile(path.join(__dirname, 'sonidos.js')));
 
