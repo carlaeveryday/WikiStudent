@@ -71,6 +71,14 @@ main {
     color: var(--azul-neon);
 }
 
+.welcome-title__blanco {
+    color: var(--texto-principal);
+}
+
+.welcome-title__naranja {
+    color: var(--naranja-neon);
+}
+
 .welcome-subtitle {
     font-size: clamp(0.85rem, 1.8vw, 1rem);
     font-weight: 300;
@@ -93,7 +101,7 @@ main {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--texto-secundario);
+    color: rgba(230, 241, 255, 0.55);
     margin-bottom: 16px;
     display: block;
 }
@@ -345,6 +353,38 @@ main {
 }
 .rama-btn.active .rama-btn__name { color: var(--texto-principal); }
 
+.rama-btn--disabled {
+    position: relative;
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+.rama-btn--disabled:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.07);
+    transform: none;
+}
+.rama-btn--disabled .rama-btn__icon,
+.rama-btn--disabled:hover .rama-btn__icon {
+    color: var(--texto-secundario);
+    transform: none;
+}
+
+.rama-btn__soon {
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--texto-principal);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 2px 6px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
 /* ── ZONA CTA ───────────────────────────────────────────────── */
 .cta-zone {
     width: 100%;
@@ -479,7 +519,7 @@ main {
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.06em;
-    color: var(--texto-secundario);
+    color: rgba(230, 241, 255, 0.55);
     white-space: nowrap;
     text-transform: uppercase;
 }
@@ -575,7 +615,7 @@ main {
 .test-desc {
     font-size: 0.8rem;
     font-weight: 300;
-    color: var(--texto-secundario);
+    color: rgba(230, 241, 255, 0.55);
     line-height: 1.6;
     flex-grow: 1;
     margin-bottom: 18px;

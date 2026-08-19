@@ -70,7 +70,7 @@
                     Tests Vocacionales · WikiStudent
                 </div>
                 <h1 class="welcome-title">
-                    Tu futuro empieza aquí.<br>
+                    <span class="welcome-title__blanco">Tu futuro empieza</span> <span class="welcome-title__naranja">aquí.</span><br>
                     <span class="welcome-title__accent">¿En qué punto te encuentras?</span>
                 </h1>
                 <p class="welcome-subtitle">
@@ -134,32 +134,36 @@
                             <span class="rama-btn__name">Ing. y Arquitectura</span>
                         </button>
 
-                        <button class="rama-btn" id="rama-SLD"
-                                onclick="selectRama('SLD','Ciencias de la Salud')">
+                        <button class="rama-btn rama-btn--disabled" id="rama-SLD" disabled
+                                aria-disabled="true">
                             <span class="rama-btn__icon material-symbols-outlined">stethoscope</span>
                             <span class="rama-btn__code">SLD</span>
                             <span class="rama-btn__name">Ciencias de la Salud</span>
+                            <span class="rama-btn__soon">Próximamente</span>
                         </button>
 
-                        <button class="rama-btn" id="rama-CIEN"
-                                onclick="selectRama('CIEN','Ciencias y Naturaleza')">
+                        <button class="rama-btn rama-btn--disabled" id="rama-CIEN" disabled
+                                aria-disabled="true">
                             <span class="rama-btn__icon material-symbols-outlined">science</span>
                             <span class="rama-btn__code">CIEN</span>
                             <span class="rama-btn__name">Ciencias y Naturaleza</span>
+                            <span class="rama-btn__soon">Próximamente</span>
                         </button>
 
-                        <button class="rama-btn" id="rama-SOC"
-                                onclick="selectRama('SOC','CC. Sociales y Jurídicas')">
+                        <button class="rama-btn rama-btn--disabled" id="rama-SOC" disabled
+                                aria-disabled="true">
                             <span class="rama-btn__icon material-symbols-outlined">balance</span>
                             <span class="rama-btn__code">SOC</span>
                             <span class="rama-btn__name">CC. Sociales</span>
+                            <span class="rama-btn__soon">Próximamente</span>
                         </button>
 
-                        <button class="rama-btn" id="rama-ART"
-                                onclick="selectRama('ART','Artes y Humanidades')">
+                        <button class="rama-btn rama-btn--disabled" id="rama-ART" disabled
+                                aria-disabled="true">
                             <span class="rama-btn__icon material-symbols-outlined">palette</span>
                             <span class="rama-btn__code">ART</span>
                             <span class="rama-btn__name">Artes y Humanidades</span>
+                            <span class="rama-btn__soon">Próximamente</span>
                         </button>
 
                     </div>

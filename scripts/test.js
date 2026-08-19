@@ -65,6 +65,14 @@ const COLORES_ESPECIALISTA = {
     AGRARIA:            "#96f2a4",
     NAVAL:              "#0084b4",
     TELECOMUNICACIONES: "#f093fb",
+    ROBOTICA:           "#ff4d6d",
+    DISENO_INDUSTRIAL:  "#7ee8fa",
+    BIOMEDICA:          "#ff9a9e",
+    MATERIALES:         "#c9a86a",
+    EDIFICACION:        "#89f7fe",
+    FORESTAL:           "#2d9d5f",
+    RECURSOS_MINEROS:   "#8d6748",
+    SONIDO_IMAGEN:      "#fbc2eb",
     // Ciencias Puras
     MATEMATICAS:        "#00d2ff",
     FISICA:             "#f7971e",
@@ -127,6 +135,14 @@ const NOMBRES_ESPECIALISTA = {
     AGRARIA:            "Ing. Agraria / Forestal",
     NAVAL:              "Ing. Naval / Tecnologías Marinas",
     TELECOMUNICACIONES: "Telecomunicaciones",
+    ROBOTICA:           "Robótica",
+    DISENO_INDUSTRIAL:  "Diseño Industrial",
+    BIOMEDICA:          "Ing. Biomédica",
+    MATERIALES:         "Ing. de Materiales",
+    EDIFICACION:        "Ing. de Edificación",
+    FORESTAL:           "Ing. Forestal",
+    RECURSOS_MINEROS:   "Ing. de Recursos Mineros",
+    SONIDO_IMAGEN:      "Ing. de Sonido e Imagen",
     MATEMATICAS:        "Matemáticas / Estadística",
     FISICA:             "Física",
     BIOLOGIA:           "Biología / Genética",
@@ -197,10 +213,8 @@ const datosGrado = {
 // Ajusta las rutas según tu estructura de carpetas
 const JSON_RAMA = {
     ING:  [
-        '/data/tests/test_ingenieria_bloque1.json',
-        '/data/tests/test_ingenieria_bloque2.json',
-        '/data/tests/test_ingenieria_bloque3.json',
-        '/data/tests/test_ingenieria_bloque4.json'
+        '/data/tests/test_ingenieria_bloque1.json'
+        // Añade aquí bloque2/3/4 cuando estén listos (40 preguntas en total)
     ],
     CIEN: [
         '/data/tests/test_ciencias_bloque1.json',
@@ -282,8 +296,8 @@ function selectRama(codigo, nombre) {
         ramaTag.textContent   = nombre;
         ramaTag.style.display = 'inline-flex';
     }
-    // ← AQUÍ se actualizan los 40 preguntas y el texto correcto
-    if (sub) sub.textContent = '40 preguntas · ~8 min · 99% accuracy';
+    // ← AQUÍ se actualizan el nº de preguntas y el texto correcto
+    if (sub) sub.textContent = '12 preguntas · ~3 min · 99% accuracy';
 
     ctaCarrera.style.display = 'flex';
     ctaZone.classList.add('open');

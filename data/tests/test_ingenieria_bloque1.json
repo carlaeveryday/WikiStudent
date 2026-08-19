@@ -1,0 +1,124 @@
+{
+    "preguntas": [
+        {
+            "id": "ing-01",
+            "enunciado": "Vas a crear una app para ayudar a autónomos a hacer sus facturas. ¿En qué te centras?",
+            "opciones": [
+                { "texto": "En el código, las bases de datos y la lógica interna para que no falle.", "scores": { "INFORMATICA": 3, "TELECOMUNICACIONES": 1 } },
+                { "texto": "En el diseño visual, los colores, los botones y que sea fácil de usar.", "scores": { "DISENO_INDUSTRIAL": 3, "ARQUITECTURA": 1 } },
+                { "texto": "En los servidores, la red y que las facturas se envíen de forma segura.", "scores": { "TELECOMUNICACIONES": 3, "INFORMATICA": 1 } },
+                { "texto": "En conectar la app con la cámara para escanear facturas en papel y clasificarlas.", "scores": { "ELECTRONICA": 3, "ROBOTICA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-02",
+            "enunciado": "Estás entrenando en el gimnasio y te fijas en...",
+            "opciones": [
+                { "texto": "En el diseño del local, la distribución del espacio y los techos.", "scores": { "ARQUITECTURA": 3, "EDIFICACION": 1 } },
+                { "texto": "En las poleas, engranajes y la resistencia física de las máquinas.", "scores": { "MECANICA": 3, "DISENO_INDUSTRIAL": 1 } },
+                { "texto": "En las pantallas, consolas digitales y sensores de pulso.", "scores": { "ELECTRONICA": 3, "BIOMEDICA": 1 } },
+                { "texto": "En la acústica, la sonorización y que la música no tenga eco.", "scores": { "SONIDO_IMAGEN": 3, "EDIFICACION": 1 } }
+            ]
+        },
+        {
+            "id": "ing-03",
+            "enunciado": "Diseño de un nuevo avión: ¿qué parte te llama más la atención?",
+            "opciones": [
+                { "texto": "En la forma de las alas, la velocidad y la aerodinámica.", "scores": { "AERO": 3, "MECANICA": 1 } },
+                { "texto": "En el piloto automático, los radares y las radiocomunicaciones.", "scores": { "TELECOMUNICACIONES": 3, "AERO": 1 } },
+                { "texto": "En crear materiales ultraligeros y superresistentes para el fuselaje.", "scores": { "MATERIALES": 3, "AERO": 1 } },
+                { "texto": "En desarrollar un combustible limpio para reducir emisiones.", "scores": { "QUIMICA": 3, "ENERGIA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-04",
+            "enunciado": "Renovación de un puerto marítimo: ¿en qué te centras?",
+            "opciones": [
+                { "texto": "En diseñar y construir los diques, muelles y zonas de contención.", "scores": { "CIVIL": 3, "EDIFICACION": 1 } },
+                { "texto": "En el casco y la propulsión de barcos más eficientes.", "scores": { "NAVAL": 3, "MECANICA": 1 } },
+                { "texto": "En instalar paneles solares y energía de las olas.", "scores": { "ENERGIA": 3, "CIENCIAS_AMB": 1 } },
+                { "texto": "En grúas robotizadas que muevan contenedores de forma autónoma.", "scores": { "ROBOTICA": 3, "ELECTRONICA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-05",
+            "enunciado": "Están desarrollando una mano robótica médica. ¿Qué parte te interesa más?",
+            "opciones": [
+                { "texto": "En conectar los circuitos a los impulsos eléctricos de los nervios.", "scores": { "BIOMEDICA": 3, "ELECTRONICA": 1 } },
+                { "texto": "En los motores pequeños y articulaciones para mover los dedos.", "scores": { "ROBOTICA": 3, "MECANICA": 1 } },
+                { "texto": "En buscar materiales biocompatibles que el cuerpo no rechace.", "scores": { "MATERIALES": 3, "BIOMEDICA": 1 } },
+                { "texto": "En tratamientos químicos para evitar el desgaste u oxidación.", "scores": { "QUIMICA": 3, "MATERIALES": 1 } }
+            ]
+        },
+        {
+            "id": "ing-06",
+            "enunciado": "Vas a montar una granja inteligente en el campo. ¿Qué te preocupa más?",
+            "opciones": [
+                { "texto": "En mejorar las cosechas, la eficiencia del riego y el suelo.", "scores": { "AGRARIA": 3, "CIENCIAS_AMB": 1 } },
+                { "texto": "En cuidar la masa forestal de alrededor y prevenir incendios.", "scores": { "FORESTAL": 3, "AGRARIA": 1 } },
+                { "texto": "En conectar sensores inalámbricos para medir la humedad en tiempo real.", "scores": { "TELECOMUNICACIONES": 3, "AGRARIA": 1 } },
+                { "texto": "En diseñar invernaderos y naves agrícolas modernas y funcionales.", "scores": { "EDIFICACION": 3, "ARQUITECTURA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-07",
+            "enunciado": "Construcción de un rascacielos: ¿qué parte te apasiona?",
+            "opciones": [
+                { "texto": "En el dibujo, la forma del edificio y su impacto en la ciudad.", "scores": { "ARQUITECTURA": 3, "EDIFICACION": 1 } },
+                { "texto": "En la dirección de obra, presupuestos y control a pie de calle.", "scores": { "EDIFICACION": 3, "CIVIL": 1 } },
+                { "texto": "En los cimientos profundos y la estructura antiterremotos.", "scores": { "CIVIL": 3, "ARQUITECTURA": 1 } },
+                { "texto": "En la red eléctrica de alta potencia y los sistemas de iluminación.", "scores": { "ELECTRONICA": 3, "ENERGIA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-08",
+            "enunciado": "Automatización de una fábrica: ¿qué parte del proyecto elegirías?",
+            "opciones": [
+                { "texto": "Programar brazos robóticos con visión artificial para clasificar piezas.", "scores": { "ROBOTICA": 3, "INFORMATICA": 1 } },
+                { "texto": "Los paneles de control eléctrico, autómatas y el cableado.", "scores": { "ELECTRONICA": 3, "ROBOTICA": 1 } },
+                { "texto": "Tratar los gases y residuos para no contaminar el entorno.", "scores": { "CIENCIAS_AMB": 3, "QUIMICA": 1 } },
+                { "texto": "Hacer pruebas térmicas y de resistencia a los materiales de las piezas.", "scores": { "MATERIALES": 3, "MECANICA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-09",
+            "enunciado": "Baterías del futuro: ¿en qué parte del proceso te ves trabajando?",
+            "opciones": [
+                { "texto": "En planificar las excavaciones y la extracción del mineral de la mina.", "scores": { "RECURSOS_MINEROS": 3, "CIVIL": 1 } },
+                { "texto": "En los procesos químicos para purificar el litio a gran escala.", "scores": { "QUIMICA": 3, "RECURSOS_MINEROS": 1 } },
+                { "texto": "En evaluar el impacto ecológico de la mina y replantar la zona.", "scores": { "CIENCIAS_AMB": 3, "FORESTAL": 1 } },
+                { "texto": "En diseñar celdas para acumular más energía en menos espacio.", "scores": { "ENERGIA": 3, "MATERIALES": 1 } }
+            ]
+        },
+        {
+            "id": "ing-10",
+            "enunciado": "Festival de música al aire libre: ¿qué te encargarías de montar?",
+            "opciones": [
+                { "texto": "La mesa de sonido, la ecualización y el montaje de altavoces.", "scores": { "SONIDO_IMAGEN": 3, "TELECOMUNICACIONES": 1 } },
+                { "texto": "La resistencia de las estructuras de los escenarios y carpas.", "scores": { "CIVIL": 3, "MECANICA": 1 } },
+                { "texto": "Desplegar antenas portátiles para dar cobertura móvil masiva.", "scores": { "TELECOMUNICACIONES": 3, "INFORMATICA": 1 } },
+                { "texto": "Organizar el recinto arbolado y proteger el entorno natural.", "scores": { "FORESTAL": 3, "ARQUITECTURA": 1 } }
+            ]
+        },
+        {
+            "id": "ing-11",
+            "enunciado": "Exploración del océano profundo: ¿qué parte del proyecto elegirías?",
+            "opciones": [
+                { "texto": "La estructura del submarino para aguantar la presión del agua.", "scores": { "NAVAL": 3, "MECANICA": 1 } },
+                { "texto": "El robot submarino a control remoto para grabar en las profundidades.", "scores": { "ROBOTICA": 3, "NAVAL": 1 } },
+                { "texto": "El software de navegación 3D para mapear el suelo marino.", "scores": { "INFORMATICA": 3, "ROBOTICA": 1 } },
+                { "texto": "La extracción limpia de minerales del lecho marino.", "scores": { "RECURSOS_MINEROS": 3, "NAVAL": 1 } }
+            ]
+        },
+        {
+            "id": "ing-12",
+            "enunciado": "Protección de un parque natural: ¿en qué te centrarías?",
+            "opciones": [
+                { "texto": "En la reforestación con especies autóctonas y gestión del monte.", "scores": { "FORESTAL": 3, "AGRARIA": 1 } },
+                { "texto": "En levantar barreras naturales en los ríos para prevenir riadas.", "scores": { "CIVIL": 3, "CIENCIAS_AMB": 1 } },
+                { "texto": "En analizar la calidad del agua y montar plantas depuradoras.", "scores": { "CIENCIAS_AMB": 3, "QUIMICA": 1 } },
+                { "texto": "En diseñar pasarelas y miradores de madera integrados en el paisaje.", "scores": { "DISENO_INDUSTRIAL": 3, "ARQUITECTURA": 1 } }
+            ]
+        }
+    ]
+}
