@@ -121,13 +121,43 @@ if (document.readyState === "loading") {
   }
 
   /**
+   * Comprueba si el usuario tiene activada esta categoría de
+   * notificación interna en Ajustes > Notificaciones. El mirror lo
+   * mantiene settings.js en localStorage (clave "ws_notif_prefs"),
+   * así que esto no necesita ninguna llamada al servidor.
+   * Si la categoría no existe en el mirror (p.ej. porque el usuario
+   * nunca abrió Ajustes en este dispositivo), se permite por defecto.
+   * @param {string|null} categoria  "pomodoro" | "logros" | null
+   */
+  function prefsPermiten(categoria) {
+    if (!categoria) return true; // notificación sin categoría -> no se filtra
+    try {
+      const prefs = JSON.parse(localStorage.getItem("ws_notif_prefs") || "{}");
+      if (!(categoria in prefs)) return true;
+      return prefs[categoria] !== false;
+    } catch {
+      return true;
+    }
+  }
+
+  /**
    * Muestra una "Notificación Interna": tarjeta visual dentro de la
    * propia web + sonido (según lo configurado en Ajustes > Sonido).
+   * Las notificaciones internas SOLO existen para dos categorías:
+   * "pomodoro" (sesión terminada/cancelada) y "logros" (badges/hitos).
+   * El resto de avisos (agenda, ranking, racha) son push del servidor,
+   * no pasan por aquí — ver firebase-messaging-sw.js y server.js.
    * @param {string} titulo
    * @param {string} cuerpo
    * @param {string} icono  nombre de un icono Material Symbols (opcional)
+   * @param {string|null} categoria  "pomodoro" | "logros" — controla si
+   *        el usuario la ha desactivado en Ajustes. Si se omite, se
+   *        muestra siempre (úsalo solo para avisos que no sean ni
+   *        pomodoro ni logros).
    */
-  function mostrarInterna(titulo, cuerpo = "", icono = "notifications") {
+  function mostrarInterna(titulo, cuerpo = "", icono = "notifications", categoria = null) {
+    if (!prefsPermiten(categoria)) return;
+
     const cont = crearContenedor();
 
     const card = document.createElement("div");
@@ -157,5 +187,5 @@ if (document.readyState === "loading") {
     card.addEventListener("mouseenter", () => clearTimeout(auto));
   }
 
-  window.WSNotify = { mostrarInterna };
+  window.WSNotify = { mostrarInterna, prefsPermiten };
 })();

@@ -235,6 +235,19 @@ function onSesionCompletada() {
     // Alarma sonora (Web Audio API, ver sonidos.js) + repetición opcional
     reproducirAlarmaConRepeticion();
 
+    // Notificación interna "Pomodoro terminado" (Ajustes > Notificaciones).
+    // Independiente del modal cyberpunk de abajo: el modal SIEMPRE se ve
+    // (es el feedback principal de la sesión), esta tarjeta es el aviso
+    // que el usuario puede desactivar si le resulta redundante.
+    if (window.WSNotify) {
+        window.WSNotify.mostrarInterna(
+            '¡Pomodoro terminado!',
+            `+${pts} puntos ganados. ¡Sigue así!`,
+            'timer',
+            'pomodoro'
+        );
+    }
+
     // 1. Actualiza ranking en BD y re-renderiza el podio
     actualizarPuntosUsuario(pts).then(nuevaPosicion => {
         mostrarModal(pts, puntosAcum, nuevaPosicion);
@@ -461,7 +474,7 @@ async function cancelarPorAusencia() {
     );
 
     if (window.WSNotify) {
-        window.WSNotify.mostrarInterna('Sesión de Pomodoro cancelada', 'Estuviste ausente más de 5 minutos.');
+        window.WSNotify.mostrarInterna('Sesión de Pomodoro cancelada', 'Estuviste ausente más de 5 minutos.', 'timer', 'pomodoro');
     }
 
     try {

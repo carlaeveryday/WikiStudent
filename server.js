@@ -598,6 +598,42 @@ app.get('/api/ranking/stream', ensureAuthenticated, (req, res) => {
   });
 });
 
+// Toggle "Actualización de ranking" de Ajustes: avisa (push) a quien
+// acabas de adelantar en puntos, y a ti mismo si tu posición mejora.
+// Se dispara aquí porque este es el único sitio donde `points` cambia
+// para un usuario (ver comentario de RANKING_SELECT más arriba).
+const RANKING_PUSH_TTL_SECS = 3600;
+
+async function avisarAdelantosRanking(userId, username, oldPoints, newPoints) {
+  if (!supabaseAdmin) return;
+  try {
+    // Usuarios que tenían MÁS puntos que tú antes, y AHORA tienen igual o
+    // menos: a esos los acabas de adelantar. Se usa supabaseAdmin porque
+    // hace falta leer el notification_token/prefs de gente que no es
+    // "req.user" (RLS normal no lo permitiría).
+    const { data: adelantados, error } = await supabaseAdmin
+      .from('profiles')
+      .select('id, username, notification_token, notification_prefs')
+      .gt('points', oldPoints)
+      .lte('points', newPoints)
+      .neq('id', userId)
+      .not('notification_token', 'is', null);
+    if (error) throw error;
+
+    for (const u of adelantados || []) {
+      if (!pushPermitido(u.notification_prefs, 'ranking')) continue;
+      await enviarPush(
+        u.id, u.notification_token,
+        '📉 ¡Te han superado en el ranking!',
+        `${username} te ha adelantado con ${newPoints} pts. ¡A por ello!`,
+        RANKING_PUSH_TTL_SECS
+      );
+    }
+  } catch (err) {
+    console.error('[Ranking] Error al avisar adelantos:', err.message);
+  }
+}
+
 app.post('/api/ranking/add-points', ensureAuthenticated, async (req, res) => {
   const { puntos } = req.body;
   if (!puntos || isNaN(puntos)) return res.status(400).json({ error: 'puntos inválidos' });
@@ -609,8 +645,11 @@ app.post('/api/ranking/add-points', ensureAuthenticated, async (req, res) => {
       .from('profiles').select('points').eq('id', req.user.id).single();
     if (readErr) throw readErr;
 
+    const oldPoints = current.points;
+    const newPoints = oldPoints + Number(puntos);
+
     const { error: updErr } = await req.supabase
-      .from('profiles').update({ points: current.points + Number(puntos) }).eq('id', req.user.id);
+      .from('profiles').update({ points: newPoints }).eq('id', req.user.id);
     if (updErr) throw updErr;
 
     const users = await fetchRankingUsers(req.supabase, req.query.limit);
@@ -618,6 +657,10 @@ app.post('/api/ranking/add-points', ensureAuthenticated, async (req, res) => {
     // Difunde el cambio en tiempo real a todo el mundo conectado (incluido
     // el propio usuario en otras pestañas/dispositivos).
     broadcastRanking();
+
+    // Push a quien acabas de adelantar (no bloqueamos la respuesta por
+    // esto: si Firebase tarda, el usuario no tiene por qué esperar).
+    avisarAdelantosRanking(req.user.id, req.user.username, oldPoints, newPoints);
 
     res.json({ users, currentUserId: req.user.id });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -679,6 +722,12 @@ app.post('/api/stats/session', ensureAuthenticated, async (req, res) => {
       today_points:    user.today_points + Number(points),
       last_study_date: todayISO,
       streak:          newStreak,
+      // Timestamp exacto (no solo la fecha) para poder calcular "llevas
+      // más de 20h sin estudiar" en comprobarRachaEnPeligro(). Reseteamos
+      // también el aviso de "racha en peligro" de hoy: si ya había saltado
+      // y el usuario acaba de estudiar, puede volver a saltar mañana.
+      last_session_at:        new Date().toISOString(),
+      racha_alert_sent_date:  null,
     }).eq('id', req.user.id);
     if (updErr) throw updErr;
 
@@ -782,6 +831,31 @@ app.post('/api/user/notification-token', ensureAuthenticated, async (req, res) =
   const { error } = await req.supabase.from('profiles').update({ notification_token: token }).eq('id', req.user.id);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
+});
+
+// ── API: PREFERENCIAS DE NOTIFICACIONES (Ajustes > Notificaciones) ───────────
+// Se guardan en profiles.notification_prefs (jsonb) porque, a diferencia de
+// las de sonido/tema (que solo importan al propio navegador y viven en
+// localStorage), las push (agenda/ranking/racha) las decide EL SERVIDOR
+// desde un cron sin que el usuario tenga ninguna pestaña abierta — así que
+// necesitan estar donde el cron pueda leerlas.
+// Body: { pomodoro?, logros?, agenda?, ranking?, racha? } (booleans, parciales)
+const NOTIF_PREF_KEYS = ['pomodoro', 'logros', 'agenda', 'ranking', 'racha'];
+
+app.post('/api/user/notification-prefs', ensureAuthenticated, async (req, res) => {
+  const updates = {};
+  for (const key of NOTIF_PREF_KEYS) {
+    if (typeof req.body[key] === 'boolean') updates[key] = req.body[key];
+  }
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ error: 'No se recibió ninguna preferencia válida.' });
+  }
+
+  const merged = { ...(req.user.notification_prefs || {}), ...updates };
+  const { error } = await req.supabase
+    .from('profiles').update({ notification_prefs: merged }).eq('id', req.user.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, notification_prefs: merged });
 });
 
 // ── API: RECORDATORIOS DEL CALENDARIO ────────────────────────────────────────
@@ -933,6 +1007,37 @@ app.delete('/api/user/account', ensureAuthenticated, async (req, res) => {
 const REMINDER_TTL_SECONDS          = 600;   // avisos "quedan 10 min" → caduca en 10 min
 const CALENDAR_REMINDER_TTL_SECONDS = 10800; // avisos "hoy toca X" → caduca en 3h
 
+// Devuelve true si el usuario NO ha desactivado esta categoría de push en
+// Ajustes > Notificaciones. `prefs` puede venir null/undefined (usuario que
+// nunca tocó Ajustes) — en ese caso se permite por defecto.
+function pushPermitido(prefs, categoria) {
+  if (!prefs) return true;
+  return prefs[categoria] !== false;
+}
+
+// Envoltorio pequeño para admin.messaging().send() que además limpia el
+// token si Firebase dice que ya no es válido (dispositivo desinstalado,
+// permiso revocado, etc.) — mismo comportamiento que ya tenían los dos
+// crons de recordatorios, ahora reutilizable para racha/ranking.
+async function enviarPush(userId, token, title, body, ttlSeconds) {
+  try {
+    await admin.messaging().send({
+      notification: { title, body },
+      token,
+      webpush: { headers: { TTL: String(ttlSeconds) } },
+    });
+    return true;
+  } catch (err) {
+    if (err.code === 'messaging/registration-token-not-registered') {
+      await supabaseAdmin.from('profiles').update({ notification_token: null }).eq('id', userId);
+      console.warn(`  ⚠️ Token inválido para ${userId}, eliminado.`);
+    } else {
+      console.error(`  ❌ Error al notificar a ${userId}:`, err.message);
+    }
+    return false;
+  }
+}
+
 async function comprobarRecordatorios() {
   try {
     const ahora = new Date();
@@ -970,7 +1075,7 @@ async function comprobarRecordatorios() {
     const userIds = [...new Set(tareas.map(t => t.user_id))];
     const { data: profiles, error: profErr } = await supabaseAdmin
       .from('profiles')
-      .select('id, username, notification_token')
+      .select('id, username, notification_token, notification_prefs')
       .in('id', userIds)
       .not('notification_token', 'is', null);
     if (profErr) throw profErr;
@@ -981,34 +1086,18 @@ async function comprobarRecordatorios() {
     for (const tarea of tareas) {
       const profile = profileMap.get(tarea.user_id);
       if (!profile) continue; // usuario sin token registrado
+      if (!pushPermitido(profile.notification_prefs, 'agenda')) continue; // desactivado en Ajustes
 
-      const mensaje = {
-        notification: {
-          title: `⏰ En 10 minutos — ${tarea.titulo}`,
-          body:  `${tarea.asignatura ? tarea.asignatura + ' · ' : ''}Empieza a las ${tarea.hora}. ¡Prepárate!`,
-        },
-        token: profile.notification_token,
-        // TTL (Time-To-Live) del Web Push: si el dispositivo está offline
-        // y no se puede entregar en este margen, FCM DESCARTA el mensaje
-        // en vez de guardarlo en cola para cuando el usuario vuelva a
-        // conectarse. Sin esto, un aviso de "quedan 10 min" te podía
-        // llegar horas (o días) después, ya sin sentido, nada más
-        // encender el ordenador. 600s = 10 min: pasado ese margen la
-        // tarea ya ha empezado, así que no tiene sentido seguir esperando.
-        webpush: { headers: { TTL: String(REMINDER_TTL_SECONDS) } },
-      };
-
-      try {
-        await admin.messaging().send(mensaje);
-        console.log(`  ✅ Aviso a ${profile.username} → "${tarea.titulo}" (${tarea.hora})`);
-      } catch (errEnvio) {
-        if (errEnvio.code === 'messaging/registration-token-not-registered') {
-          await supabaseAdmin.from('profiles').update({ notification_token: null }).eq('id', tarea.user_id);
-          console.warn(`  ⚠️ Token inválido para ${profile.username}, eliminado.`);
-        } else {
-          console.error(`  ❌ Error al notificar a ${profile.username}:`, errEnvio.message);
-        }
-      }
+      const titulo = `⏰ En 10 minutos — ${tarea.titulo}`;
+      const cuerpo = `${tarea.asignatura ? tarea.asignatura + ' · ' : ''}Empieza a las ${tarea.hora}. ¡Prepárate!`;
+      // TTL (Time-To-Live) del Web Push: si el dispositivo está offline y no
+      // se puede entregar en este margen, FCM DESCARTA el mensaje en vez de
+      // guardarlo en cola para cuando el usuario vuelva a conectarse. Sin
+      // esto, un aviso de "quedan 10 min" te podía llegar horas (o días)
+      // después, ya sin sentido, nada más encender el ordenador. 600s = 10
+      // min: pasado ese margen la tarea ya ha empezado.
+      const ok = await enviarPush(tarea.user_id, profile.notification_token, titulo, cuerpo, REMINDER_TTL_SECONDS);
+      if (ok) console.log(`  ✅ Aviso a ${profile.username} → "${tarea.titulo}" (${tarea.hora})`);
     }
   } catch (error) {
     console.error('Error en el reloj de recordatorios:', error);
@@ -1055,7 +1144,7 @@ async function comprobarRecordatoriosCalendario() {
     const userIds = [...new Set(recordatorios.map(r => r.user_id))];
     const { data: profiles, error: profErr } = await supabaseAdmin
       .from('profiles')
-      .select('id, username, notification_token')
+      .select('id, username, notification_token, notification_prefs')
       .in('id', userIds)
       .not('notification_token', 'is', null);
     if (profErr) throw profErr;
@@ -1067,33 +1156,24 @@ async function comprobarRecordatoriosCalendario() {
       const profile = profileMap.get(rec.user_id);
       if (!profile) continue; // usuario sin token registrado
 
-      const esHoyElEvento = rec.event_date === hoyISO;
-      const mensaje = {
-        notification: {
-          title: esHoyElEvento ? `📅 Hoy — ${rec.label}` : `⏰ Recordatorio — ${rec.label}`,
-          body:  esHoyElEvento
-            ? `${rec.type === 'exam' ? 'Examen' : 'Evento'} hoy. ¡No lo olvides!`
-            : `${rec.type === 'exam' ? 'Examen' : 'Evento'} el ${rec.event_date}.`,
-        },
-        token: profile.notification_token,
-        // Estos son avisos de "hoy toca X", así que tiene sentido darles
-        // más margen que a los de 10 min (ver REMINDER_TTL_SECONDS más
-        // arriba): si vuelves a conectarte unas horas después sigue
-        // siendo el mismo día y sigue siendo útil. Pero no queremos que
-        // aparezca al día siguiente, así que igualmente caduca.
-        webpush: { headers: { TTL: String(CALENDAR_REMINDER_TTL_SECONDS) } },
-      };
+      // Ojo: aunque el aviso esté desactivado en Ajustes, seguimos marcando
+      // el recordatorio como "notificado hoy" más abajo — si no, en modo
+      // "daily" el cron lo reintentaría cada minuto sin sentido.
+      const permitido = pushPermitido(profile.notification_prefs, 'agenda');
 
-      try {
-        await admin.messaging().send(mensaje);
-        console.log(`  ✅ Aviso a ${profile.username} → "${rec.label}" (${rec.reminder_mode})`);
-      } catch (errEnvio) {
-        if (errEnvio.code === 'messaging/registration-token-not-registered') {
-          await supabaseAdmin.from('profiles').update({ notification_token: null }).eq('id', rec.user_id);
-          console.warn(`  ⚠️ Token inválido para ${profile.username}, eliminado.`);
-        } else {
-          console.error(`  ❌ Error al notificar a ${profile.username}:`, errEnvio.message);
-        }
+      if (permitido) {
+        const esHoyElEvento = rec.event_date === hoyISO;
+        const titulo = esHoyElEvento ? `📅 Hoy — ${rec.label}` : `⏰ Recordatorio — ${rec.label}`;
+        const cuerpo = esHoyElEvento
+          ? `${rec.type === 'exam' ? 'Examen' : 'Evento'} hoy. ¡No lo olvides!`
+          : `${rec.type === 'exam' ? 'Examen' : 'Evento'} el ${rec.event_date}.`;
+        // Estos son avisos de "hoy toca X", así que tiene sentido darles más
+        // margen que a los de 10 min (ver REMINDER_TTL_SECONDS más arriba):
+        // si vuelves a conectarte unas horas después sigue siendo el mismo
+        // día y sigue siendo útil. Pero no queremos que aparezca al día
+        // siguiente, así que igualmente caduca.
+        const ok = await enviarPush(rec.user_id, profile.notification_token, titulo, cuerpo, CALENDAR_REMINDER_TTL_SECONDS);
+        if (ok) console.log(`  ✅ Aviso a ${profile.username} → "${rec.label}" (${rec.reminder_mode})`);
       }
 
       // Marcamos el aviso de hoy como hecho. Si era "same_day" ya no hace
@@ -1110,9 +1190,63 @@ async function comprobarRecordatoriosCalendario() {
   }
 }
 
+// ⏰ RELOJ DE "RACHA EN PELIGRO"
+// ============================================================
+// Toggle "Racha en peligro" de Ajustes > Notificaciones: avisa cuando
+// llevas más de 20h sin registrar una sesión de estudio y tienes una
+// racha activa que perder. A diferencia de los recordatorios de arriba
+// (que disparan a una hora exacta), esto compara contra last_session_at
+// (timestamp real, no solo la fecha), así que el cron corre cada hora
+// en vez de cada minuto — no hace falta más precisión que esa.
+//
+// racha_alert_sent_date evita mandar el mismo aviso más de una vez el
+// mismo día; se resetea a null en cuanto el usuario vuelve a estudiar
+// (ver /api/stats/session), así que si la racha vuelve a peligrar otro
+// día, puede avisar de nuevo.
+const RACHA_PELIGRO_HORAS    = 20;
+const RACHA_PELIGRO_TTL_SECS = 3600; // 1h de margen de entrega, es un aviso "blando"
+
+async function comprobarRachaEnPeligro() {
+  try {
+    if (!supabaseAdmin) return;
+
+    const ahora        = new Date();
+    const limiteISO     = new Date(ahora.getTime() - RACHA_PELIGRO_HORAS * 60 * 60 * 1000).toISOString();
+    const hoyISO        = ahora.toLocaleDateString('en-CA', { timeZone: 'Europe/Madrid' });
+
+    const { data: usuarios, error } = await supabaseAdmin
+      .from('profiles')
+      .select('id, username, streak, last_session_at, racha_alert_sent_date, notification_token, notification_prefs')
+      .gt('streak', 0)
+      .not('notification_token', 'is', null)
+      .not('last_session_at', 'is', null)
+      .lt('last_session_at', limiteISO);
+    if (error) throw error;
+    if (!usuarios || usuarios.length === 0) return;
+
+    console.log(`🔥 [Racha en peligro] Revisando ${usuarios.length} usuario(s) sin estudiar en +${RACHA_PELIGRO_HORAS}h...`);
+
+    for (const u of usuarios) {
+      if (!pushPermitido(u.notification_prefs, 'racha')) continue; // desactivado en Ajustes
+      if (u.racha_alert_sent_date === hoyISO) continue;            // ya avisado hoy
+
+      const titulo = '🔥 ¡Tu racha está en peligro!';
+      const cuerpo  = `Llevas más de ${RACHA_PELIGRO_HORAS}h sin estudiar. No pierdas tu racha de ${u.streak} día${u.streak === 1 ? '' : 's'}.`;
+      const ok = await enviarPush(u.id, u.notification_token, titulo, cuerpo, RACHA_PELIGRO_TTL_SECS);
+      if (ok) {
+        await supabaseAdmin.from('profiles').update({ racha_alert_sent_date: hoyISO }).eq('id', u.id);
+        console.log(`  ✅ Aviso de racha a ${u.username} (${u.streak} días)`);
+      }
+    }
+  } catch (error) {
+    console.error('Error en el reloj de racha en peligro:', error);
+  }
+}
+
 // Cron interno: sigue funcionando solo mientras el proceso está despierto.
 cron.schedule('* * * * *', comprobarRecordatorios);
 cron.schedule('* * * * *', comprobarRecordatoriosCalendario);
+cron.schedule('0 * * * *', comprobarRachaEnPeligro); // cada hora en punto
 
 // Ruta para que un pinger externo gratuito (cron-job.org, UptimeRobot...)
 // dispare la comprobación cada minuto desde fuera, y de paso mantenga el
@@ -1125,6 +1259,7 @@ app.get('/api/cron/recordatorios', async (req, res) => {
   }
   await comprobarRecordatorios();
   await comprobarRecordatoriosCalendario();
+  await comprobarRachaEnPeligro();
   res.json({ success: true, checkedAt: new Date().toISOString() });
 });
 

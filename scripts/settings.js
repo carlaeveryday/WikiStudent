@@ -566,6 +566,55 @@
         } catch { mostrarToast('Sin conexión', 'error'); }
     });
 
+    /* ══════════════════════════════════════════════════════
+       PREFERENCIAS DE NOTIFICACIONES (internas + push)
+       ------------------------------------------------------
+       Los checkboxes ya vienen marcados desde el servidor (ver
+       app.ejs -> notifPrefs), así que aquí solo hace falta:
+         1) Guardar el mirror en localStorage para que otros scripts
+            (notificaciones.js, pomodoro.js) puedan leerlo al vuelo
+            sin depender de que el modal de Ajustes esté abierto.
+         2) Mandar el cambio al servidor, porque las push (agenda,
+            ranking, racha) las decide el propio servidor en un cron,
+            y ahí no hay localStorage al que agarrarse.
+       ══════════════════════════════════════════════════════ */
+
+    function guardarMirrorNotifPrefs() {
+        const prefs = {};
+        document.querySelectorAll('[data-notif-key]').forEach(input => {
+            prefs[input.dataset.notifKey] = input.checked;
+        });
+        localStorage.setItem('ws_notif_prefs', JSON.stringify(prefs));
+        return prefs;
+    }
+
+    // Mirror inicial con los valores ya renderizados por el servidor
+    guardarMirrorNotifPrefs();
+
+    document.querySelectorAll('[data-notif-key]').forEach(input => {
+        input.addEventListener('change', async () => {
+            const key = input.dataset.notifKey;
+            const value = input.checked;
+
+            guardarMirrorNotifPrefs();
+
+            try {
+                const res = await fetch('/api/user/notification-prefs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ [key]: value }),
+                });
+                if (!res.ok) throw new Error();
+            } catch {
+                // Revertimos visualmente si no se pudo guardar en servidor,
+                // para que el toggle no mienta sobre el estado real.
+                input.checked = !value;
+                guardarMirrorNotifPrefs();
+                mostrarToast('No se pudo guardar la preferencia', 'error');
+            }
+        });
+    });
+
     /* ── Modo claro / oscuro ── */
     document.getElementById('toggle-light-mode')?.addEventListener('change', (e) => {
         document.documentElement.classList.toggle('light-mode', e.target.checked);

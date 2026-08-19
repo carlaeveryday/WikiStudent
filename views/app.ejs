@@ -1,3 +1,11 @@
+<%
+  // Preferencias de notificaciones — se guardan en profiles.notification_prefs
+  // (jsonb). Si el usuario no ha tocado nunca los ajustes, esa columna viene
+  // null/undefined, así que aplicamos los mismos valores por defecto que
+  // tenía el HTML estático antes de que esto fuera dinámico.
+  const notifPrefsDefault = { pomodoro: true, logros: true, agenda: true, ranking: false, racha: true };
+  const notifPrefs = Object.assign({}, notifPrefsDefault, user.notification_prefs || {});
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -826,7 +834,7 @@
         </div>
 
         <div class="cfg-section">
-          <div class="cfg-section-label">🔔 Notificaciones Internas</div>
+          <div class="cfg-section-label">🔔 Notificaciones internas</div>
           <div class="cfg-row-desc" style="margin:-6px 0 4px 0">
             Son los avisos visuales y sonoros propios de WikiStudent (aparecen
             dentro de la web mientras la tienes abierta). Son distintas de las
@@ -844,46 +852,7 @@
                 <div class="cfg-row-desc">Aviso cuando acaba la sesión de estudio</div>
               </div>
             </div>
-            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
-          </div>
-
-          <div class="cfg-row">
-            <div class="cfg-row-info">
-              <div class="cfg-row-icon" style="background:rgba(214,197,22,0.12);color:#d6c516">
-                <span class="material-symbols-outlined">event</span>
-              </div>
-              <div class="cfg-row-text">
-                <div class="cfg-row-name">Recordatorio de agenda</div>
-                <div class="cfg-row-desc">15 min antes de cada bloque</div>
-              </div>
-            </div>
-            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
-          </div>
-
-          <div class="cfg-row">
-            <div class="cfg-row-info">
-              <div class="cfg-row-icon" style="background:rgba(127,22,214,0.12);color:#a855f7">
-                <span class="material-symbols-outlined">military_tech</span>
-              </div>
-              <div class="cfg-row-text">
-                <div class="cfg-row-name">Actualización de ranking</div>
-                <div class="cfg-row-desc">Cuando alguien te supera o subes posición</div>
-              </div>
-            </div>
-            <label class="cfg-toggle"><input type="checkbox"><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
-          </div>
-
-          <div class="cfg-row">
-            <div class="cfg-row-info">
-              <div class="cfg-row-icon" style="background:rgba(127,22,214,0.12);color:#7f25f5">
-                <span class="material-symbols-outlined">local_fire_department</span>
-              </div>
-              <div class="cfg-row-text">
-                <div class="cfg-row-name">Racha en peligro</div>
-                <div class="cfg-row-desc">Si llevas más de 20h sin estudiar</div>
-              </div>
-            </div>
-            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+            <label class="cfg-toggle"><input type="checkbox" id="notif-pomodoro" data-notif-key="pomodoro" <%= notifPrefs.pomodoro ? 'checked' : '' %>><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
           </div>
 
           <div class="cfg-row">
@@ -896,7 +865,55 @@
                 <div class="cfg-row-desc">Cuando consigues un nuevo badge o hito</div>
               </div>
             </div>
-            <label class="cfg-toggle"><input type="checkbox" checked><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+            <label class="cfg-toggle"><input type="checkbox" id="notif-logros" data-notif-key="logros" <%= notifPrefs.logros ? 'checked' : '' %>><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+        </div>
+
+        <div class="cfg-section">
+          <div class="cfg-section-label">📲 Notificaciones push</div>
+          <div class="cfg-row-desc" style="margin:-6px 0 4px 0">
+            Estas se envían aunque tengas la pestaña o el navegador cerrados.
+            Necesitan que las <strong>notificaciones del navegador</strong> de
+            arriba estén activadas, si no, no llegarán a tu dispositivo.
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(214,197,22,0.12);color:#d6c516">
+                <span class="material-symbols-outlined">event</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Recordatorio de agenda</div>
+                <div class="cfg-row-desc">15 min antes de cada bloque</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" id="notif-agenda" data-notif-key="agenda" <%= notifPrefs.agenda ? 'checked' : '' %>><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(127,22,214,0.12);color:#a855f7">
+                <span class="material-symbols-outlined">military_tech</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Actualización de ranking</div>
+                <div class="cfg-row-desc">Cuando alguien te supera o subes posición</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" id="notif-ranking" data-notif-key="ranking" <%= notifPrefs.ranking ? 'checked' : '' %>><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-row-info">
+              <div class="cfg-row-icon" style="background:rgba(127,22,214,0.12);color:#7f25f5">
+                <span class="material-symbols-outlined">local_fire_department</span>
+              </div>
+              <div class="cfg-row-text">
+                <div class="cfg-row-name">Racha en peligro</div>
+                <div class="cfg-row-desc">Si llevas más de 20h sin estudiar</div>
+              </div>
+            </div>
+            <label class="cfg-toggle"><input type="checkbox" id="notif-racha" data-notif-key="racha" <%= notifPrefs.racha ? 'checked' : '' %>><div class="cfg-toggle-track"></div><div class="cfg-toggle-thumb"></div></label>
           </div>
 
         </div>
