@@ -461,6 +461,71 @@ footer {
     gap: 14px;
 }
 
+/* header-user-block / header-user-text / user-title-chip no tenían layout
+   propio en ninguno de los archivos que gestiono (probablemente se
+   esperaba que niveles.css lo resolviera) — de ahí que avatar, fecha y
+   chip "Novato" aparecieran cada uno en un sitio distinto. Los alineamos
+   aquí: avatar + texto en fila, y el texto en columna pegado a la
+   izquierda. Si niveles.css ya define estas clases con otros valores,
+   pásamelo para revisar que no choquen (niveles.css se carga el último). */
+.header-user-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-user-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.main__header-info {
+    margin-top: 0;
+    text-align: left;
+}
+
+.user-title-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    align-self: flex-start;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PULIDO SIDEBAR — perfil + botón Pro (transición al abrir/cerrar)
+   Estas reglas viven aquí a propósito, NO en estilos_generales.css:
+   ese archivo no se toca. home.css se carga después, así que con la
+   misma especificidad estas reglas ganan y "completan" la transición
+   que faltaba en el original (solo animaba opacity/transform, dejando
+   width/padding/border-radius saltando de golpe entre colapsado y
+   expandido — por eso al cerrar el botón Pro "perdía" las esquinas
+   redondeadas en vez de recuperarlas suavemente).
+   ══════════════════════════════════════════════════════════════ */
+
+.sidebar__pro-btn {
+    transition:
+        opacity 0.2s,
+        transform 0.15s,
+        width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        border-radius 0.3s ease;
+}
+
+/* justify-content no se puede interpolar de forma continua (es una
+   propiedad "discreta"): el original la dejaba en 0s (salto instantáneo)
+   mientras gap/padding sí se animaban a 0.25s/0.35s, y eso desfasado es
+   justo lo que se ve "sucio" (el avatar salta de golpe mientras el resto
+   se sigue moviendo). Unificamos todo a la misma duración para que el
+   salto ocurra sincronizado con el resto, no desfasado. */
+.sidebar__user {
+    transition-property: gap, padding, border-radius, justify-content;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* ══════════════════════════════════════════════════════════════
    MODAL POMODORO — rediseño acorde al resto de popups
    ══════════════════════════════════════════════════════════════ */

@@ -250,27 +250,36 @@
             <div id="grid-main-1__rows">
                 <div id="calendario"></div>
 
-                <div id="nota">
-                    <div id="nota-top">
-                        <div id="nota-title">Nota rápida</div>
-                        <div id="editar-btn">Editar</div>
-                    </div>
-                    <textarea id="nota-user" placeholder="Escribe tus pensamientos o algo que quieras recordar."></textarea>
-                </div>
-
-                <div id="estado">
-                    <div id="estado-title">¿Qué tal ha ido el día hoy?</div>
-                    <div id="estado-buttons-container">
-                        <div class="mood-list">
-                            <img src="/directorio images/Slightly_smiling_face_3D.png" class="mood-emoji" alt="Feliz">
-                            <img src="/directorio images/Worried_face_3D.png" class="mood-emoji" alt="Agobiado">
-                            <img src="/directorio images/Frowning_face_3D.png" class="mood-emoji" alt="Cansado">
-                            <img src="/directorio images/Exploding_head_3D.png" class="mood-emoji" alt="Cansado">
-                            <img src="/directorio images/Crying_face_3D.png" class="mood-emoji" alt="Pensativo">
-                            <div class="material-symbols-outlined arrow_emojis">arrow_forward</div>
+                <!-- Nota rápida + Estado de ánimo, unificados en una sola
+                     tarjeta visual (antes eran dos tarjetas apiladas con
+                     su propio borde cada una). Los ids/clases internos
+                     (#nota, #nota-user, #estado, .mood-list...) se dejan
+                     tal cual para no romper el JS que ya los usa. -->
+                <div id="nota-estado-card">
+                    <div id="nota">
+                        <div id="nota-top">
+                            <div id="nota-title">Nota rápida</div>
+                            <div id="editar-btn">Editar</div>
                         </div>
+                        <textarea id="nota-user" placeholder="Escribe tus pensamientos o algo que quieras recordar."></textarea>
                     </div>
-                    <p class="info-emojis">Puedes elegir hasta tres estados*</p>
+
+                    <div id="nota-estado-divider"></div>
+
+                    <div id="estado">
+                        <div id="estado-title">¿Qué tal ha ido el día hoy?</div>
+                        <div id="estado-buttons-container">
+                            <div class="mood-list">
+                                <img src="/directorio images/Slightly_smiling_face_3D.png" class="mood-emoji" alt="Feliz">
+                                <img src="/directorio images/Worried_face_3D.png" class="mood-emoji" alt="Agobiado">
+                                <img src="/directorio images/Frowning_face_3D.png" class="mood-emoji" alt="Cansado">
+                                <img src="/directorio images/Exploding_head_3D.png" class="mood-emoji" alt="Cansado">
+                                <img src="/directorio images/Crying_face_3D.png" class="mood-emoji" alt="Pensativo">
+                                <div class="material-symbols-outlined arrow_emojis">arrow_forward</div>
+                            </div>
+                        </div>
+                        <p class="info-emojis">Puedes elegir hasta tres estados*</p>
+                    </div>
                 </div>
             </div>
         </div>
